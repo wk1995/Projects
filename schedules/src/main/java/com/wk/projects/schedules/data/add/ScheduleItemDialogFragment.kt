@@ -1,12 +1,10 @@
-package com.wk.projects.schedules.add
+package com.wk.projects.schedules.data.add
 
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.TimePicker
 import android.widget.Toast
 import com.wk.projects.common.BaseSimpleDialogFragment
 import com.wk.projects.common.communication.IRvClickListener
@@ -18,7 +16,6 @@ import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.ui.recycler.SchedulesAddItemAdapter
 import org.litepal.LitePal
 import rx.Observable
-import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -54,6 +51,7 @@ class ScheduleItemDialogFragment : BaseSimpleDialogFragment(), IRvClickListener 
         rvCommon.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
         Observable.just("select distinct itemname from scheduleitem")
                 .map {
+                    Timber.d("54 $it")
                     LitePal.findBySQL(it)
                 }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

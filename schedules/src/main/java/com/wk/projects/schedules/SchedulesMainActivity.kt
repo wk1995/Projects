@@ -1,21 +1,25 @@
 package com.wk.projects.schedules
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import butterknife.BindView
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.schedules.add.ScheduleItemDialogFragment
-import com.wk.projects.schedules.add.ScheduleNewItemDialogFragment
+import com.wk.projects.schedules.data.add.ScheduleItemDialogFragment
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
-import com.wk.projects.schedules.date.DateTime.getTodayEnd
-import com.wk.projects.schedules.date.DateTime.getTodayStart
+import com.wk.projects.schedules.data.all.AllDataInfoActivity
+import com.wk.projects.schedules.date.DateTime
+import com.wk.projects.schedules.date.DateTime.getDayEnd
+import com.wk.projects.schedules.date.DateTime.getDayStart
 import com.wk.projects.schedules.permission.PermissionDialog
 import com.wk.projects.schedules.permission.RefuseDialog
 import com.wk.projects.schedules.ui.recycler.SchedulesMainAdapter
@@ -27,8 +31,15 @@ import java.util.*
 
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
-
     private val scheduleMainAdapter by lazy { SchedulesMainAdapter(ArrayList()) }
+
+    @BindView(R2.id.addScheduleItem)
+    lateinit var addScheduleItem: TextView
+    @BindView(R2.id.addNewScheduleItem)
+    lateinit var addNewScheduleItem: TextView
+    @BindView(R2.id.tvQueryAllData)
+    lateinit var tvQueryAllData: TextView
+
 
     override fun initResLayId() = R.layout.schedules_activity_main
 
@@ -42,8 +53,8 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
         rvSchedules.adapter = scheduleMainAdapter
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        val toDayStart = getTodayStart().toString()
-        val toDayEnd = getTodayEnd().toString()
+        val toDayStart = getDayStart().toString()
+        val toDayEnd = getDayEnd().toString()
         LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
                 .order("startTime")
                 .findAsync(ScheduleItem::class.java)
@@ -56,6 +67,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     private fun initClickListener() {
         addScheduleItem.setOnClickListener(this)
         addNewScheduleItem.setOnClickListener(this)
+        tvQueryAllData.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -65,9 +77,12 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
                 ScheduleItemDialogFragment().show(supportFragmentManager)
 
             //增加数据库中没有的项目
-            addNewScheduleItem -> {
-                ScheduleNewItemDialogFragment().show(supportFragmentManager)
-            }
+            addNewScheduleItem ->
+//                ScheduleNewItemDialogFragment().show(supportFragmentManager)
+                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(0, 0, 2017))}")
+
+            tvQueryAllData -> startActivity(
+                    Intent(this@SchedulesMainActivity, AllDataInfoActivity::class.java))
         }
     }
 

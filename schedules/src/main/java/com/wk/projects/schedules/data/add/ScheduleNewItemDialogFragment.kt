@@ -1,4 +1,4 @@
-package com.wk.projects.schedules.add
+package com.wk.projects.schedules.data.add
 
 import android.os.Bundle
 import android.view.View
