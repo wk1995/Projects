@@ -1,0 +1,125 @@
+package com.wk.projects.schedules
+
+import android.Manifest
+import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import android.widget.Toast
+import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.communication.constant.BundleKey
+import com.wk.projects.common.communication.constant.IFAFlag
+import com.wk.projects.common.configuration.WkProjects
+import com.wk.projects.schedules.add.ScheduleItemDialogFragment
+import com.wk.projects.schedules.add.ScheduleNewItemDialogFragment
+import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
+import com.wk.projects.schedules.data.ScheduleItem
+import com.wk.projects.schedules.date.DateTime.getTodayEnd
+import com.wk.projects.schedules.date.DateTime.getTodayStart
+import com.wk.projects.schedules.permission.PermissionDialog
+import com.wk.projects.schedules.permission.RefuseDialog
+import com.wk.projects.schedules.ui.recycler.SchedulesMainAdapter
+import kotlinx.android.synthetic.main.schedules_activity_main.*
+import org.litepal.LitePal
+import permissions.dispatcher.*
+import timber.log.Timber
+import java.util.*
+
+@RuntimePermissions
+class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
+
+    private val scheduleMainAdapter by lazy { SchedulesMainAdapter(ArrayList()) }
+
+    override fun initResLayId() = R.layout.schedules_activity_main
+
+    override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+        SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
+        initClickListener()
+    }
+
+    private fun initRecyclerView() {
+        rvSchedules.layoutManager = LinearLayoutManager(this)
+        rvSchedules.adapter = scheduleMainAdapter
+        rvSchedules.addItemDecoration(
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        val toDayStart = getTodayStart().toString()
+        val toDayEnd = getTodayEnd().toString()
+        LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
+                .order("startTime")
+                .findAsync(ScheduleItem::class.java)
+                .listen {
+                    scheduleMainAdapter.addItems(it)
+                }
+
+    }
+
+    private fun initClickListener() {
+        addScheduleItem.setOnClickListener(this)
+        addNewScheduleItem.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when (v) {
+            //增加数据库中已有的项目
+            addScheduleItem ->
+                ScheduleItemDialogFragment().show(supportFragmentManager)
+
+            //增加数据库中没有的项目
+            addNewScheduleItem -> {
+                ScheduleNewItemDialogFragment().show(supportFragmentManager)
+            }
+        }
+    }
+
+    override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
+        when (flag) {
+            IFAFlag.SCHEDULE_NEW_ITEM_DIALOG,
+            IFAFlag.SCHEDULE_ITEM_DIALOG -> {
+                val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
+                val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
+                val item = ScheduleItem(itemName)
+                item.assignBaseObjId(id.toInt())
+                scheduleMainAdapter.addItem(item)
+            }
+            IFAFlag.DELETE_ITEM_DIALOG -> {
+                val id = bundle?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
+                        ?: throw Exception("id 有问题")
+                val position = bundle.getInt(BundleKey.LIST_POSITION, -1)
+                LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
+                    val itemList = scheduleMainAdapter.itemList
+                    if (itemList.size <= 0) return@listen
+                    val item = itemList[position]
+                    if (item.baseObjId == id)
+                        itemList.remove(item)
+                    scheduleMainAdapter.notifyDataSetChanged()
+                    Toast.makeText(WkProjects.getContext(), "删除成功", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        SchedulesMainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun getStorage() {
+        initRecyclerView()
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun refusePermission() {
+        RefuseDialog().show(this)
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun showRationale(request: PermissionRequest) {
+        PermissionDialog().withRequest(request).show(this)
+    }
+
+}
+

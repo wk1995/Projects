@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clComSimpleDiaLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:background="@color/colorPrimaryDark"
+    android:padding="@dimen/d15dp">
+
+    <TextView
+        android:id="@+id/tvComSimpleDialogTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/s16sp"
+        android:layout_marginTop="@dimen/d15dp"
+        android:textColor="@android:color/white"
+        android:text="@string/common_str_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ViewStub
+        android:id="@+id/vsComSimpleDialogContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvComSimpleDialogTheme" />
+
+    <Button
+        android:id="@+id/btnComSimpleDialogOk"
+        style="@style/common_base_simple_dialog.button"
+        android:text="@android:string/ok"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/btnComSimpleDialogCancel"
+        app:layout_constraintTop_toBottomOf="@id/vsComSimpleDialogContent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/btnComSimpleDialogCancel"
+        android:text="@android:string/cancel"
+        style="@style/common_base_simple_dialog.button"
+        android:layout_marginStart="@dimen/d40dp"
+        app:layout_constraintLeft_toRightOf="@id/btnComSimpleDialogOk"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vsComSimpleDialogContent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</android.support.constraint.ConstraintLayout>

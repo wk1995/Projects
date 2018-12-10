@@ -1,0 +1,9 @@
+<resources>
+    <string name="modules_name">schedules</string>
+    <string name="schedules_add_item">新增项目</string>
+    <string name="schedules_end_time">结束时间</string>
+    <string name="schedules_check_item_end_time">确定结束时间</string>
+    <string name="schedules_modify_item_start_time">修改开始时间</string>
+    <string name="schedules_start_time">开始时间</string>
+    <string name="schedules_delete_item">删除该项目</string>
+</resources>
