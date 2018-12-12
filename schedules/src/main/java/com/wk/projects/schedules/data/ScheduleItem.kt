@@ -25,4 +25,6 @@ data class ScheduleItem(@Column(nullable = false) val itemName: String,
     public override  fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
+
+
 }

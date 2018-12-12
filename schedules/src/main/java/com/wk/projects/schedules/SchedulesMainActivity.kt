@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import butterknife.BindView
+import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.IFAFlag
@@ -16,6 +17,7 @@ import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.schedules.data.add.ScheduleItemDialogFragment
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
+import com.wk.projects.schedules.data.add.ScheduleNewItemDialogFragment
 import com.wk.projects.schedules.data.all.AllDataInfoActivity
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.date.DateTime.getDayEnd
@@ -23,6 +25,7 @@ import com.wk.projects.schedules.date.DateTime.getDayStart
 import com.wk.projects.schedules.permission.PermissionDialog
 import com.wk.projects.schedules.permission.RefuseDialog
 import com.wk.projects.schedules.ui.recycler.SchedulesMainAdapter
+import com.wk.projects.schedules.ui.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import org.litepal.LitePal
 import permissions.dispatcher.*
@@ -39,11 +42,14 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     lateinit var addNewScheduleItem: TextView
     @BindView(R2.id.tvQueryAllData)
     lateinit var tvQueryAllData: TextView
+    @BindView(R2.id.tvDaySelected)
+    lateinit var tvDaySelected: TextView
 
 
     override fun initResLayId() = R.layout.schedules_activity_main
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+        tvDaySelected.text = DateTime.getTimeString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
     }
@@ -53,21 +59,32 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
         rvSchedules.adapter = scheduleMainAdapter
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        val toDayStart = getDayStart().toString()
-        val toDayEnd = getDayEnd().toString()
+        initData()
+
+    }
+
+    private fun initData() {
+        val currentTime = DateTime.getTime(tvDaySelected.text.toString().trim())
+        val toDayStart = getDayStart(currentTime).toString()
+        val toDayEnd = getDayEnd(currentTime).toString()
+        Timber.d("69 toDayStart ${DateTime.getTimeString(toDayStart.toLong())} toDayEnd ${DateTime.getTimeString(toDayEnd.toLong())}")
+
+        //开始的时间是当天,对结束的时间没有限制
         LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
                 .order("startTime")
                 .findAsync(ScheduleItem::class.java)
                 .listen {
+                    scheduleMainAdapter.clear()
                     scheduleMainAdapter.addItems(it)
                 }
-
     }
+
 
     private fun initClickListener() {
         addScheduleItem.setOnClickListener(this)
         addNewScheduleItem.setOnClickListener(this)
         tvQueryAllData.setOnClickListener(this)
+        tvDaySelected.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -78,11 +95,18 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
 
             //增加数据库中没有的项目
             addNewScheduleItem ->
-//                ScheduleNewItemDialogFragment().show(supportFragmentManager)
-                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(0, 0, 2017))}")
+                ScheduleNewItemDialogFragment().show(supportFragmentManager)
+//                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(System.currentTimeMillis()))}")
 
             tvQueryAllData -> startActivity(
                     Intent(this@SchedulesMainActivity, AllDataInfoActivity::class.java))
+            tvDaySelected ->
+                TimePickerCreator.create(this, object : OnTimeSelectListener {
+                    override fun onTimeSelect(date: Date?, view: View?) {
+                        tvDaySelected.text = DateTime.getTimeString(date?.time)
+                        initData()
+                    }
+                })
         }
     }
 

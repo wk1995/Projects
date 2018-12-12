@@ -77,4 +77,9 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>) : RecyclerView
         itemList.addAll(list)
         notifyDataSetChanged()
     }
+
+    fun clear(){
+        itemList.clear()
+        notifyDataSetChanged()
+    }
 }
