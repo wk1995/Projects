@@ -12,25 +12,14 @@
         android:gravity="center"
         android:layout_height="@dimen/d50dp" />
     <TextView
-        android:id="@+id/addScheduleItem"
-        android:layout_width="0dp"
-        app:layout_constraintRight_toLeftOf="@id/addNewScheduleItem"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
-        app:layout_constraintHorizontal_weight="1"
-        android:layout_height="@dimen/d60dp"
-        android:gravity="center"
-        android:text="新增活动"
-        android:textSize="@dimen/s24sp"/>
-    <TextView
         app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
         app:layout_constraintRight_toLeftOf="@id/tvQueryAllData"
         android:id="@+id/addNewScheduleItem"
         android:layout_width="0dp"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/addScheduleItem"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_height="@dimen/d60dp"
-        android:text="新增新活动"
+        android:text="增加活动"
         android:gravity="center"
         android:textSize="@dimen/s24sp"/>
     <TextView
@@ -46,7 +35,7 @@
         android:textSize="@dimen/s24sp"/>
 
     <android.support.v7.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@id/addScheduleItem"
+        app:layout_constraintTop_toBottomOf="@id/addNewScheduleItem"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

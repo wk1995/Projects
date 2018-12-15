@@ -1,9 +1,8 @@
 package com.wk.projects.schedules.permission
 
-import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.wk.projects.common.BaseSimpleDialogFragment
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.R
 import permissions.dispatcher.PermissionRequest
 
@@ -17,7 +16,7 @@ import permissions.dispatcher.PermissionRequest
  *      desc   :
  * </pre>
  */
-class PermissionDialog : BaseSimpleDialogFragment() {
+class PermissionDialog : BaseSimpleDialog() {
 
 
     private var request: PermissionRequest? = null

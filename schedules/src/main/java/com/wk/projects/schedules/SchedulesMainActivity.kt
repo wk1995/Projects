@@ -14,10 +14,9 @@ import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.schedules.data.add.ScheduleItemDialogFragment
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
-import com.wk.projects.schedules.data.add.ScheduleNewItemDialogFragment
+import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
 import com.wk.projects.schedules.data.all.AllDataInfoActivity
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.date.DateTime.getDayEnd
@@ -36,15 +35,13 @@ import java.util.*
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     private val scheduleMainAdapter by lazy { SchedulesMainAdapter(ArrayList()) }
 
-    @BindView(R2.id.addScheduleItem)
-    lateinit var addScheduleItem: TextView
+
     @BindView(R2.id.addNewScheduleItem)
     lateinit var addNewScheduleItem: TextView
     @BindView(R2.id.tvQueryAllData)
     lateinit var tvQueryAllData: TextView
     @BindView(R2.id.tvDaySelected)
     lateinit var tvDaySelected: TextView
-
 
     override fun initResLayId() = R.layout.schedules_activity_main
 
@@ -81,7 +78,6 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
 
 
     private fun initClickListener() {
-        addScheduleItem.setOnClickListener(this)
         addNewScheduleItem.setOnClickListener(this)
         tvQueryAllData.setOnClickListener(this)
         tvDaySelected.setOnClickListener(this)
@@ -89,13 +85,9 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
-            //增加数据库中已有的项目
-            addScheduleItem ->
-                ScheduleItemDialogFragment().show(supportFragmentManager)
-
             //增加数据库中没有的项目
             addNewScheduleItem ->
-                ScheduleNewItemDialogFragment().show(supportFragmentManager)
+                ScheduleItemAddDialog.create().show(supportFragmentManager)
 //                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(System.currentTimeMillis()))}")
 
             tvQueryAllData -> startActivity(

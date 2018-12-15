@@ -3,14 +3,9 @@ package com.wk.projects.schedules.update
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import com.wk.projects.common.BaseSimpleDialogFragment
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.R
 import com.wk.projects.common.communication.constant.IFAFlag
-import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
-import com.wk.projects.schedules.data.ScheduleItem
-import org.litepal.LitePal
 
 /**
  * <pre>
@@ -22,7 +17,7 @@ import org.litepal.LitePal
  *      desc   :
  * </pre>
  */
-class DeleteScheduleItemDialog : BaseSimpleDialogFragment() {
+class DeleteScheduleItemDialog : BaseSimpleDialog() {
     companion object {
         fun create(bundle: Bundle? = null): DeleteScheduleItemDialog {
             val mUpdateOrDeleteDialog = DeleteScheduleItemDialog()

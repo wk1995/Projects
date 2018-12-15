@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
-import com.wk.projects.common.BaseSimpleDialogFragment
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
@@ -25,7 +25,7 @@ import java.util.*
  *      desc   :
  * </pre>
  */
-class ScheduleItemInfoDialog : BaseSimpleDialogFragment(), OnTimeSelectListener {
+class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemInfoDialog {

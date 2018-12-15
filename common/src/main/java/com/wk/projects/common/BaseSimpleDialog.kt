@@ -20,7 +20,7 @@ import butterknife.BindView
  * </pre>*/
 
 
-abstract class BaseSimpleDialogFragment : BaseDialogFragment(), View.OnClickListener {
+abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
     @BindView(R2.id.vsComSimpleDialogContent)
     protected lateinit var vsComSimpleDialogContent: ViewStub

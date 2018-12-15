@@ -1,8 +1,6 @@
 package com.wk.projects.schedules.date
 
-import android.provider.ContactsContract
 import java.text.SimpleDateFormat
-import java.time.Year
 import java.util.*
 
 /**
@@ -16,14 +14,19 @@ import java.util.*
  * </pre>
  */
 object DateTime {
-    private val mSimpleDateFormat by lazy { SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒SSS", Locale.getDefault()) }
+    private val defaultSimpleDateFormat by lazy {
+        SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒SSS", Locale.getDefault())
+    }
+
     @JvmStatic
-    fun getTimeString(time: Long?): String =
+    fun getTimeString(time: Long?, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
+            : String =
             if (time == null) "null" else
                 mSimpleDateFormat.format(time)
 
     @JvmStatic
-    fun getTime(timeString: String): Long = mSimpleDateFormat.parse(timeString).time
+    fun getTime(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
+            : Long = mSimpleDateFormat.parse(timeString).time
 
     @JvmStatic
     //获取某一天的0点0分0秒0毫秒 月和日都从0开始算

@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EditText xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/etAddItem"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-</EditText>
+    <EditText
+        android:id="@+id/etAddItem"
+        android:layout_width="match_parent"
+        android:imeOptions="flagNoExtractUi"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvExistItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d150dp" />
+</LinearLayout>
+
