@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tvCommon"
     android:textSize="@dimen/s20sp"
-    tools:background="@android:color/black"
     tools:text="Java"
-    android:textColor="@android:color/holo_red_light"
+    android:textColor="@android:color/black"
     android:padding="@dimen/d10dp"
     android:gravity="center_vertical"
     android:layout_height="@dimen/d60dp"/>

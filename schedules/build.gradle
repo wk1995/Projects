@@ -57,6 +57,8 @@ dependencies {
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
+    //路由
+    kapt "com.alibaba:arouter-compiler:1.1.4"
 }
 repositories {
     mavenCentral()

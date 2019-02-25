@@ -5,11 +5,14 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import butterknife.BindView
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.R2
 import com.wk.projects.schedules.ui.recycler.RefreshHelper
 
+@Route(path = ARoutePath.AllDataInfoActivity)
 class AllDataInfoActivity : BaseProjectsActivity() {
 
     @BindView(R2.id.rvCommonRs)

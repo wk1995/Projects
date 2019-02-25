@@ -13,14 +13,18 @@ import org.litepal.crud.LitePalSupport
  *      desc   :
  * </pre>
  */
-data class ScheduleItem(@Column(nullable = false) val itemName: String,
+data class ScheduleItem(@Column(nullable = false) var itemName: String,
                         @Column(nullable = true) var startTime: Long? = null,
-                        @Column(nullable = true) var endTime: Long? = null)
+                        @Column(nullable = true) var endTime: Long? = null,
+                        @Column(nullable = true) var note: String? = null,
+                        @Column(nullable = true) var parentId: Long? = null)
     : LitePalSupport() {
     companion object {
         const val  COLUMN_ITEM_NAME="itemName"
         const val  COLUMN_START_TIME="startTime"
         const val  COLUMN_END_TIME="endTime"
+        const val  COLUMN_ITEM_NOTE="note"
+        const val  COLUMN_PARENT_ID="parentId"
     }
     public override  fun getBaseObjId(): Long {
         return super.getBaseObjId()

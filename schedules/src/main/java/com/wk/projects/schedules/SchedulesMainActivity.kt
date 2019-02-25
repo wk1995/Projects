@@ -1,7 +1,6 @@
 package com.wk.projects.schedules
 
 import android.Manifest
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -9,15 +8,17 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import butterknife.BindView
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
+import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
-import com.wk.projects.schedules.data.all.AllDataInfoActivity
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.date.DateTime.getDayEnd
 import com.wk.projects.schedules.date.DateTime.getDayStart
@@ -31,10 +32,10 @@ import permissions.dispatcher.*
 import timber.log.Timber
 import java.util.*
 
+@Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     private val scheduleMainAdapter by lazy { SchedulesMainAdapter(ArrayList()) }
-
 
     @BindView(R2.id.addNewScheduleItem)
     lateinit var addNewScheduleItem: TextView
@@ -52,12 +53,14 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerView() {
-        rvSchedules.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.reverseLayout = true
+        linearLayoutManager.stackFromEnd = true
+        rvSchedules.layoutManager = linearLayoutManager
         rvSchedules.adapter = scheduleMainAdapter
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         initData()
-
     }
 
     private fun initData() {
@@ -85,13 +88,12 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
-            //增加数据库中没有的项目
+        //增加数据库中没有的项目
             addNewScheduleItem ->
                 ScheduleItemAddDialog.create().show(supportFragmentManager)
 //                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(System.currentTimeMillis()))}")
 
-            tvQueryAllData -> startActivity(
-                    Intent(this@SchedulesMainActivity, AllDataInfoActivity::class.java))
+            tvQueryAllData -> ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
             tvDaySelected ->
                 TimePickerCreator.create(this, object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {

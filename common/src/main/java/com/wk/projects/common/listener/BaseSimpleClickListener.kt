@@ -17,18 +17,14 @@ import com.chad.library.adapter.base.listener.SimpleClickListener
 abstract class BaseSimpleClickListener: SimpleClickListener() {
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

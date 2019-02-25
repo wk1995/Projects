@@ -58,22 +58,46 @@
     <Button
         android:id="@+id/btOk"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/d50dp"
         android:gravity="center"
         android:text="@android:string/ok"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toBottomOf="@id/tvScheduleEndTime"
+        app:layout_constraintLeft_toRightOf="@id/btEndTime"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <Button
+        android:id="@+id/btEndTime"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d50dp"
+        android:gravity="center"
+        android:text="@string/schedules_item_end_time"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/btOk"
         app:layout_constraintLeft_toRightOf="@id/btCancel"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btOk"
         />
     <Button
         android:id="@+id/btCancel"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toLeftOf="@id/tvScheduleStartTime"
+        android:layout_height="@dimen/d50dp"
+        app:layout_constraintRight_toLeftOf="@id/btEndTime"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleEndTime"
+        app:layout_constraintTop_toTopOf="@id/btEndTime"
         android:text="@android:string/cancel"/>
+
+    <TextView
+        android:id="@+id/tvScheduleNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btCancel"
+        android:text="@string/common_str_note"/>
+    <EditText
+        android:inputType="text"
+        android:hint="@string/schedules_et_note_hint"
+        android:id="@+id/etScheduleNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvScheduleNote"/>
 </android.support.constraint.ConstraintLayout>
