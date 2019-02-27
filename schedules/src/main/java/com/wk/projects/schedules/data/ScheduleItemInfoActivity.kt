@@ -1,18 +1,23 @@
 package com.wk.projects.schedules.data
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
+import com.wk.projects.schedules.constant.ActivityResultCode
 import com.wk.projects.schedules.date.DateTime
+import com.wk.projects.schedules.date.DateTime.getTime
 import com.wk.projects.schedules.ui.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
@@ -38,6 +43,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         itemId
     }
 
+
     override fun initResLayId() = R.layout.schedules_activity_schedule_item_info
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
@@ -58,17 +64,22 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     override fun onClick(v: View?) {
         when (v) {
             btOk -> {
+                val startTime=tvScheduleStartTime.text.toString()
+                val endTime=tvScheduleEndTime.text.toString()
                 val mContentValues = ContentValues()
                 mContentValues.put(ScheduleItem.COLUMN_START_TIME,
-                        DateTime.getTime(tvScheduleStartTime.text.toString()))
+                        DateTime.getTime(startTime))
                 mContentValues.put(ScheduleItem.COLUMN_END_TIME,
-                        DateTime.getTime(tvScheduleEndTime.text.toString()))
+                        DateTime.getTime(endTime))
                 mContentValues.put(ScheduleItem.COLUMN_ITEM_NOTE,
                         etScheduleNote.text.toString())
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
                 }
+                intent.putExtra(ScheduleItem.COLUMN_START_TIME,getTime(startTime))
+                intent.putExtra(ScheduleItem.COLUMN_END_TIME,getTime(endTime))
+                setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity,intent)
                 finish()
             }
             btCancel -> finish()
@@ -80,8 +91,8 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                     }
                 })
             }
-            btEndTime->{
-                tvScheduleEndTime.text=DateTime.getTimeString(System.currentTimeMillis())
+            btEndTime -> {
+                tvScheduleEndTime.text = DateTime.getTimeString(System.currentTimeMillis())
             }
         }
 

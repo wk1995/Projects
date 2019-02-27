@@ -66,7 +66,23 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         etAddItem = vsView.findViewById(R.id.etAddItem)
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
 
-        rvExistItem.layoutManager =LinearLayoutManager(mActivity)
+        rvExistItem.layoutManager = LinearLayoutManager(mActivity) /*{
+     override fun onMeasure(recycler: RecyclerView.Recycler, state: RecyclerView.State, widthSpec: Int, heightSpec: Int) {
+//                super.onMeasure(recycler, state, widthSpec, heightSpec)
+         val count = state.itemCount
+         if (count > 0) {
+             val firstView = recycler.getViewForPosition(0) ?: return
+             val measuredWidth = View.MeasureSpec.getSize(widthSpec)
+
+             val measuredHeight = firstView.measuredHeight
+             Timber.i("measuredHeight: $measuredHeight")
+             val realWidth = Math.max(0, measuredWidth)
+             val realHeight = measuredHeight * 4
+             setMeasuredDimension(realWidth, realHeight)
+         } else
+             super.onMeasure(recycler, state, widthSpec, heightSpec)
+     }
+ }*/
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

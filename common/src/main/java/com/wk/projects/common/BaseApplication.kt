@@ -39,4 +39,9 @@ abstract class BaseApplication:Application(){
         // 尽可能早，推荐在Application中初始化
         ARouter.init(this)
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        ARouter.getInstance().destroy()
+    }
 }

@@ -1,6 +1,7 @@
 package com.wk.projects.schedules
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -11,12 +12,17 @@ import butterknife.BindView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
+import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
+import com.wk.projects.schedules.constant.ActivityRequestCode
+import com.wk.projects.schedules.constant.ActivityResultCode
 import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
 import com.wk.projects.schedules.date.DateTime
@@ -26,6 +32,7 @@ import com.wk.projects.schedules.permission.PermissionDialog
 import com.wk.projects.schedules.permission.RefuseDialog
 import com.wk.projects.schedules.ui.recycler.SchedulesMainAdapter
 import com.wk.projects.schedules.ui.time.TimePickerCreator
+import com.wk.projects.schedules.update.DeleteScheduleItemDialog
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import org.litepal.LitePal
 import permissions.dispatcher.*
@@ -35,7 +42,9 @@ import java.util.*
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
-    private val scheduleMainAdapter by lazy { SchedulesMainAdapter(ArrayList()) }
+    private val scheduleMainAdapter by lazy {
+        SchedulesMainAdapter(ArrayList())
+    }
 
     @BindView(R2.id.addNewScheduleItem)
     lateinit var addNewScheduleItem: TextView
@@ -58,6 +67,31 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
         rvSchedules.adapter = scheduleMainAdapter
+        rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
+
+            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
+                when (view?.id) {
+                    R.id.tvCommon -> ARouter.getInstance()
+                            .build(ARoutePath.ScheduleItemInfoActivity)
+                            .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                            .withInt(LIST_POSITION, position)
+                            .navigation(this@SchedulesMainActivity, ActivityRequestCode.RequestCode_SchedulesMainActivity)
+                }
+            }
+
+            override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                val item = adapter?.getItem(position) as? ScheduleItem ?: return
+                val baseObjId = item.baseObjId
+                val itemName = item.itemName
+                //修改项目开始时间或者删除项目
+                val bundle = Bundle()
+                bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                bundle.putInt(BundleKey.LIST_POSITION, position)
+                bundle.putString(BundleKey.LIST_ITEM_NAME, itemName)
+                DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
+            }
+        })
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         initData()
@@ -129,6 +163,24 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
+        if (requestCode == ActivityRequestCode.RequestCode_SchedulesMainActivity &&
+                resultCode == ActivityResultCode.ResultCode_ScheduleItemInfoActivity) {
+            val position = data?.getIntExtra(LIST_POSITION, -1) ?: return
+            if (position < 0)
+                return
+            val endTime=data.getLongExtra(ScheduleItem.COLUMN_END_TIME,0)
+            val startTime=data.getLongExtra(ScheduleItem.COLUMN_START_TIME,0)
+            val scheduleItem=scheduleMainAdapter.getItem(position)?:return
+            scheduleItem.endTime=endTime
+            scheduleItem.startTime=startTime
+            scheduleMainAdapter.notifyItemChanged(position)
+        }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
