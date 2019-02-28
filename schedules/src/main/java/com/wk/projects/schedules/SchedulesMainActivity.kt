@@ -5,10 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import butterknife.BindView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
@@ -41,22 +42,16 @@ import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
-class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
+class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Toolbar.OnMenuItemClickListener {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
 
-    @BindView(R2.id.addNewScheduleItem)
-    lateinit var addNewScheduleItem: TextView
-    @BindView(R2.id.tvQueryAllData)
-    lateinit var tvQueryAllData: TextView
-    @BindView(R2.id.tvDaySelected)
-    lateinit var tvDaySelected: TextView
-
     override fun initResLayId() = R.layout.schedules_activity_main
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
-        tvDaySelected.text = DateTime.getTimeString(System.currentTimeMillis())
+        setSupportActionBar(tbSchedules)
+        tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
     }
@@ -72,7 +67,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
                 when (view?.id) {
-                    R.id.tvCommon -> ARouter.getInstance()
+                    R.id.clScheduleItem -> ARouter.getInstance()
                             .build(ARoutePath.ScheduleItemInfoActivity)
                             .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
                             .withInt(LIST_POSITION, position)
@@ -98,10 +93,10 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
     }
 
     private fun initData() {
-        val currentTime = DateTime.getTime(tvDaySelected.text.toString().trim())
+        val currentTime = DateTime.getDateLong(tvDaySelected.text.toString().trim())
         val toDayStart = getDayStart(currentTime).toString()
         val toDayEnd = getDayEnd(currentTime).toString()
-        Timber.d("69 toDayStart ${DateTime.getTimeString(toDayStart.toLong())} toDayEnd ${DateTime.getTimeString(toDayEnd.toLong())}")
+        Timber.d("69 toDayStart ${DateTime.getDateString(toDayStart.toLong())} toDayEnd ${DateTime.getDateString(toDayEnd.toLong())}")
 
         //开始的时间是当天,对结束的时间没有限制
         LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
@@ -113,29 +108,38 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
                 }
     }
 
-
     private fun initClickListener() {
-        addNewScheduleItem.setOnClickListener(this)
-        tvQueryAllData.setOnClickListener(this)
         tvDaySelected.setOnClickListener(this)
+        fabAddScheduleItem.setOnClickListener(this)
+        tbSchedules.setOnMenuItemClickListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.schedules_tb_menu,menu)
+        return true
     }
 
     override fun onClick(v: View?) {
         when (v) {
-        //增加数据库中没有的项目
-            addNewScheduleItem ->
-                ScheduleItemAddDialog.create().show(supportFragmentManager)
-//                Timber.d("83 ${DateTime.getTimeString(DateTime.getDayStart(System.currentTimeMillis()))}")
-
-            tvQueryAllData -> ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
             tvDaySelected ->
                 TimePickerCreator.create(this, object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
-                        tvDaySelected.text = DateTime.getTimeString(date?.time)
+                        tvDaySelected.text = DateTime.getDateString(date?.time)
                         initData()
                     }
                 })
+        //增加数据库中没有的项目
+            fabAddScheduleItem -> ScheduleItemAddDialog.create().show(supportFragmentManager)
         }
+    }
+
+    override fun onMenuItemClick(p0: MenuItem?): Boolean {
+        when(p0?.itemId){
+            R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
+            R.id.menuItemSearch->{}
+            R.id.menuItemIdea->{}
+        }
+        return true
     }
 
     override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
@@ -173,11 +177,11 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener {
             val position = data?.getIntExtra(LIST_POSITION, -1) ?: return
             if (position < 0)
                 return
-            val endTime=data.getLongExtra(ScheduleItem.COLUMN_END_TIME,0)
-            val startTime=data.getLongExtra(ScheduleItem.COLUMN_START_TIME,0)
-            val scheduleItem=scheduleMainAdapter.getItem(position)?:return
-            scheduleItem.endTime=endTime
-            scheduleItem.startTime=startTime
+            val endTime = data.getLongExtra(ScheduleItem.COLUMN_END_TIME, 0)
+            val startTime = data.getLongExtra(ScheduleItem.COLUMN_START_TIME, 0)
+            val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
+            scheduleItem.endTime = endTime
+            scheduleItem.startTime = startTime
             scheduleMainAdapter.notifyItemChanged(position)
         }
 

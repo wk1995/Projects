@@ -55,9 +55,9 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
             btnComSimpleDialogOk -> {
                 val mContentValues = ContentValues()
                 mContentValues.put(ScheduleItem.COLUMN_START_TIME,
-                        DateTime.getTime(tvScheduleStartTime.text.toString()))
+                        DateTime.getDateLong(tvScheduleStartTime.text.toString()))
                 mContentValues.put(ScheduleItem.COLUMN_END_TIME,
-                        DateTime.getTime(tvScheduleEndTime.text.toString()))
+                        DateTime.getDateLong(tvScheduleEndTime.text.toString()))
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
@@ -80,14 +80,14 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
         tvScheduleEndTime.setOnClickListener(this)
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
             tvComSimpleDialogTheme.text = it.itemName
-            tvScheduleStartTime.text = DateTime.getTimeString(it.startTime)
-            tvScheduleEndTime.text = DateTime.getTimeString(it.endTime)
+            tvScheduleStartTime.text = DateTime.getDateString(it.startTime)
+            tvScheduleEndTime.text = DateTime.getDateString(it.endTime)
         }
 
     }
 
     override fun initViewSubLayout() = R.layout.schedules_dialog_item_info_
     override fun onTimeSelect(date: Date?, v: View?) {
-        (v as TextView).text = DateTime.getTimeString(date?.time)
+        (v as TextView).text = DateTime.getDateString(date?.time)
     }
 }

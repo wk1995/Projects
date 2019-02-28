@@ -22,7 +22,7 @@ class CrashHandler private constructor(private val context: Context,
                                        private val moduleName: String)
     : Thread.UncaughtExceptionHandler {
     //先把原先的取出来
-    private val mDefaultCrashHandler: Thread.UncaughtExceptionHandler  by lazy {Thread.getDefaultUncaughtExceptionHandler()}
+    private val mDefaultCrashHandler: Thread.UncaughtExceptionHandler?  by lazy {Thread.getDefaultUncaughtExceptionHandler()}
     private val logPath by lazy { ES_PATH + COMMON_ROOT_PATH + moduleName + LOG }
 
     init {
@@ -68,7 +68,7 @@ class CrashHandler private constructor(private val context: Context,
         ex.printStackTrace()
         //如果系统提供了默认的异常处理器，则交给系统去结束程序，否则就由自己结束自己
         if (mDefaultCrashHandler != null)
-            mDefaultCrashHandler.uncaughtException(thread, ex)
+            mDefaultCrashHandler?.uncaughtException(thread, ex)
         else
             Process.killProcess(Process.myPid())
 

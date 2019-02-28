@@ -19,14 +19,53 @@ object DateTime {
     }
 
     @JvmStatic
-    fun getTimeString(time: Long?, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
+    fun getDateString(time: Long?, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
             : String =
             if (time == null) "null" else
                 mSimpleDateFormat.format(time)
 
     @JvmStatic
-    fun getTime(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
+    fun getDateLong(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
             : Long = mSimpleDateFormat.parse(timeString).time
+
+    /**
+     * @param time 毫秒
+     * @return 00:00:00时间
+     * */
+    @JvmStatic
+    fun getTime(time: Long): String {
+        var dealTime = time
+        //毫秒
+        var ms = 0L
+        //秒
+        var second = 0L
+        //分
+        var min = 0L
+        //时
+        var h = 0L
+        ms = dealTime % 1000
+        if (dealTime >= 1000) {
+            dealTime /= 1000
+            second = dealTime % 60
+            if (dealTime >= 60) {
+                dealTime /= 60
+                min = dealTime % 60
+                if (dealTime >= 60) {
+                    dealTime /= 60
+                    h = dealTime % 60
+                    if (h >= 24)
+                        return "超过一天了"
+                }
+            }
+        }
+        if (h == 0L)
+            return String.format("%02d:%02d", min, second)
+        else
+            return String.format("%02d:%02d:%02d", h, min, second)
+
+
+    }
+
 
     @JvmStatic
     //获取某一天的0点0分0秒0毫秒 月和日都从0开始算

@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:label="@string/modules_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/ScheduleAppTheme"
         tools:replace="android:label">
         <activity android:name=".SchedulesMainActivity">
             <intent-filter>
@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.all.AllDataInfoActivity"></activity>
+        <activity android:name=".data.all.AllDataInfoActivity"/>
     </application>
 
 </manifest>
