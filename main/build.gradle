@@ -1,12 +1,16 @@
+
+println "main gradle start"
+
 if (isModule.toBoolean()) {
     apply plugin: 'com.android.application'
 } else {
     apply plugin: 'com.android.library'
 }
-apply plugin: 'kotlin-kapt'
+
 apply plugin: 'kotlin-android'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -58,3 +62,4 @@ dependencies {
 repositories {
     mavenCentral()
 }
+println "main gradle end"

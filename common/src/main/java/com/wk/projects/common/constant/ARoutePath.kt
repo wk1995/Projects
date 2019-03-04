@@ -15,4 +15,5 @@ object ARoutePath {
     const val SchedulesMainActivity="/schedules/activity/SchedulesMainActivity"
     const val AllDataInfoActivity="/schedules/activity/AllDataInfoActivity"
     const val ScheduleItemInfoActivity="/schedules/activity/ScheduleItemInfoActivity"
+    const val IdeaActivity="/schedules/activity/IdeaActivity"
 }

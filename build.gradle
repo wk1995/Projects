@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+println "project start"
 buildscript {
     ext.kotlin_version = '1.2.71'
     ext.kotlin_version = '1.2.70'
@@ -32,3 +32,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+println "project end"

@@ -1,6 +1,10 @@
+
+println "app gradle start"
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../version.gradle'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -34,3 +38,5 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+println "app gradle end"

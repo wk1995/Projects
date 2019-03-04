@@ -32,7 +32,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.all.AllDataInfoActivity"/>
+        <activity android:name=".data.all.AllDataInfoActivity" />
+        <activity
+            android:name=".idea.IdeaActivity"
+            android:label="@string/title_activity_idea"></activity>
     </application>
 
 </manifest>

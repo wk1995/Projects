@@ -137,7 +137,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         when(p0?.itemId){
             R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
             R.id.menuItemSearch->{}
-            R.id.menuItemIdea->{}
+            R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.IdeaActivity).navigation()}
         }
         return true
     }

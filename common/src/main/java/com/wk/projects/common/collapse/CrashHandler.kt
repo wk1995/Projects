@@ -189,7 +189,7 @@ class CrashHandler private constructor(private val context: Context,
 
     companion object {
         private const val FILE_NAME_SUFFIX = "log.txt"
-        private const val LOG = "LOG"
+        private const val LOG = "/LOG"
 
         object CrashHandlerFactory {
             fun getCrashHandler(context: Context, moduleName: String) = CrashHandler(context, moduleName)

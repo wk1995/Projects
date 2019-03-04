@@ -1,1 +1,3 @@
-include ':app', ':common', ':schedules', ':main'
+println "setting gradle start"
+include ':app', ':common', ':schedules', ':main', ':buildSrc'
+println "setting gradle end"
