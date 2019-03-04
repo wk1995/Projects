@@ -21,7 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.ScheduleItemInfoActivity" />
+        <activity
+            android:name=".data.ScheduleItemInfoActivity"
+
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
         <activity android:name=".collapse.SchedulesWatchActivity" />
         <activity
             android:name=".collapse.SchedulesCollapseActivity"
@@ -32,10 +35,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.all.AllDataInfoActivity" />
+        <activity
+            android:name=".data.all.AllDataInfoActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />   <!--EditText不自动弹出软键盘-->
         <activity
             android:name=".idea.IdeaActivity"
-            android:label="@string/title_activity_idea"></activity>
+            android:label="@string/title_activity_idea" />
     </application>
 
 </manifest>

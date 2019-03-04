@@ -2,6 +2,7 @@ package com.wk.projects.schedules.data.add
 
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -36,6 +37,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
     lateinit var etAddItem: EditText
     lateinit var rvExistItem: RecyclerView
+    lateinit var rvItemClass: RecyclerView
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemAddDialog {
@@ -65,24 +67,10 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun initVSView(vsView: View) {
         etAddItem = vsView.findViewById(R.id.etAddItem)
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
+        rvItemClass = vsView.findViewById(R.id.rvItemClass)
+//        rvItemClass.layoutManager = GridLayoutManager(mActivity,3)
+        rvExistItem.layoutManager = LinearLayoutManager(mActivity)
 
-        rvExistItem.layoutManager = LinearLayoutManager(mActivity) /*{
-     override fun onMeasure(recycler: RecyclerView.Recycler, state: RecyclerView.State, widthSpec: Int, heightSpec: Int) {
-//                super.onMeasure(recycler, state, widthSpec, heightSpec)
-         val count = state.itemCount
-         if (count > 0) {
-             val firstView = recycler.getViewForPosition(0) ?: return
-             val measuredWidth = View.MeasureSpec.getSize(widthSpec)
-
-             val measuredHeight = firstView.measuredHeight
-             Timber.i("measuredHeight: $measuredHeight")
-             val realWidth = Math.max(0, measuredWidth)
-             val realHeight = measuredHeight * 4
-             setMeasuredDimension(realWidth, realHeight)
-         } else
-             super.onMeasure(recycler, state, widthSpec, heightSpec)
-     }
- }*/
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

@@ -6,6 +6,9 @@ import android.support.v7.widget.AppCompatTextView
 import android.widget.FrameLayout
 import android.widget.ScrollView
 import com.wk.projects.common.communication.constant.BundleKey.FILE
+import com.wk.projects.common.helper.file.FileHelper
+import com.wk.projects.common.helper.file.IFileStatusListener
+import timber.log.Timber
 import java.io.*
 
 /**
@@ -18,43 +21,31 @@ import java.io.*
  *      desc   :
  * </pre>
  */
-abstract class BaseWatchActivity : AppCompatActivity() {
-
+abstract class BaseWatchActivity : AppCompatActivity(), IFileStatusListener.IReadStatusListener {
+    private val fileHelper by lazy { FileHelper.getInstance() }
+    private var appCompatTextView: AppCompatTextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT)
-        val appCompatTextView = AppCompatTextView(this)
-        appCompatTextView.layoutParams = lp
+        appCompatTextView = AppCompatTextView(this)
+        appCompatTextView?.layoutParams = lp
         val scroll = ScrollView(this)
         scroll.layoutParams = lp
         scroll.addView(appCompatTextView)
         setContentView(scroll)
         val file = intent.getSerializableExtra(FILE) as? File
-        if (file == null) {
-            appCompatTextView.text = "空文件"
-            return
-        }
-        val sb = StringBuilder()
-        var br: BufferedReader? = null
-        try {
-            br = BufferedReader(InputStreamReader(FileInputStream(file)))
+        fileHelper.readIO(file, this)
+    }
 
-            var tmp = br.readLine()
-            while (tmp != null) {
-                sb.append(tmp)
-                sb.append("\r\n")
-                tmp = br.readLine()
-            }
-        } catch (e: IOException) {
-            sb.append("读取文件发生异常： \r\n ${e.message}")
-        } catch (e: FileNotFoundException) {
-            sb.append("未找到文件：\r\n ${file.path}")
-        } catch (e: Exception) {
-            sb.append("发生异常： \r\n ${e.message}")
-        } finally {
-            br?.close()
-        }
-        appCompatTextView.text = sb.toString()
+    override fun readResult(result: String?) {
+        appCompatTextView?.text = result
+    }
+
+    override fun readFinish() {
+    }
+
+    override fun readError(e: Throwable?) {
+        Timber.i("readError: ${e?.message}")
     }
 }

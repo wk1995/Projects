@@ -75,6 +75,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 }
             }
 
+            //长按
             override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 val item = adapter?.getItem(position) as? ScheduleItem ?: return
                 val baseObjId = item.baseObjId
