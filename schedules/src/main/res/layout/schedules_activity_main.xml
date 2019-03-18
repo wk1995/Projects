@@ -5,29 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SchedulesMainActivity">
-    <TextView
-        android:id="@+id/addScheduleItem"
-        android:layout_width="0dp"
-        app:layout_constraintRight_toLeftOf="@id/addNewScheduleItem"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        android:layout_height="@dimen/d60dp"
-        android:text="新增活动"
-        android:textSize="@dimen/s24sp"/>
-    <TextView
+    <android.support.v7.widget.Toolbar
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/addNewScheduleItem"
-        android:layout_width="0dp"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/addScheduleItem"
-        android:layout_height="@dimen/d60dp"
-        android:text="新增新活动"
-        android:textSize="@dimen/s24sp"/>
-
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/tbSchedules"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="?android:attr/actionBarSize"/>
+    <TextView
+        android:id="@+id/tvDaySelected"
+        app:layout_constraintTop_toBottomOf="@id/tbSchedules"
+        android:layout_width="match_parent"
+        tools:text="当前日期"
+        android:gravity="center"
+        android:layout_height="@dimen/d50dp" />
     <android.support.v7.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@id/addScheduleItem"
+        app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -35,5 +29,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:context=".SchedulesMainActivity" />
-
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="@dimen/d40dp"
+        android:layout_marginBottom="@dimen/d40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabAddScheduleItem"
+        android:src="@drawable/common_pic_add_black"
+        app:elevation="8dp"/>
 </android.support.constraint.ConstraintLayout>

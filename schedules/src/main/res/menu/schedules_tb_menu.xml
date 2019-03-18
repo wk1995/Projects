@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/common_pic_search_black"
+        android:title="search"
+        android:id="@+id/menuItemSearch"
+        android:orderInCategory="90"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menuItemAllData"
+        android:title="全部数据"
+        android:orderInCategory="1"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menuItemIdea"
+        android:title="新想法"
+        android:orderInCategory="1"
+        app:showAsAction="never"/>
+
+</menu>

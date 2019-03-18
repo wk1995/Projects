@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
-import com.wk.projects.common.BaseSimpleDialogFragment
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
@@ -25,7 +25,7 @@ import java.util.*
  *      desc   :
  * </pre>
  */
-class ScheduleItemInfoDialog : BaseSimpleDialogFragment(), OnTimeSelectListener {
+class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemInfoDialog {
@@ -55,9 +55,9 @@ class ScheduleItemInfoDialog : BaseSimpleDialogFragment(), OnTimeSelectListener 
             btnComSimpleDialogOk -> {
                 val mContentValues = ContentValues()
                 mContentValues.put(ScheduleItem.COLUMN_START_TIME,
-                        DateTime.getTime(tvScheduleStartTime.text.toString()))
+                        DateTime.getDateLong(tvScheduleStartTime.text.toString()))
                 mContentValues.put(ScheduleItem.COLUMN_END_TIME,
-                        DateTime.getTime(tvScheduleEndTime.text.toString()))
+                        DateTime.getDateLong(tvScheduleEndTime.text.toString()))
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
@@ -80,14 +80,14 @@ class ScheduleItemInfoDialog : BaseSimpleDialogFragment(), OnTimeSelectListener 
         tvScheduleEndTime.setOnClickListener(this)
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
             tvComSimpleDialogTheme.text = it.itemName
-            tvScheduleStartTime.text = DateTime.getTimeString(it.startTime)
-            tvScheduleEndTime.text = DateTime.getTimeString(it.endTime)
+            tvScheduleStartTime.text = DateTime.getDateString(it.startTime)
+            tvScheduleEndTime.text = DateTime.getDateString(it.endTime)
         }
 
     }
 
     override fun initViewSubLayout() = R.layout.schedules_dialog_item_info_
     override fun onTimeSelect(date: Date?, v: View?) {
-        (v as TextView).text = DateTime.getTimeString(date?.time)
+        (v as TextView).text = DateTime.getDateString(date?.time)
     }
 }

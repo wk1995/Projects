@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clScheduleItem"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/d60dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tvScheduleItemName"
+        android:gravity="center"
+        android:textSize="@dimen/s20sp"
+        android:padding="@dimen/d10dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/tvScheduleItemTime"
+        android:layout_width="@dimen/d100dp"
+        android:layout_height="@dimen/d60dp" />
+    <TextView
+        app:layout_constraintRight_toLeftOf="@id/tvScheduleItemTime"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="0dp"
+        android:textSize="@dimen/s20sp"
+        tools:text="Java"
+        android:id="@+id/tvScheduleItemName"
+        android:textColor="@android:color/black"
+        android:padding="@dimen/d10dp"
+        android:gravity="center_vertical"
+        android:layout_height="@dimen/d60dp" />
+</android.support.constraint.ConstraintLayout>

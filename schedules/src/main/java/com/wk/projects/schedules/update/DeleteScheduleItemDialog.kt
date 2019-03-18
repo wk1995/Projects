@@ -1,16 +1,13 @@
 package com.wk.projects.schedules.update
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import com.wk.projects.common.BaseSimpleDialogFragment
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.R
+import com.wk.projects.common.communication.constant.BundleKey.LIST_ITEM_NAME
 import com.wk.projects.common.communication.constant.IFAFlag
-import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
-import com.wk.projects.schedules.data.ScheduleItem
-import org.litepal.LitePal
 
 /**
  * <pre>
@@ -22,7 +19,7 @@ import org.litepal.LitePal
  *      desc   :
  * </pre>
  */
-class DeleteScheduleItemDialog : BaseSimpleDialogFragment() {
+class DeleteScheduleItemDialog : BaseSimpleDialog() {
     companion object {
         fun create(bundle: Bundle? = null): DeleteScheduleItemDialog {
             val mUpdateOrDeleteDialog = DeleteScheduleItemDialog()
@@ -44,6 +41,8 @@ class DeleteScheduleItemDialog : BaseSimpleDialogFragment() {
     override fun initVSView(vsView: View) {
         tvCommon = vsView.findViewById(R.id.tvCommon)
         tvCommon.setText(com.wk.projects.schedules.R.string.schedules_delete_item)
+        tvCommon.gravity= Gravity.CENTER
+        tvComSimpleDialogTheme.text = (arguments?.getString(LIST_ITEM_NAME))
     }
 
     override fun initViewSubLayout() = R.layout.common_only_text

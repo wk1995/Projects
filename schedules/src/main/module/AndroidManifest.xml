@@ -12,23 +12,35 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:label="@string/modules_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/ScheduleAppTheme"
         tools:replace="android:label">
         <activity android:name=".SchedulesMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.ScheduleItemInfoActivity"/>
-        <activity android:name=".collapse.SchedulesWatchActivity"/>
-        <activity android:name=".collapse.SchedulesCollapseActivity"
+        <activity
+            android:name=".data.ScheduleItemInfoActivity"
+
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+        <activity android:name=".collapse.SchedulesWatchActivity" />
+        <activity
+            android:name=".collapse.SchedulesCollapseActivity"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="com.wk.projects.collapse" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".data.all.AllDataInfoActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />   <!--EditText不自动弹出软键盘-->
+        <activity
+            android:name=".idea.IdeaActivity"
+            android:label="@string/title_activity_idea" />
     </application>
 
 </manifest>

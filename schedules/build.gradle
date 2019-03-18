@@ -1,12 +1,41 @@
+println "schedules gradle start"
+
 if (isModule.toBoolean()) {
     apply plugin: 'com.android.application'
 } else {
+
     apply plugin: 'com.android.library'
 }
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+class SchedulesPlugin implements Plugin<Project> {
+    @java.lang.Override
+    void apply(Project target) {
+        target.task('SchedulesPlugin') {
+            doLast {
+                println("task in SchedulesPlugin")
+            }
+        }
+    }
+}
+
+
+apply plugin: SchedulesPlugin
+// 如果CustomPluginInBuildSrc没有包名，则直接写CustomPluginInBuildSrc
+//apply plugin: com.wk.projects.CustomPluginInBuildSrc
+//跟上面的那行可以相等
+apply plugin: 'coustom.plugin'
+
+customPluginExtension {
+    msg 'wk3'
+}
+/*customPluginExtension1{
+    msg 'kotlin'
+}*/
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -45,6 +74,53 @@ android {
     }
 }
 
+project.afterEvaluate {
+    println " schedules evaluate start "
+    println " schedules evaluate end "
+}
+//myTask 是DefaultTask实例
+task myTask {
+    println "myTask is ${myTask.class} "
+}
+myTask.doFirst {
+    println "myTask doFirst"
+}
+myTask.doLast {
+    println "myTask doLast"
+}
+
+
+class WkTask extends DefaultTask {
+    String msg = "this is wk"
+
+    @TaskAction
+    def hello() {
+        println "hello world $msg"
+    }
+
+}
+
+//wkTask是WkTask的实例
+task wkTask(type: WkTask)
+//hello1是WkTask的实例
+task hello1(type: WkTask) {
+    msg = "I am an android developer"
+}
+
+task myTask1 << {
+    println "do last myTask1"
+}
+task myTask2 << {
+    println "do last myTask2"
+}
+
+project.task("wkTask2", group: "wkGroup", description: "wk`s Task", dependsOn: ["myTask1", "myTask2"]).doLast {
+    println "do last wkTask2"
+}
+
+
+
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -57,7 +133,10 @@ dependencies {
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
+    //路由
+    kapt "com.alibaba:arouter-compiler:1.1.4"
 }
 repositories {
     mavenCentral()
 }
+println "schedules gradle end"

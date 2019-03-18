@@ -30,7 +30,7 @@ object WkProjects {
 
     @JvmStatic
     fun <T> getConfiguration(key: Int) =
-            getInfo()[key] as T
+            getInfo()[key] as? T
 
     @JvmStatic
     fun setConfiguration(key: Int, any: Any) = getInfo().put(key, any)

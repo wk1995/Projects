@@ -1,11 +1,21 @@
-rootProject.ext{
-    compileSdkVersion=28
-    minSdkVersion=21
-    targetSdkVersion=28
-    versionCode=1
-    versionName="1.0"
+println "version gradle start"
+rootProject.ext {
+    compileSdkVersion = 28
+    minSdkVersion = 21
+    targetSdkVersion = 28
+    versionCode = 2
+    versionName = "1.01"
 
-    supportAppcompatV7="28.0.0"
-    permissionsDispatcher="2.3.1"
-    butterKnife="9.0.0-rc1"
+    supportAppcompatV7 = "28.0.0"
+    permissionsDispatcher = "2.3.1"
+    butterKnife = "9.0.0-rc1"
 }
+
+project.task("versionConfig") {
+    doLast {
+        println "versionConfig: ${project.name}"
+    }
+}
+
+
+println "version gradle end"

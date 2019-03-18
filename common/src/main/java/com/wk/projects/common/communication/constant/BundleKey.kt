@@ -21,6 +21,8 @@ object BundleKey {
 
     const val LIST_POSITION="LIST_POSITION"
 
+    const val LIST_ITEM_NAME="LIST_ITEM_NAME"
+
     const val FILE="FILE"
     const val PATH="PATH"
 }

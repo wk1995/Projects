@@ -1,12 +1,16 @@
+
+println "main gradle start"
+
 if (isModule.toBoolean()) {
     apply plugin: 'com.android.application'
 } else {
     apply plugin: 'com.android.library'
 }
-apply plugin: 'kotlin-kapt'
+
 apply plugin: 'kotlin-android'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -52,7 +56,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':common')
+    //路由
+    kapt "com.alibaba:arouter-compiler:1.1.4"
 }
 repositories {
     mavenCentral()
 }
+println "main gradle end"

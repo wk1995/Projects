@@ -58,22 +58,88 @@
     <Button
         android:id="@+id/btOk"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/d50dp"
         android:gravity="center"
         android:text="@android:string/ok"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toBottomOf="@id/tvScheduleEndTime"
+        app:layout_constraintLeft_toRightOf="@id/btEndTime"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <Button
+        android:id="@+id/btEndTime"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d50dp"
+        android:gravity="center"
+        android:text="@string/schedules_item_end_time"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/btOk"
         app:layout_constraintLeft_toRightOf="@id/btCancel"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btOk"
         />
     <Button
         android:id="@+id/btCancel"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toLeftOf="@id/tvScheduleStartTime"
+        android:layout_height="@dimen/d50dp"
+        app:layout_constraintRight_toLeftOf="@id/btEndTime"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleEndTime"
+        app:layout_constraintTop_toTopOf="@id/btEndTime"
         android:text="@android:string/cancel"/>
+
+    <TextView
+        android:id="@+id/tvScheduleNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btCancel"
+        android:text="@string/common_str_note"/>
+    <EditText
+        android:inputType="text"
+        android:hint="@string/schedules_et_note_hint"
+        android:id="@+id/etScheduleNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvScheduleNote"/>
+    <TextView
+        android:id="@+id/tvItemClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop ="@dimen/d40dp"
+        app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
+        android:text="@string/common_str_category"/>
+    <TextView
+        android:id="@+id/tvItemClassName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop ="@dimen/d40dp"
+        android:gravity="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tvItemClass"
+        app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
+        tools:text="书"/>
+    <Button
+        android:id="@+id/btAddCategory"
+        app:layout_constraintTop_toBottomOf="@id/tvItemClass"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:text="@string/common_str_add"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:inputType="text"
+        android:hint="@string/schedules_add_category_hint"
+        android:id="@+id/etAddCategory"
+        android:layout_width="0dp"
+        app:layout_constraintTop_toTopOf="@id/btAddCategory"
+        app:layout_constraintBottom_toBottomOf="@id/btAddCategory"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/btAddCategory"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:background="@color/colorPrimary"
+        android:id="@+id/rvItemClass"
+        app:layout_constraintTop_toBottomOf="@id/btAddCategory"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"/>
 </android.support.constraint.ConstraintLayout>
