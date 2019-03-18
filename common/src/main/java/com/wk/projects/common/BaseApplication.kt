@@ -18,9 +18,7 @@ import timber.log.Timber
 abstract class BaseApplication:Application(){
     override fun onCreate() {
         super.onCreate()
-
         initRouter()
-
         //日志Log
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

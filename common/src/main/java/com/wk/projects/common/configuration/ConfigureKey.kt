@@ -13,5 +13,7 @@ package com.wk.projects.common.configuration
 object ConfigureKey {
     const val CONTEXT=1
     const val MODULE_NAME=2
+    const val INTERCEPTORS=2
+    const val HOST=3
 
 }

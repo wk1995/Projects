@@ -1,0 +1,14 @@
+<resources>
+    <string name="modules_name">日常活动</string>
+    <string name="schedules_add_item">新增项目</string>
+    <string name="schedules_end_time">结束时间</string>
+    <string name="schedules_check_item_end_time">确定结束时间</string>
+    <string name="schedules_modify_item_start_time">修改开始时间</string>
+    <string name="schedules_start_time">开始时间</string>
+    <string name="schedules_delete_item">删除该项目</string>
+    <string name="schedules_item_end_time">結束时间</string>
+    <string name="schedules_et_note_hint">填入备注</string>
+    <string name="schedules_add_category_hint">添加类别</string>
+    <string name="title_activity_idea">IdeaActivity</string>
+
+</resources>

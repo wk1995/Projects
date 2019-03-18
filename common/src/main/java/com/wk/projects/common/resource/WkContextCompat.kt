@@ -2,6 +2,7 @@ package com.wk.projects.common.resource
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
+import com.wk.projects.common.configuration.WkProjects
 
 /**
  * <pre>
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat
  *      desc   :
  * </pre>
  */
+@Suppress(WkProjects.UNUSED)
 object WkContextCompat {
 
     fun getColor(context: Context, color: Int) {

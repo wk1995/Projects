@@ -9,6 +9,7 @@ rootProject.ext {
     supportAppcompatV7 = "28.0.0"
     permissionsDispatcher = "2.3.1"
     butterKnife = "9.0.0-rc1"
+    fragmentationVersion="1.3.6"
 }
 
 project.task("versionConfig") {

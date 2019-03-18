@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.wk.projects.activities">
+
+    <!-- 允许程序设置内置sd卡的读写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:icon="@mipmap/activities"
+        android:name=".debug.ScheduleApp"
+        android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:label="@string/modules_name"
+        android:theme="@style/ScheduleAppTheme"
+        tools:replace="android:label">
+        <activity android:name=".SchedulesMainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".data.ScheduleItemInfoActivity"
+
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+        <activity android:name=".collapse.SchedulesWatchActivity" />
+        <activity
+            android:name=".collapse.SchedulesCollapseActivity"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="com.wk.projects.collapse" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".data.all.AllDataInfoActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />   <!--EditText不自动弹出软键盘-->
+        <activity
+            android:name=".idea.IdeaActivity"
+            android:label="@string/title_activity_idea" />
+    </application>
+
+</manifest>

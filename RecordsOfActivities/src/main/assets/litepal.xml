@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="schedule"/>
+    <version value="2" />
+    <list>
+        <mapping class="com.wk.projects.activities.data.ScheduleItem" />
+        <mapping class="com.wk.projects.activities.data.WkActivity" />
+    </list>
+    <storage value="wk/projects/database/schedules" />
+</litepal>
