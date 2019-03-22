@@ -93,7 +93,7 @@ dependencies {
     api "me.yokeyword:fragmentation-swipeback:${rootProject.fragmentationVersion}"
 
     //okHttp
-    api 'com.squareup.okhttp3:okhttp:3.14.0'
+    api 'com.squareup.okhttp3:okhttp:3.9.1'
     api 'com.squareup.okio:okio:1.13.0'
 
     //rxJava
@@ -105,6 +105,12 @@ dependencies {
     api 'com.squareup.retrofit2:converter-gson:2.3.0'
     api 'com.squareup.retrofit2:converter-scalars:2.0.0'
     api 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    //leakcanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
 
 }
 repositories {

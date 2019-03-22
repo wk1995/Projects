@@ -31,11 +31,19 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     @BindView(R2.id.btnComSimpleDialogCancel)
     protected lateinit var btnComSimpleDialogCancel: Button
 
+
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
+    private lateinit var vsView:View
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         initView()
         initListener()
+    }
+
+    //这里能直接用控件
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initVSView(vsView)
     }
 
     override fun onClick(v: View?) {
@@ -68,7 +76,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
     private fun initView() {
         vsComSimpleDialogContent.layoutResource = (initViewSubLayout())
-        val vsView = vsComSimpleDialogContent.inflate()
+        vsView = vsComSimpleDialogContent.inflate()
         val p = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT)
@@ -80,6 +88,6 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
         vsView.layoutParams = p
         (btnComSimpleDialogOk.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
         (btnComSimpleDialogCancel.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
-        initVSView(vsView)
+
     }
 }

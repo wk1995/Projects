@@ -37,10 +37,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".data.all.AllDataInfoActivity"
+            android:name=".data.query.AllDataInfoActivity"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />   <!--EditText不自动弹出软键盘-->
         <activity
-            android:name=".idea.IdeaActivity"
+            android:name=".idea.ScheduleIdeaActivity"
             android:label="@string/title_activity_idea" />
     </application>
 

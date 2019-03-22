@@ -1,48 +1,59 @@
-package com.wk.projects.activities.idea
+package com.wk.projects.common.idea
 
 import android.os.Bundle
-import com.alibaba.android.arouter.facade.annotation.Route
+import android.widget.Toast
 import com.wk.projects.common.BaseProjectsActivity
-import com.wk.projects.common.configuration.ConfigureKey
+import com.wk.projects.common.R
 import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
 import com.wk.projects.common.constant.CommonFilePath.ES_PATH
+import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.helper.file.FileHelper
 import com.wk.projects.common.helper.file.IFileStatusListener
 import com.wk.projects.common.listener.BaseTextWatcher
-import com.wk.projects.activities.R
-import kotlinx.android.synthetic.main.schedules_activity_idea.*
+import kotlinx.android.synthetic.main.common_activity_idea.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
-import java.io.*
+import java.io.File
 
-@Route(path = ARoutePath.IdeaActivity)
-class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusListener {
+/**
+ * <pre>
+ *      author : wk
+ *      e-mail : 122642603@qq.com
+ *      time   : 2019/03/22
+ *      GitHub : https://github.com/wk1995
+ *      CSDN   : http://blog.csdn.net/qq_33882671
+ *      desc   : 写新想法的界面
+ * </pre>
+ */
+abstract class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusListener {
     companion object {
         private const val IDEA_FILE_NAME = "/idea.txt"
-        private val moduleName = WkProjects.getConfiguration<String>(ConfigureKey.MODULE_NAME)
-        val IDEA_FILE_PATH = ES_PATH + COMMON_ROOT_PATH + moduleName + IDEA_FILE_NAME
     }
 
+    private val ideaFilePath by lazy { ES_PATH + COMMON_ROOT_PATH + getModuleName() + IDEA_FILE_NAME }
     private val fileHelper by lazy { FileHelper.getInstance() }
-    private val ideaFile by lazy { File(IDEA_FILE_PATH) }
-
-    private var isSave = false
-    override fun initResLayId() = R.layout.schedules_activity_idea
+    private val ideaFile by lazy { File(ideaFilePath) }
+    private val editTextHelper by lazy { EditTextHelper.getInstance() }
+    private var ideaIisChange = false
+    override fun initResLay() = R.layout.common_activity_idea
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+        //这时候etIdea的内容其实是为空的
+//        editTextHelper.showLastPosition(etIdea)
         //读取文件
-        fileHelper.readIO(ideaFile,this)
+        fileHelper.readIO(ideaFile, this)
         etIdea.addTextChangedListener(object : BaseTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                isSave = false
+                ideaIisChange = true
+                editTextHelper.showLastPosition(etIdea)
                 super.onTextChanged(s, start, before, count)
             }
         })
         btSaveIdea.setOnClickListener {
+            if (!ideaIisChange) return@setOnClickListener
             //保存
             val idea = etIdea.text.toString()
             Observable.just(ideaFile).map {
@@ -56,6 +67,7 @@ class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusList
 
                         override fun onCompleted() {
                             Timber.i("onCompleted")
+                            Toast.makeText(WkProjects.getContext(), "保存成功", Toast.LENGTH_SHORT).show()
                         }
 
                         override fun onError(e: Throwable?) {
@@ -77,4 +89,6 @@ class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusList
     override fun readError(e: Throwable?) {
         Timber.i("onError: ${e?.message}")
     }
+
+    abstract fun getModuleName(): String
 }

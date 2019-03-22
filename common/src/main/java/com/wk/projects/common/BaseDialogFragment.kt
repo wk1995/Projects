@@ -28,7 +28,7 @@ abstract class BaseDialogFragment : DialogFragment() {
     private lateinit var activityUnBinder: Unbinder
     protected lateinit var mActivity: BaseProjectsActivity
     protected lateinit var iFa:IFragmentToActivity
-
+    protected val window by lazy { dialog.window }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -37,18 +37,33 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        hideBottomUIMenu()
+        initContentView()
         val rootView = inflater.inflate(initResLayId(), container, false)
         activityUnBinder = ButterKnife.bind(this, rootView)
         bindView(savedInstanceState, rootView)
         return rootView
     }
 
+/*    override fun onStart() {
+        super.onStart()
+        //去掉dialog周围的阴影
+        val windowParams = dialog.window?.attributes
+        windowParams?.dimAmount = 0.0f
+        dialog.window.attributes=(windowParams)
+
+    }*/
+
     override fun onDestroyView() {
         activityUnBinder.unbind()
         super.onDestroyView()
+    }
+
+    open fun initContentView(){
+        //默认整个背景为纯白，设置为透明
+//        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        //这个应该跟整体设计有关，沉浸式体验
+//        hideBottomUIMenu()
     }
 
     /**
@@ -62,7 +77,6 @@ abstract class BaseDialogFragment : DialogFragment() {
             v.systemUiVisibility = View.GONE
         } else if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
-
             val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN)
             v.systemUiVisibility = uiOptions

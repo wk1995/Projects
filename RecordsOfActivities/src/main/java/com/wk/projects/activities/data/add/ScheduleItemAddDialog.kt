@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -17,6 +18,8 @@ import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.common.helper.EditTextHelper
+import kotlinx.android.synthetic.main.schedules_main_dialog_simple_add_item.*
 import org.litepal.LitePal
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -30,14 +33,12 @@ import timber.log.Timber
  *      time   : 2018/11/25
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 新增数据库没有的项目数据
+ *      desc   : 新增项目
  * </pre>
  */
 class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
-    lateinit var etAddItem: EditText
-    lateinit var rvExistItem: RecyclerView
-    lateinit var rvItemClass: RecyclerView
+    private val editTextHelper by lazy { EditTextHelper.getInstance() }
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemAddDialog {
@@ -65,12 +66,8 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
     override fun initVSView(vsView: View) {
-        etAddItem = vsView.findViewById(R.id.etAddItem)
-        rvExistItem = vsView.findViewById(R.id.rvExistItem)
-        rvItemClass = vsView.findViewById(R.id.rvItemClass)
-//        rvItemClass.layoutManager = GridLayoutManager(mActivity,3)
+        editTextHelper.showFocus(etAddItem, window)
         rvExistItem.layoutManager = LinearLayoutManager(mActivity)
-
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

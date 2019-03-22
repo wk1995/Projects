@@ -1,4 +1,4 @@
-package com.wk.projects.activities.constant
+package com.wk.projects.activities.communication.constant
 
 import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
 

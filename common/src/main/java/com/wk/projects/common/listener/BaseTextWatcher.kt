@@ -24,7 +24,7 @@ abstract class BaseTextWatcher: TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        Timber.d("27 beforeTextChanged  $s  start : $start count:$count  before:  $before")
+        Timber.d("27 onTextChanged  $s  start : $start count:$count  before:  $before")
 
     }
 }

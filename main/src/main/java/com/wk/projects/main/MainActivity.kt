@@ -14,7 +14,7 @@ import com.wk.projects.common.BaseProjectsActivity
  * </pre>
  */
 class MainActivity: BaseProjectsActivity() {
-    override fun initResLayId()=0
+    override fun initResLay()=0
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
     }

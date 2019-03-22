@@ -20,14 +20,13 @@ import java.io.IOException
  *      CSDN   : http://blog.csdn.net/qq_33882671
  * </pre>
  */
-@Suppress("UNUSED")
 class HttpEngineOkHttp internal constructor(private val operation: String?,
                                             private val url: String?,
                                             queryMap: HashMap<String, String>,
                                             private val mCallback: HttpResultCallBack<Any, Any?>,
                                             private var body: RequestBody?,
                                             private val method: String = "GET",
-                                            mAny:Any?) : HttpEngine(queryMap,mAny) {
+                                            mAny: Any?) : HttpEngine(queryMap, mAny) {
 
     private var call: Call? = null
     override fun operateAsyHttp() {

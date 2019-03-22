@@ -15,7 +15,7 @@ import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
-import com.wk.projects.activities.constant.ActivityResultCode
+import com.wk.projects.activities.communication.constant.ActivityResultCode
 import com.wk.projects.activities.data.`class`.CategoryAdapter
 import com.wk.projects.activities.date.DateTime
 import com.wk.projects.activities.date.DateTime.getDateLong
@@ -49,7 +49,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     private val mCategoryAdapter by lazy { CategoryAdapter() }
 
 
-    override fun initResLayId() = R.layout.schedules_activity_schedule_item_info
+    override fun initResLay() = R.layout.schedules_activity_schedule_item_info
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {

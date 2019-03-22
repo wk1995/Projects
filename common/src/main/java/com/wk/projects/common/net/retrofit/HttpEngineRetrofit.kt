@@ -1,8 +1,8 @@
 package com.wk.projects.common.net.retrofit
 
 import com.google.gson.Gson
-import com.wk.projects.common.constant.MediaTypeConstant.apk
-import com.wk.projects.common.constant.MediaTypeConstant.applicationJson
+import com.wk.projects.common.communication.constant.MediaTypeConstant.apk
+import com.wk.projects.common.communication.constant.MediaTypeConstant.applicationJson
 import com.wk.projects.common.net.HttpEngine
 import com.wk.projects.common.net.HttpResult
 import com.wk.projects.common.net.HttpResultCallBack

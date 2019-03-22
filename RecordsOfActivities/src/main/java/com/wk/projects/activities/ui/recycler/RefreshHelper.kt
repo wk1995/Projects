@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.activities.data.all.AllDataAdapter
+import com.wk.projects.activities.data.query.AllDataAdapter
 import org.litepal.LitePal
 import java.lang.Exception
 

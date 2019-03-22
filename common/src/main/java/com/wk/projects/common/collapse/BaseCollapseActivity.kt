@@ -24,11 +24,11 @@ import java.util.*
  * </pre>
  */
 abstract class BaseCollapseActivity : BaseProjectsActivity(), View.OnClickListener {
-    override fun initResLayId() = R.layout.common_activity_collapse
+    override fun initResLay() = R.layout.common_activity_collapse
     private lateinit var collapseAdapter: CollapseRvAdapter
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun beforeContentView() {
+        super.beforeContentView()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         if(supportActionBar!=null)
             supportActionBar?.hide()

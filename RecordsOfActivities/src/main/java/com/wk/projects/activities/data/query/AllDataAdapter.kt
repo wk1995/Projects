@@ -1,4 +1,4 @@
-package com.wk.projects.activities.data.all
+package com.wk.projects.activities.data.query
 
 import android.content.Context
 import android.content.Intent

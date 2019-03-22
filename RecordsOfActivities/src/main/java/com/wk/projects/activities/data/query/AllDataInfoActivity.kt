@@ -1,4 +1,4 @@
-package com.wk.projects.activities.data.all
+package com.wk.projects.activities.data.query
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -14,7 +14,7 @@ import org.litepal.LitePal
 @Route(path = ARoutePath.AllDataInfoActivity)
 class AllDataInfoActivity : BaseProjectsActivity() {
 
-    override fun initResLayId() = R.layout.schedules_activity_query_data
+    override fun initResLay() = R.layout.schedules_activity_query_data
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         initRecycler()
         initClickListener()

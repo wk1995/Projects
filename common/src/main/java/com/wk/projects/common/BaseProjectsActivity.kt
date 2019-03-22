@@ -2,6 +2,7 @@ package com.wk.projects.common
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.wk.projects.common.communication.IFragmentToActivity
@@ -13,19 +14,30 @@ import com.wk.projects.common.communication.IFragmentToActivity
  *      time   : 2018/11/23
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      desc   : BaseProjectsActivity所有Activity父类
  * </pre>
  */
-abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity {
+abstract class BaseProjectsActivity : AppCompatActivity(), IFragmentToActivity {
 
     private lateinit var activityUnBinder: Unbinder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initContentView()
-        setContentView(initResLayId())
-        activityUnBinder=ButterKnife.bind(this)
-        bindView(savedInstanceState,this)
+        beforeContentView()
+        val resLay = initResLay()
+        when (resLay) {
+            is View -> {
+                setContentView(resLay)
+                activityUnBinder = ButterKnife.bind(this)
+                bindView(savedInstanceState, this)
+            }
+            is Int -> {
+                setContentView(resLay)
+                activityUnBinder = ButterKnife.bind(this)
+                bindView(savedInstanceState, this)
+            }
+        }
     }
+
 
     override fun onDestroy() {
         activityUnBinder.unbind()
@@ -33,11 +45,10 @@ abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity {
     }
 
 
-    override fun communication(flag:Int,bundle: Bundle?, any: Any?){}
+    override fun communication(flag: Int, bundle: Bundle?, any: Any?) {}
+    open fun beforeContentView() {}
 
-    open fun initContentView(){}
 
-
-    abstract fun initResLayId():Int
-    abstract fun bindView(savedInstanceState: Bundle?,mBaseProjectsActivity:BaseProjectsActivity)
+    abstract fun initResLay(): Any
+    abstract fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity)
 }

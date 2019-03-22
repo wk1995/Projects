@@ -22,8 +22,8 @@ import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
-import com.wk.projects.activities.constant.ActivityRequestCode
-import com.wk.projects.activities.constant.ActivityResultCode
+import com.wk.projects.activities.communication.constant.ActivityRequestCode
+import com.wk.projects.activities.communication.constant.ActivityResultCode
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
 import com.wk.projects.activities.date.DateTime
@@ -47,7 +47,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         SchedulesMainAdapter(ArrayList())
     }
 
-    override fun initResLayId() = R.layout.schedules_activity_main
+    override fun initResLay() = R.layout.schedules_activity_main
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         setSupportActionBar(tbSchedules)
@@ -138,7 +138,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         when(p0?.itemId){
             R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
             R.id.menuItemSearch->{}
-            R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.IdeaActivity).navigation()}
+            R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()}
         }
         return true
     }
