@@ -1,16 +1,16 @@
 package com.wk.projects.common.idea
 
 import android.os.Bundle
-import android.widget.Toast
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.R
-import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
 import com.wk.projects.common.constant.CommonFilePath.ES_PATH
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.helper.file.FileHelper
 import com.wk.projects.common.helper.file.IFileStatusListener
 import com.wk.projects.common.listener.BaseTextWatcher
+import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.notification.ToastUtil
 import kotlinx.android.synthetic.main.common_activity_idea.*
 import rx.Observable
 import rx.Subscriber
@@ -67,7 +67,7 @@ abstract class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadS
 
                         override fun onCompleted() {
                             Timber.i("onCompleted")
-                            Toast.makeText(WkProjects.getContext(), "保存成功", Toast.LENGTH_SHORT).show()
+                            ToastUtil.show(WkContextCompat.getString(R.string.common_str_save_successful), ToastUtil.LENGTH_SHORT)
                         }
 
                         override fun onError(e: Throwable?) {

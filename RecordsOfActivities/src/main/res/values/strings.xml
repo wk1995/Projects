@@ -10,5 +10,5 @@
     <string name="schedules_et_note_hint">填入备注</string>
     <string name="schedules_add_category_hint">添加类别</string>
     <string name="title_activity_idea">IdeaActivity</string>
-
+    <string name="schedules_item_need_name">项目需要名字</string>
 </resources>

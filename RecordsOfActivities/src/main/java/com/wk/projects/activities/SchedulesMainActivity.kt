@@ -9,21 +9,13 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.wk.projects.common.BaseProjectsActivity
-import com.wk.projects.common.communication.constant.BundleKey
-import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
-import com.wk.projects.common.communication.constant.IFAFlag
-import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.common.constant.ARoutePath
-import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
-import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.communication.constant.ActivityRequestCode
 import com.wk.projects.activities.communication.constant.ActivityResultCode
+import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
 import com.wk.projects.activities.date.DateTime
@@ -34,6 +26,14 @@ import com.wk.projects.activities.permission.RefuseDialog
 import com.wk.projects.activities.ui.recycler.SchedulesMainAdapter
 import com.wk.projects.activities.ui.time.TimePickerCreator
 import com.wk.projects.activities.update.DeleteScheduleItemDialog
+import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.communication.constant.BundleKey
+import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
+import com.wk.projects.common.communication.constant.IFAFlag
+import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.notification.ToastUtil
+import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import org.litepal.LitePal
 import permissions.dispatcher.*
@@ -46,6 +46,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
+    private val linearLayoutManager by lazy { LinearLayoutManager(this) }
 
     override fun initResLay() = R.layout.schedules_activity_main
 
@@ -57,7 +58,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
     }
 
     private fun initRecyclerView() {
-        val linearLayoutManager = LinearLayoutManager(this)
+
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
@@ -116,7 +117,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.schedules_tb_menu,menu)
+        menuInflater.inflate(R.menu.schedules_tb_menu, menu)
         return true
     }
 
@@ -135,23 +136,27 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
     }
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
-        when(p0?.itemId){
-            R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
-            R.id.menuItemSearch->{}
-            R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()}
+        when (p0?.itemId) {
+            R.id.menuItemAllData -> ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
+            R.id.menuItemSearch -> {
+            }
+            R.id.menuItemIdea -> {
+                ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()
+            }
         }
         return true
     }
 
     override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
         when (flag) {
-            IFAFlag.SCHEDULE_NEW_ITEM_DIALOG,
             IFAFlag.SCHEDULE_ITEM_DIALOG -> {
                 val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
                 val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
                 val item = ScheduleItem(itemName)
                 item.assignBaseObjId(id.toInt())
                 scheduleMainAdapter.addItem(item)
+                linearLayoutManager.scrollToPositionWithOffset(0,0)
+                linearLayoutManager.stackFromEnd=true
             }
             IFAFlag.DELETE_ITEM_DIALOG -> {
                 val id = bundle?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
@@ -164,7 +169,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                     if (item.baseObjId == id)
                         itemList.remove(item)
                     scheduleMainAdapter.notifyDataSetChanged()
-                    Toast.makeText(WkProjects.getContext(), "删除成功", Toast.LENGTH_SHORT).show()
+                    ToastUtil.show(WkContextCompat.getString(R.string.common_str_delete_successful),ToastUtil.LENGTH_SHORT)
                 }
             }
         }

@@ -4,14 +4,14 @@ import android.content.ContentValues
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
-import com.wk.projects.common.BaseSimpleDialog
-import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.date.DateTime
 import com.wk.projects.activities.ui.time.TimePickerCreator
+import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.notification.ToastUtil
 import org.litepal.LitePal
 import java.util.*
 
@@ -60,7 +60,7 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
                         DateTime.getDateLong(tvScheduleEndTime.text.toString()))
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
-                    Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
+                    ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
                 }
                 super.onClick(v)
             }

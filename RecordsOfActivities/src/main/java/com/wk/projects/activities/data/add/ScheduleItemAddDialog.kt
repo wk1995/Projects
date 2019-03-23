@@ -2,23 +2,20 @@ package com.wk.projects.activities.data.add
 
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.WindowManager
-import android.widget.EditText
-import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.wk.projects.common.BaseSimpleDialog
-import com.wk.projects.common.communication.constant.BundleKey
-import com.wk.projects.common.communication.constant.IFAFlag
-import com.wk.projects.common.listener.BaseSimpleClickListener
-import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.communication.constant.BundleKey
+import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.helper.EditTextHelper
+import com.wk.projects.common.listener.BaseSimpleClickListener
+import com.wk.projects.common.listener.BaseTextWatcher
+import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.notification.ToastUtil
 import kotlinx.android.synthetic.main.schedules_main_dialog_simple_add_item.*
 import org.litepal.LitePal
 import rx.Observable
@@ -109,17 +106,17 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     //保存数据库中
     private fun saveItem(itemName: String?) {
         if (itemName == null || itemName.isBlank()) {
-            Toast.makeText(mActivity, "项目需名字", Toast.LENGTH_LONG).show()
+            ToastUtil.show(WkContextCompat.getString(R.string.schedules_item_need_name), ToastUtil.LENGTH_LONG)
             return
         }
         val scheduleItem = ScheduleItem(itemName, System.currentTimeMillis())
         scheduleItem.saveAsync().listen {
-            val msg: String
+            val msg: String?
             when (it) {
                 true -> {
                     //传到主页面
                     val bundle = Bundle()
-                    msg = "保存成功"
+                    msg = WkContextCompat.getString(R.string.common_str_save_successful)
                     Timber.d("80 id is ${scheduleItem.baseObjId}")
                     bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, itemName)
                     bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
@@ -128,7 +125,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                 else ->
                     msg = "未知原因,保存失败"
             }
-            Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show()
+            ToastUtil.show(msg,ToastUtil.LENGTH_LONG)
         }
     }
 }

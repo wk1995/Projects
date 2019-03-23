@@ -7,4 +7,8 @@
     <string name="common_str_save">保存</string>
     <string name="common_str_category">类别</string>
     <string name="common_str_add">添加</string>
+    <string name="common_str_save_successful">保存成功</string>
+    <string name="common_str_save_failed">保存失败</string>
+    <string name="common_str_delete_successful">删除成功</string>
+    <string name="common_str_update_successful">更新成功</string>
 </resources>

@@ -5,21 +5,21 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.wk.projects.common.BaseProjectsActivity
-import com.wk.projects.common.configuration.WkProjects
-import com.wk.projects.common.constant.ARoutePath
-import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.activities.R
-import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.communication.constant.ActivityResultCode
+import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.`class`.CategoryAdapter
 import com.wk.projects.activities.date.DateTime
 import com.wk.projects.activities.date.DateTime.getDateLong
 import com.wk.projects.activities.ui.time.TimePickerCreator
+import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.listener.BaseSimpleClickListener
+import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.notification.ToastUtil
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
 import timber.log.Timber
@@ -107,7 +107,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
-                    Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
+                    ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
                     intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
                     intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
                     setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity, intent)
@@ -138,9 +138,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                             .findAsync(WkActivity::class.java)
                             .listen {
                                 if (it.size > 0) {
-                                    Toast.makeText(this@ScheduleItemInfoActivity,
-                                            "$addCategoryName 已存在，添加失败",
-                                            Toast.LENGTH_SHORT).show()
+                                    ToastUtil.show("$addCategoryName 已存在，添加失败",ToastUtil.LENGTH_SHORT)
                                     newCategoryId = it[0].baseObjId
                                     Timber.d("newCategoryId: $newCategoryId")
                                     etAddCategory.setText(addCategoryName)
@@ -155,9 +153,8 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                                             mCategoryAdapter.data.add(newWkActivity)
                                             mCategoryAdapter.notifyItemChanged(mCategoryAdapter.data.size - 1)
                                         } else
-                                            Toast.makeText(this@ScheduleItemInfoActivity,
-                                                    "保存失败",
-                                                    Toast.LENGTH_SHORT).show()
+                                            ToastUtil.show(WkContextCompat.getString(R.string.common_str_save_failed),ToastUtil.LENGTH_SHORT)
+
                                     }
 
                                 }

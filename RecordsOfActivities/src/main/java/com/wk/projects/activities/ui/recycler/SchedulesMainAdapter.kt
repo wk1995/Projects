@@ -46,6 +46,7 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
     fun addItem(mScheduleItem: ScheduleItem) {
         itemList.add(mScheduleItem)
         notifyItemChanged(itemCount - 1)
+
     }
 
     fun addItems(list: MutableCollection<ScheduleItem>) {
