@@ -25,7 +25,8 @@ class EditTextHelper private constructor() {
 
     //获取焦点并弹出软键盘
     fun showFocus(editText: EditText, window: Window) {
-        editText.isFocusable = (true)
+        editText.isFocusable = true
+
         editText.isFocusableInTouchMode = (true)
         editText.requestFocus()
         //显示软键盘

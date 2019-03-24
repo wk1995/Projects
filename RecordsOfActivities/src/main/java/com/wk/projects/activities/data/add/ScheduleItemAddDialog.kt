@@ -6,11 +6,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
+import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.communication.constant.BundleKey
-import com.wk.projects.common.communication.constant.IFAFlag
+import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
@@ -63,11 +64,12 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
     override fun initVSView(vsView: View) {
-        editTextHelper.showFocus(etAddItem, window)
+//        editTextHelper.showFocus(etAddItem, window)
         rvExistItem.layoutManager = LinearLayoutManager(mActivity)
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                Timber.i("onItemChildClick")
                 when (view?.id) {
                     R.id.tvCommon -> {
                         //获取当前的值
@@ -120,12 +122,12 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     Timber.d("80 id is ${scheduleItem.baseObjId}")
                     bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, itemName)
                     bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
-                    iFa.communication(IFAFlag.SCHEDULE_ITEM_DIALOG, bundle)
+                    rxBus.post(ActivitiesMsg(EventMsg.SCHEDULE_ITEM_DIALOG, bundle))
                 }
                 else ->
                     msg = "未知原因,保存失败"
             }
-            ToastUtil.show(msg,ToastUtil.LENGTH_LONG)
+            ToastUtil.show(msg, ToastUtil.LENGTH_LONG)
         }
     }
 }

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import butterknife.ButterKnife
 import butterknife.Unbinder
-import com.wk.projects.common.communication.IFragmentToActivity
+import com.wk.projects.common.communication.eventBus.RxBus
 
 /**
  * <pre>
@@ -17,9 +17,10 @@ import com.wk.projects.common.communication.IFragmentToActivity
  *      desc   : BaseProjectsActivity所有Activity父类
  * </pre>
  */
-abstract class BaseProjectsActivity : AppCompatActivity(), IFragmentToActivity {
+abstract class BaseProjectsActivity : AppCompatActivity() {
 
     private lateinit var activityUnBinder: Unbinder
+    protected val rxBus by lazy { RxBus.getInstance() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         beforeContentView()
@@ -45,7 +46,6 @@ abstract class BaseProjectsActivity : AppCompatActivity(), IFragmentToActivity {
     }
 
 
-    override fun communication(flag: Int, bundle: Bundle?, any: Any?) {}
     open fun beforeContentView() {}
 
 

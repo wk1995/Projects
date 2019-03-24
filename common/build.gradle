@@ -16,7 +16,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
-
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -105,6 +107,9 @@ dependencies {
     api 'com.squareup.retrofit2:converter-gson:2.3.0'
     api 'com.squareup.retrofit2:converter-scalars:2.0.0'
     api 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    //MPAndroidChart
+    api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'

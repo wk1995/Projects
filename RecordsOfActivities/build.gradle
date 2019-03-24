@@ -47,7 +47,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
-
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
     buildTypes {
         release {
             minifyEnabled false

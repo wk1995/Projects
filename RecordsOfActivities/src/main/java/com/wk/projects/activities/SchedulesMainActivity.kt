@@ -13,6 +13,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.ActivityRequestCode
 import com.wk.projects.activities.communication.constant.ActivityResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
@@ -29,7 +30,7 @@ import com.wk.projects.activities.update.DeleteScheduleItemDialog
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
-import com.wk.projects.common.communication.constant.IFAFlag
+import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
@@ -37,15 +38,19 @@ import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import org.litepal.LitePal
 import permissions.dispatcher.*
+import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import timber.log.Timber
 import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
-class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Toolbar.OnMenuItemClickListener {
+class SchedulesMainActivity : BaseProjectsActivity(),
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, Action1<Any> {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
+
     private val linearLayoutManager by lazy { LinearLayoutManager(this) }
 
     override fun initResLay() = R.layout.schedules_activity_main
@@ -55,6 +60,9 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
+        rxBus.getObserverable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this)
     }
 
     private fun initRecyclerView() {
@@ -62,7 +70,10 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
-        rvSchedules.adapter = scheduleMainAdapter
+        scheduleMainAdapter.bindToRecyclerView(rvSchedules)
+        scheduleMainAdapter.setEmptyView(R.layout.common_list_empty)
+//        scheduleMainAdapter.addFooterView(TextView(this))
+
         rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
 
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -147,29 +158,33 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         return true
     }
 
-    override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
-        when (flag) {
-            IFAFlag.SCHEDULE_ITEM_DIALOG -> {
-                val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
-                val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
-                val item = ScheduleItem(itemName)
-                item.assignBaseObjId(id.toInt())
-                scheduleMainAdapter.addItem(item)
-                linearLayoutManager.scrollToPositionWithOffset(0,0)
-                linearLayoutManager.stackFromEnd=true
-            }
-            IFAFlag.DELETE_ITEM_DIALOG -> {
-                val id = bundle?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
-                        ?: throw Exception("id 有问题")
-                val position = bundle.getInt(BundleKey.LIST_POSITION, -1)
-                LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
-                    val itemList = scheduleMainAdapter.itemList
-                    if (itemList.size <= 0) return@listen
-                    val item = itemList[position]
-                    if (item.baseObjId == id)
-                        itemList.remove(item)
-                    scheduleMainAdapter.notifyDataSetChanged()
-                    ToastUtil.show(WkContextCompat.getString(R.string.common_str_delete_successful),ToastUtil.LENGTH_SHORT)
+    override fun call(t: Any?) {
+        if (t is ActivitiesMsg) {
+            val bundle = t.any as? Bundle
+            when (t.flag) {
+                EventMsg.SCHEDULE_ITEM_DIALOG -> {
+                    val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
+                    val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
+                    val item = ScheduleItem(itemName)
+                    item.assignBaseObjId(id.toInt())
+                    scheduleMainAdapter.addItem(item)
+                    linearLayoutManager.scrollToPositionWithOffset(0, 0)
+                    linearLayoutManager.stackFromEnd = true
+                }
+
+                EventMsg.DELETE_ITEM_DIALOG -> {
+                    val id = bundle?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
+                            ?: throw Exception("id 有问题")
+                    val position = bundle.getInt(BundleKey.LIST_POSITION, -1)
+                    LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
+                        val itemList = scheduleMainAdapter.itemList
+                        if (itemList.size <= 0) return@listen
+                        val item = itemList[position]
+                        if (item.baseObjId == id)
+                            itemList.remove(item)
+                        scheduleMainAdapter.notifyDataSetChanged()
+                        ToastUtil.show(WkContextCompat.getString(R.string.common_str_delete_successful), ToastUtil.LENGTH_SHORT)
+                    }
                 }
             }
         }

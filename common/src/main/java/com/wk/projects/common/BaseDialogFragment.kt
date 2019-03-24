@@ -13,6 +13,7 @@ import android.view.Window
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.wk.projects.common.communication.IFragmentToActivity
+import com.wk.projects.common.communication.eventBus.RxBus
 
 /**
  * <pre>
@@ -27,13 +28,12 @@ import com.wk.projects.common.communication.IFragmentToActivity
 abstract class BaseDialogFragment : DialogFragment() {
     private lateinit var activityUnBinder: Unbinder
     protected lateinit var mActivity: BaseProjectsActivity
-    protected lateinit var iFa:IFragmentToActivity
     protected val window by lazy { dialog.window }
+    protected val rxBus by lazy { RxBus.getInstance() }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mActivity = context as BaseProjectsActivity
-        iFa=mActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

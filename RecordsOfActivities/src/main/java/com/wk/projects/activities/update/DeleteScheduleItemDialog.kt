@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.R
 import com.wk.projects.common.communication.constant.BundleKey.LIST_ITEM_NAME
-import com.wk.projects.common.communication.constant.IFAFlag
+import com.wk.projects.common.communication.eventBus.EventMsg
 
 /**
  * <pre>
@@ -32,7 +33,7 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
     override fun onClick(v: View?) {
         when (v) {
             btnComSimpleDialogOk ->
-                iFa.communication(IFAFlag.DELETE_ITEM_DIALOG, arguments)
+                rxBus.post(ActivitiesMsg(EventMsg.DELETE_ITEM_DIALOG, arguments))
 
         }
         super.onClick(v)
@@ -41,7 +42,7 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
     override fun initVSView(vsView: View) {
         tvCommon = vsView.findViewById(R.id.tvCommon)
         tvCommon.setText(com.wk.projects.activities.R.string.schedules_delete_item)
-        tvCommon.gravity= Gravity.CENTER
+        tvCommon.gravity = Gravity.CENTER
         tvComSimpleDialogTheme.text = (arguments?.getString(LIST_ITEM_NAME))
     }
 
