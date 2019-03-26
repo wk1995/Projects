@@ -12,4 +12,4 @@ import com.wk.projects.common.communication.eventBus.EventMsg
  *      desc   :
  * </pre>
  */
-data class ActivitiesMsg(val flag: Int, val any: Any?) : EventMsg(flag, any)
+data class ActivitiesMsg(val flag: Int, val any: Any?=null) : EventMsg()

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
@@ -38,19 +39,18 @@ import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import org.litepal.LitePal
 import permissions.dispatcher.*
-import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
 import timber.log.Timber
 import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
-class SchedulesMainActivity : BaseProjectsActivity(),
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, Action1<Any> {
+class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
+        View.OnClickListener, Toolbar.OnMenuItemClickListener
+       {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
-
     private val linearLayoutManager by lazy { LinearLayoutManager(this) }
 
     override fun initResLay() = R.layout.schedules_activity_main
@@ -60,20 +60,16 @@ class SchedulesMainActivity : BaseProjectsActivity(),
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
-        rxBus.getObserverable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this)
     }
 
     private fun initRecyclerView() {
-
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
         scheduleMainAdapter.bindToRecyclerView(rvSchedules)
+
         scheduleMainAdapter.setEmptyView(R.layout.common_list_empty)
 //        scheduleMainAdapter.addFooterView(TextView(this))
-
         rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
 
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -158,6 +154,7 @@ class SchedulesMainActivity : BaseProjectsActivity(),
         return true
     }
 
+    //RxBus的回调
     override fun call(t: Any?) {
         if (t is ActivitiesMsg) {
             val bundle = t.any as? Bundle
@@ -168,8 +165,9 @@ class SchedulesMainActivity : BaseProjectsActivity(),
                     val item = ScheduleItem(itemName)
                     item.assignBaseObjId(id.toInt())
                     scheduleMainAdapter.addItem(item)
-                    linearLayoutManager.scrollToPositionWithOffset(0, 0)
-                    linearLayoutManager.stackFromEnd = true
+                    rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount-1)
+                   /* linearLayoutManager.scrollToPositionWithOffset(0, 0)
+                    linearLayoutManager.stackFromEnd = true*/
                 }
 
                 EventMsg.DELETE_ITEM_DIALOG -> {

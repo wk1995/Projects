@@ -3,6 +3,7 @@ package com.wk.projects.common
 import android.app.Application
 import com.alibaba.android.arouter.launcher.ARouter
 import com.squareup.leakcanary.LeakCanary
+import me.yokeyword.fragmentation.Fragmentation
 import org.litepal.LitePal
 import timber.log.Timber
 
@@ -32,6 +33,15 @@ abstract class BaseApplication : Application() {
         // You should not init your app in this process.
         if (!LeakCanary.isInAnalyzerProcess(this))
             LeakCanary.install(this)
+
+        // 建议在Application里初始化
+        Fragmentation.builder()
+                // 显示悬浮球 ; 其他Mode:SHAKE: 摇一摇唤出   NONE：隐藏
+                .stackViewMode(Fragmentation.BUBBLE)
+                .debug(BuildConfig.DEBUG)
+                //...  更多查看wiki或demo
+                .install()
+
 
     }
 

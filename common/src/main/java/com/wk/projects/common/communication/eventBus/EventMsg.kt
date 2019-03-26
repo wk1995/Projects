@@ -10,9 +10,11 @@ package com.wk.projects.common.communication.eventBus
  *      desc   :
  * </pre>
  */
-abstract class EventMsg( flag:Int, any:Any?){
+abstract class EventMsg{
     companion object {
         const val SCHEDULE_ITEM_DIALOG=1
         const val DELETE_ITEM_DIALOG=3
+        const val INIT_RECYCLER=2
+        const val UPDATE_DATA=4
     }
 }

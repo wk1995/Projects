@@ -33,7 +33,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
 
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
-    private lateinit var vsView:View
+    private lateinit var vsView: View
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         initView()
@@ -58,12 +58,15 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     fun show(manager: FragmentManager?) {
         super.show(manager, this::class.java.simpleName)
     }
-    fun show(baseProjectsActivity: BaseProjectsActivity){
+
+    fun show(baseProjectsActivity: BaseProjectsActivity) {
         show(baseProjectsActivity.supportFragmentManager)
     }
 
     //加载ViewSub中的View
-    abstract fun initVSView(vsView: View)
+    open fun initVSView(vsView: View){
+
+    }
 
     //设置ViewSub被替换的布局
     abstract fun initViewSubLayout(): Int
@@ -90,4 +93,5 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
         (btnComSimpleDialogCancel.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
 
     }
+
 }

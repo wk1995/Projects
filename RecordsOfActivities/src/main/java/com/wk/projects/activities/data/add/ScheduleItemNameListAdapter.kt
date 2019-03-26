@@ -27,6 +27,13 @@ class ScheduleItemNameListAdapter
         }
     }
 
+    override fun getItemCount(): Int {
+        return if (data.size >= 4) 4
+        else
+            super.getItemCount()
+    }
+
+
     fun initData(itemList: List<String>) {
         originalList.clear()
         filterList.clear()

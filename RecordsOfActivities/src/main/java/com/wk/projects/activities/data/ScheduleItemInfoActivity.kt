@@ -108,6 +108,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
                     ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
+                    val bundle=Bundle()
                     intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
                     intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
                     setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity, intent)

@@ -64,7 +64,7 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
                 }
                 super.onClick(v)
             }
-            btnComSimpleDialogCancel->super.onClick(v)
+            btnComSimpleDialogCancel -> super.onClick(v)
             tvScheduleStartTime,
             tvScheduleEndTime -> {
                 TimePickerCreator.create(mActivity, this)
@@ -74,7 +74,7 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
     }
 
     override fun initVSView(vsView: View) {
-        tvScheduleStartTime = vsView.findViewById(R.id.tvScheduleStartTime)
+        tvScheduleStartTime = vsView?.findViewById(R.id.tvScheduleStartTime) ?: return
         tvScheduleStartTime.setOnClickListener(this)
         tvScheduleEndTime = vsView.findViewById(R.id.tvScheduleEndTime)
         tvScheduleEndTime.setOnClickListener(this)

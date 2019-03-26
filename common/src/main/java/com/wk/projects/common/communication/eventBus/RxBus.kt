@@ -14,8 +14,10 @@ import rx.subjects.SerializedSubject
  * </pre>
  */
 class RxBus private constructor() {
+
     companion object {
         private object RxBusVH {
+            @JvmField
             val INSTANCE = RxBus()
         }
 
@@ -25,7 +27,7 @@ class RxBus private constructor() {
     private val mBus by lazy { SerializedSubject<Any, Any>(PublishSubject.create()) }
 
 
-    fun getObserverable() = mBus
+    fun getObservable() = mBus
 
     fun post(any: Any?) {
         mBus.onNext(any)

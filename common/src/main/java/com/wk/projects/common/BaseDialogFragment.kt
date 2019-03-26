@@ -1,8 +1,6 @@
 package com.wk.projects.common
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -12,7 +10,6 @@ import android.view.ViewGroup
 import android.view.Window
 import butterknife.ButterKnife
 import butterknife.Unbinder
-import com.wk.projects.common.communication.IFragmentToActivity
 import com.wk.projects.common.communication.eventBus.RxBus
 
 /**

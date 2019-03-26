@@ -6,6 +6,7 @@ import android.view.View
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.wk.projects.common.communication.eventBus.RxBus
+import me.yokeyword.fragmentation.SupportActivity
 
 /**
  * <pre>
@@ -17,7 +18,7 @@ import com.wk.projects.common.communication.eventBus.RxBus
  *      desc   : BaseProjectsActivity所有Activity父类
  * </pre>
  */
-abstract class BaseProjectsActivity : AppCompatActivity() {
+abstract class BaseProjectsActivity : SupportActivity() {
 
     private lateinit var activityUnBinder: Unbinder
     protected val rxBus by lazy { RxBus.getInstance() }
