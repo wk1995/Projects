@@ -53,6 +53,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
+            if(it==null) return@listen
             Timber.d("42 $it")
             currentId = it.parentId
             newCategoryId = currentId
@@ -119,7 +120,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             btCancel -> finish()
             tvScheduleStartTime,
             tvScheduleEndTime -> {
-                TimePickerCreator.create(this, object : OnTimeSelectListener {
+                TimePickerCreator.create(object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         (v as? TextView)?.text = DateTime.getDateString(date?.time)
                     }

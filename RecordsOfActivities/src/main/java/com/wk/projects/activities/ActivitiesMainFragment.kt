@@ -93,7 +93,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
                             ?: throw Exception("id 有问题")
                     val position = data.getInt(BundleKey.LIST_POSITION, -1)
                     LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
-                        val itemList = scheduleMainAdapter.itemList
+                        val itemList = scheduleMainAdapter.data
                         if (itemList.size <= 0) return@listen
                         val item = itemList[position]
                         if (item.baseObjId == id)
@@ -170,15 +170,14 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
                 .order("startTime")
                 .findAsync(ScheduleItem::class.java)
                 .listen {
-                    scheduleMainAdapter.clear()
-                    scheduleMainAdapter.addItems(it)
+                    scheduleMainAdapter.setNewData(it)
                 }
     }
 
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create(_mActivity, object : OnTimeSelectListener {
+                TimePickerCreator.create( object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         tvDaySelected.text = DateTime.getDateString(date?.time)
                         initData()

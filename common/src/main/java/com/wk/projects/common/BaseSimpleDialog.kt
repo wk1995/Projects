@@ -33,7 +33,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
 
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
-    private lateinit var vsView: View
+    private var vsView: View? = null
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         initView()
@@ -43,7 +43,8 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     //这里能直接用控件
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVSView(vsView)
+
+        initVSView(vsView ?: return)
     }
 
     override fun onClick(v: View?) {
@@ -64,7 +65,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     }
 
     //加载ViewSub中的View
-    open fun initVSView(vsView: View){
+    open fun initVSView(vsView: View) {
 
     }
 
@@ -85,13 +86,17 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
                 ConstraintLayout.LayoutParams.WRAP_CONTENT)
         p.topToBottom = R.id.tvComSimpleDialogTheme
         p.bottomToTop = R.id.btnComSimpleDialogOk
-        p.leftToLeft = (vsView.parent as View).id
-        p.rightToRight = (vsView.parent as View).id
-        p.width = (vsView.parent as View).measuredWidth
-        vsView.layoutParams = p
-        (btnComSimpleDialogOk.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
-        (btnComSimpleDialogCancel.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
+        p.leftToLeft = (vsView?.parent as View).id
+        p.rightToRight = (vsView?.parent as View).id
+        p.width = (vsView?.parent as View).measuredWidth
+        vsView?.layoutParams = p
+        (btnComSimpleDialogOk.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView?.id ?: -1
+        (btnComSimpleDialogCancel.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView?.id ?: -1
 
     }
 
+    override fun onDestroyView() {
+        vsView=null
+        super.onDestroyView()
+    }
 }

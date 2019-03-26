@@ -16,7 +16,7 @@ import com.wk.projects.common.configuration.WkProjects
 object ToastUtil {
     const val LENGTH_LONG = -1
     const val LENGTH_SHORT = -2
-    fun show(msg: String?, duration: Int) {
+    fun show(msg: String?, duration: Int=LENGTH_SHORT) {
         Toast.makeText(WkProjects.getContext(), msg,
                 if (duration == LENGTH_LONG)
                     Toast.LENGTH_LONG

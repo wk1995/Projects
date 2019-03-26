@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
@@ -46,8 +46,7 @@ import java.util.*
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener
-       {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
@@ -60,6 +59,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
+        rxBus.getObservable().subscribe(this)
     }
 
     private fun initRecyclerView() {
@@ -67,7 +67,6 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
         scheduleMainAdapter.bindToRecyclerView(rvSchedules)
-
         scheduleMainAdapter.setEmptyView(R.layout.common_list_empty)
 //        scheduleMainAdapter.addFooterView(TextView(this))
         rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
@@ -85,21 +84,44 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
 
             //长按
             override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                val item = adapter?.getItem(position) as? ScheduleItem ?: return
-                val baseObjId = item.baseObjId
-                val itemName = item.itemName
-                //修改项目开始时间或者删除项目
-                val bundle = Bundle()
-                bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                bundle.putInt(BundleKey.LIST_POSITION, position)
-                bundle.putString(BundleKey.LIST_ITEM_NAME, itemName)
-                DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
+                val popupMenu = PopupMenu(this@SchedulesMainActivity, view ?: return)
+                //加载菜单文件
+                popupMenu.menuInflater.inflate(R.menu.activities_main_delete_and_update, popupMenu.menu)
+
+                popupMenu.setOnMenuItemClickListener {
+                    val id = it.itemId
+                    when (id) {
+                        R.id.menuItemRename -> {
+                            ToastUtil.show("重命名")
+                        }
+                        R.id.menuItemDelete -> {
+                            val item = adapter?.getItem(position) as? ScheduleItem?
+                            if (item != null) {
+                                val baseObjId = item.baseObjId
+                                val itemName = item.itemName
+                                //修改项目开始时间或者删除项目
+                                val bundle = Bundle()
+                                bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                                bundle.putInt(BundleKey.LIST_POSITION, position)
+                                bundle.putString(BundleKey.LIST_ITEM_NAME, itemName)
+                                DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
+                            }
+                        }
+                    }
+                    true
+                }
+
+                popupMenu.show()
+
             }
+
         })
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         initData()
+
     }
+
 
     private fun initData() {
         val currentTime = DateTime.getDateLong(tvDaySelected.text.toString().trim())
@@ -107,13 +129,12 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
         val toDayEnd = getDayEnd(currentTime).toString()
         Timber.d("69 toDayStart ${DateTime.getDateString(toDayStart.toLong())} toDayEnd ${DateTime.getDateString(toDayEnd.toLong())}")
 
-        //开始的时间是当天,对结束的时间没有限制
-        LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
+        //开始的时间是当天,且显示以前未完成的活动
+        LitePal.where("(startTime>? and startTime<?) or (startTime>endTime)", toDayStart, toDayEnd)
                 .order("startTime")
                 .findAsync(ScheduleItem::class.java)
                 .listen {
-                    scheduleMainAdapter.clear()
-                    scheduleMainAdapter.addItems(it)
+                    scheduleMainAdapter.setNewData(it)
                 }
     }
 
@@ -131,7 +152,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create(this, object : OnTimeSelectListener {
+                TimePickerCreator.create(object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         tvDaySelected.text = DateTime.getDateString(date?.time)
                         initData()
@@ -165,9 +186,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
                     val item = ScheduleItem(itemName)
                     item.assignBaseObjId(id.toInt())
                     scheduleMainAdapter.addItem(item)
-                    rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount-1)
-                   /* linearLayoutManager.scrollToPositionWithOffset(0, 0)
-                    linearLayoutManager.stackFromEnd = true*/
+                    rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount - 1 - scheduleMainAdapter.footerLayoutCount)
                 }
 
                 EventMsg.DELETE_ITEM_DIALOG -> {
@@ -175,7 +194,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
                             ?: throw Exception("id 有问题")
                     val position = bundle.getInt(BundleKey.LIST_POSITION, -1)
                     LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
-                        val itemList = scheduleMainAdapter.itemList
+                        val itemList = scheduleMainAdapter.data
                         if (itemList.size <= 0) return@listen
                         val item = itemList[position]
                         if (item.baseObjId == id)

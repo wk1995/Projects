@@ -29,7 +29,6 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
         }
     }
 
-    private lateinit var tvCommon: TextView
     override fun onClick(v: View?) {
         when (v) {
             btnComSimpleDialogOk ->
@@ -40,7 +39,7 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
     }
 
     override fun initVSView(vsView: View) {
-        tvCommon = vsView.findViewById(R.id.tvCommon)
+       val tvCommon = vsView.findViewById<TextView>(R.id.tvCommon)
         tvCommon.setText(com.wk.projects.activities.R.string.schedules_delete_item)
         tvCommon.gravity = Gravity.CENTER
         tvComSimpleDialogTheme.text = (arguments?.getString(LIST_ITEM_NAME))

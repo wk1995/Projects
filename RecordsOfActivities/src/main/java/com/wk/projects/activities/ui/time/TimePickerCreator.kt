@@ -7,6 +7,8 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.activities.R
 import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.common.configuration.WkProjects
+import com.wk.projects.common.resource.WkContextCompat
 import org.litepal.LitePal
 import java.util.*
 
@@ -22,15 +24,15 @@ import java.util.*
  */
 object TimePickerCreator {
 
-    fun create(context: Context?, listener: OnTimeSelectListener) {
+    fun create(listener: OnTimeSelectListener) {
         //时间选择器
-        val pvTime = TimePickerBuilder(context, listener)
+        val pvTime = TimePickerBuilder(WkProjects.getContext(), listener)
                 .setType(booleanArrayOf(true, true, true, true, true, true))
-                .setCancelText(context?.getString(android.R.string.cancel))//取消按钮文字
-                .setSubmitText(context?.getString(android.R.string.ok))//确认按钮文字
+                .setCancelText(WkContextCompat.getString(android.R.string.cancel))//取消按钮文字
+                .setSubmitText(WkContextCompat.getString(android.R.string.ok))//确认按钮文字
                 .setContentTextSize(18)//滚轮文字大小
                 .setTitleSize(20)//标题文字大小
-                .setTitleText(context?.getString(R.string.schedules_check_item_end_time))//标题文字
+                .setTitleText(WkContextCompat.getString(R.string.schedules_check_item_end_time))//标题文字
                 .setOutSideCancelable(false)//点击屏幕，点在控件外部范围时，是否取消显示
                 .isCyclic(true)//是否循环滚动
                 .setTitleColor(Color.BLACK)//标题文字颜色

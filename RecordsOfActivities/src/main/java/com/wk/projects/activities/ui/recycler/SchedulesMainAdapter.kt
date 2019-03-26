@@ -1,7 +1,7 @@
 package com.wk.projects.activities.ui.recycler
 
 import android.graphics.Color
-import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.wk.projects.activities.R
 import com.wk.projects.activities.data.ScheduleItem
@@ -19,8 +19,8 @@ import java.util.*
  *      desc   :
  * </pre>
  */
-class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
-    : BaseQuickAdapter<ScheduleItem, BaseViewHolder>(R.layout.schedules_item_list, itemList) {
+class SchedulesMainAdapter(itemList: ArrayList<ScheduleItem>)
+    : BaseItemDraggableAdapter<ScheduleItem, BaseViewHolder>(R.layout.schedules_item_list, itemList) {
 
 
     override fun convert(helper: BaseViewHolder?, item: ScheduleItem?) {
@@ -44,18 +44,11 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
     }
 
     fun addItem(mScheduleItem: ScheduleItem) {
-        itemList.add(mScheduleItem)
+        data.add(mScheduleItem)
         notifyItemChanged(itemCount - 1)
-
     }
 
-    fun addItems(list: MutableCollection<ScheduleItem>) {
-        itemList.addAll(list)
-        notifyDataSetChanged()
-    }
-
-    fun clear() {
-        itemList.clear()
-        notifyDataSetChanged()
+    override fun getItemCount(): Int {
+        return data.size+footerLayoutCount+headerLayoutCount
     }
 }

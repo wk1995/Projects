@@ -67,7 +67,7 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
             btnComSimpleDialogCancel -> super.onClick(v)
             tvScheduleStartTime,
             tvScheduleEndTime -> {
-                TimePickerCreator.create(mActivity, this)
+                TimePickerCreator.create(this)
             }
         }
 
