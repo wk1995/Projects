@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tvDaySelected"
+        android:layout_width="match_parent"
+        tools:text="当前日期"
+        android:gravity="center"
+        android:layout_height="@dimen/d50dp" />
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
+        android:id="@+id/llConsumptionTab"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d60dp"/>
+    <FrameLayout
+        android:id="@+id/flAboutMoney"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llConsumptionTab"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -13,4 +13,8 @@
     <string name="common_str_delete_successful">删除成功</string>
     <string name="common_str_update_successful">更新成功</string>
     <string name="common_str_no_data">暂无数据</string>
+    <string name="common_str_detail">明细</string>
+    <string name="common_str_account">账户</string>
+    <string name="common_str_income">收入</string>
+    <string name="common_str_check_time">确认时间</string>
 </resources>

@@ -5,6 +5,7 @@ import android.util.SparseArray
 import com.wk.projects.common.collapse.CrashHandler
 import com.wk.projects.common.configuration.ConfigureKey.CONTEXT
 import com.wk.projects.common.configuration.ConfigureKey.MODULE_NAME
+import timber.log.Timber
 
 /**
  * <pre>
@@ -36,10 +37,12 @@ class WkConfiguration private constructor() {
     }
 
     fun configure() {
-        val moduleName = info[MODULE_NAME] as? String
-        val context = info[CONTEXT] as? Context
-        if (moduleName != null && context != null)
-            CrashHandler.init(context, moduleName)
+        val context = info[CONTEXT] as? Context ?: throw Exception("context must not be null")
+        val packageName = context.packageName
+        //全限定名
+        Timber.d("packageName:  $packageName")
+        if (packageName != null)
+            CrashHandler.init(context, packageName)
     }
 
 

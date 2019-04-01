@@ -16,4 +16,12 @@ object ARoutePath {
     const val AllDataInfoActivity="/schedules/activity/AllDataInfoActivity"
     const val ScheduleItemInfoActivity="/schedules/activity/ScheduleItemInfoActivity"
     const val ScheduleIdeaActivity="/schedules/activity/ScheduleIdeaActivity"
+
+
+    //module_RecordsOfConsumption
+    const val ConsumptionMainActivity="/consumption/activity/ConsumptionMainActivity"
+    const val ConsumptionMainFragment="/consumption/fragment/ConsumptionMainFragment"
+    const val ConsumptionDetailFragment="/consumption/fragment/ConsumptionDetailFragment"
+    const val ConsumptionAccountFragment="/consumption/fragment/ConsumptionAccountFragment"
+    const val AddDetailFragment="/consumption/fragment/AddDetailFragment"
 }

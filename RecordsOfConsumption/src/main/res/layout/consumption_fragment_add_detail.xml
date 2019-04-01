@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <TextView
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tvAddDetailNote"
+        android:id="@+id/tvAddDetailTime"
+        android:layout_width="0dp"
+        tools:text="时间"
+        android:gravity="center"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="@dimen/d40dp" />
+    <TextView
+        android:id="@+id/tvAddDetailNote"
+        app:layout_constraintLeft_toRightOf="@id/tvAddDetailTime"
+        android:layout_width="0dp"
+        app:layout_constraintRight_toLeftOf="@id/tvAddDetailAccount"
+        android:gravity="center"
+        android:text="@string/common_str_note"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="@dimen/d40dp" />
+    <TextView
+        android:id="@+id/tvAddDetailAccount"
+        app:layout_constraintLeft_toRightOf="@id/tvAddDetailNote"
+        app:layout_constraintRight_toLeftOf="@id/tvAddDetailType"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:text="@string/common_str_account"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="@dimen/d40dp" />
+    <TextView
+        android:id="@+id/tvAddDetailType"
+        app:layout_constraintLeft_toRightOf="@id/tvAddDetailAccount"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="0dp"
+        android:text="@string/common_str_income"
+        android:gravity="center"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="@dimen/d40dp" />
+    <EditText
+        android:hint="0"
+        android:id="@+id/etConsumptionAmount"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d60dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvConsumptionType"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAddDetailTime"
+        android:layout_height="@dimen/d100dp"/>
+</android.support.constraint.ConstraintLayout>

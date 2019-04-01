@@ -1,6 +1,8 @@
 package com.wk.projects.records.consumption.debug
 
 import com.wk.projects.common.BaseApplication
+import com.wk.projects.common.configuration.WkProjects
+import com.wk.projects.records.consumption.R
 
 /**
  * <pre>
@@ -9,7 +11,15 @@ import com.wk.projects.common.BaseApplication
  *      time   : 2019/3/18
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      desc   : 消费记录
  * </pre>
  */
-class ConsumptionApp:BaseApplication()
+@Suppress(WkProjects.UNUSED)
+class ConsumptionApp : BaseApplication() {
+    override fun onCreate() {
+        super.onCreate()
+        WkProjects.init(this)
+                .withModuleName(getString(R.string.modules_name))
+                .configure()
+    }
+}

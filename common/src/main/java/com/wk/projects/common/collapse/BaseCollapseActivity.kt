@@ -47,7 +47,6 @@ abstract class BaseCollapseActivity : BaseProjectsActivity(), View.OnClickListen
             val watchIntent = Intent(this, initWatchActivityClass())
             watchIntent.putExtra(FILE, fileList[position])
             startActivity(watchIntent)
-
         }
         rvCollapseFile.layoutManager = LinearLayoutManager(this)
         rvCollapseFile.adapter = collapseAdapter

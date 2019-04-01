@@ -3,8 +3,18 @@ rootProject.ext {
     compileSdkVersion = 28
     minSdkVersion = 21
     targetSdkVersion = 28
-    versionCode = 2
-    versionName = "1.01"
+    versionCode = 1
+    versionName = "1.00"
+
+
+    activitiesVersionCode=2
+    activitiesVersionName="1.01"
+
+
+    consumptionVersionCode=1
+    consumptionVersionName="1.00"
+
+
 
     supportAppcompatV7 = "28.0.0"
     permissionsDispatcher = "2.3.1"

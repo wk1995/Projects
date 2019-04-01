@@ -111,6 +111,10 @@ dependencies {
     //MPAndroidChart
     api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    //时间选择
+    api 'com.contrarywind:Android-PickerView:4.1.6'
+
+
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
