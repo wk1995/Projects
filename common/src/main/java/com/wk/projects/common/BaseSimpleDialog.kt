@@ -56,13 +56,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
             dismiss()
     }
 
-    fun show(manager: FragmentManager?) {
-        super.show(manager, this::class.java.simpleName)
-    }
 
-    fun show(baseProjectsActivity: BaseProjectsActivity) {
-        show(baseProjectsActivity.supportFragmentManager)
-    }
 
     //加载ViewSub中的View
     open fun initVSView(vsView: View) {

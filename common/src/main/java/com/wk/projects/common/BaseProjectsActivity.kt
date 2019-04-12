@@ -7,6 +7,7 @@ import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.wk.projects.common.communication.eventBus.RxBus
 import me.yokeyword.fragmentation.SupportActivity
+import rx.Subscription
 
 /**
  * <pre>
@@ -22,6 +23,7 @@ abstract class BaseProjectsActivity : SupportActivity() {
 
     private lateinit var activityUnBinder: Unbinder
     protected val rxBus by lazy { RxBus.getInstance() }
+    protected var mSubscription: Subscription? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         beforeContentView()
@@ -40,6 +42,11 @@ abstract class BaseProjectsActivity : SupportActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (mSubscription?.isUnsubscribed == false)
+            mSubscription?.unsubscribe()
+    }
 
     override fun onDestroy() {
         activityUnBinder.unbind()

@@ -1,0 +1,2 @@
+导出ANR文件
+adb pull data/anr/traces.txt D:\trances\traces.txt

@@ -7,8 +7,8 @@ import android.widget.TextView
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
-import com.wk.projects.activities.date.DateTime
-import com.wk.projects.activities.ui.time.TimePickerCreator
+import com.wk.projects.common.date.DateTime
+import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
@@ -67,14 +67,14 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
             btnComSimpleDialogCancel -> super.onClick(v)
             tvScheduleStartTime,
             tvScheduleEndTime -> {
-                TimePickerCreator.create(this)
+                TimePickerCreator.create(mActivity,this)
             }
         }
 
     }
 
     override fun initVSView(vsView: View) {
-        tvScheduleStartTime = vsView?.findViewById(R.id.tvScheduleStartTime) ?: return
+        tvScheduleStartTime = vsView.findViewById(R.id.tvScheduleStartTime) ?: return
         tvScheduleStartTime.setOnClickListener(this)
         tvScheduleEndTime = vsView.findViewById(R.id.tvScheduleEndTime)
         tvScheduleEndTime.setOnClickListener(this)

@@ -47,14 +47,4 @@ class SchedulesAddItemAdapter(private val itemList: ArrayList<String>,
     }
 
     override fun getItemCount() = itemList.size
-
-    fun addItem(sch:String){
-        itemList.add(sch)
-        notifyDataSetChanged()
-    }
-
-    fun addItems(scheduleItems: ArrayList<String>){
-        itemList.addAll(scheduleItems)
-        notifyDataSetChanged()
-    }
 }

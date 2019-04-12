@@ -5,7 +5,7 @@ import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.wk.projects.activities.R
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.activities.date.DateTime.getTime
+import com.wk.projects.common.date.DateTime.getTime
 import java.util.*
 
 

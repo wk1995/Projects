@@ -12,9 +12,7 @@ import com.wk.projects.activities.communication.constant.ActivityRequestCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
-import com.wk.projects.activities.date.DateTime
 import com.wk.projects.activities.ui.recycler.SchedulesMainAdapter
-import com.wk.projects.activities.ui.time.TimePickerCreator
 import com.wk.projects.activities.update.DeleteScheduleItemDialog
 import com.wk.projects.common.BaseFragment
 import com.wk.projects.common.communication.constant.BundleKey
@@ -23,9 +21,11 @@ import com.wk.projects.common.communication.eventBus.EventMsg.Companion.INIT_REC
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.SCHEDULE_ITEM_DIALOG
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.UPDATE_DATA
 import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.date.DateTime
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
+import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import kotlinx.android.synthetic.main.activities_fragment_main.*
 import org.litepal.LitePal
 import rx.android.schedulers.AndroidSchedulers
@@ -177,7 +177,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create( object : OnTimeSelectListener {
+                TimePickerCreator.create(_mActivity ,object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         tvDaySelected.text = DateTime.getDateString(date?.time)
                         initData()

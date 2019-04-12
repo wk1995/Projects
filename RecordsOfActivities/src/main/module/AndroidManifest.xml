@@ -8,10 +8,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:icon="@mipmap/activities"
         android:name=".debug.ScheduleApp"
         android:allowBackup="true"
         android:fullBackupContent="true"
+        android:icon="@mipmap/activities"
         android:label="@string/modules_name"
         android:theme="@style/ScheduleAppTheme"
         tools:replace="android:label">
@@ -24,7 +24,6 @@
         </activity>
         <activity
             android:name=".data.ScheduleItemInfoActivity"
-
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
         <activity android:name=".collapse.SchedulesWatchActivity" />
         <activity
@@ -38,10 +37,14 @@
         </activity>
         <activity
             android:name=".data.query.AllDataInfoActivity"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />   <!--EditText不自动弹出软键盘-->
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" /> <!-- EditText不自动弹出软键盘 -->
         <activity
             android:name=".idea.ScheduleIdeaActivity"
             android:label="@string/title_activity_idea" />
+
+        <service
+            android:name=".AppInitIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

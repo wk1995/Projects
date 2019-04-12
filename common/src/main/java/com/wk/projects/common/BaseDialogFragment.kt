@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.view.Window
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.wk.projects.common.communication.eventBus.RxBus
+import com.wk.projects.common.helper.PhysicsHelper
 
 /**
  * <pre>
@@ -25,9 +27,9 @@ import com.wk.projects.common.communication.eventBus.RxBus
 abstract class BaseDialogFragment : DialogFragment() {
     private lateinit var activityUnBinder: Unbinder
     protected lateinit var mActivity: BaseProjectsActivity
-    protected val window by lazy { dialog.window }
+    protected val window: Window by lazy { dialog.window }
     protected val rxBus by lazy { RxBus.getInstance() }
-
+    protected val mPhysicsHelper by lazy { PhysicsHelper.getInstance() }
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mActivity = context as BaseProjectsActivity
@@ -37,11 +39,15 @@ abstract class BaseDialogFragment : DialogFragment() {
         initContentView()
         val rootView = inflater.inflate(initResLayId(), container, false)
         activityUnBinder = ButterKnife.bind(this, rootView)
-        bindView(savedInstanceState, rootView)
         return rootView
     }
 
-/*    override fun onStart() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindView(savedInstanceState, view)
+    }
+
+    /*    override fun onStart() {
         super.onStart()
         //去掉dialog周围的阴影
         val windowParams = dialog.window?.attributes
@@ -55,7 +61,7 @@ abstract class BaseDialogFragment : DialogFragment() {
         super.onDestroyView()
     }
 
-    open fun initContentView(){
+    open fun initContentView() {
         //默认整个背景为纯白，设置为透明
 //        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -80,6 +86,14 @@ abstract class BaseDialogFragment : DialogFragment() {
 
         }
 
+    }
+
+    fun show(manager: FragmentManager?) {
+        super.show(manager, this::class.java.simpleName)
+    }
+
+    fun show(baseProjectsActivity: BaseProjectsActivity) {
+        show(baseProjectsActivity.supportFragmentManager)
     }
 
     abstract fun initResLayId(): Int

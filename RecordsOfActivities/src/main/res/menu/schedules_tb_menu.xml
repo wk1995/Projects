@@ -17,5 +17,9 @@
         android:title="新想法"
         android:orderInCategory="1"
         app:showAsAction="never"/>
-
+    <item
+        android:id="@+id/menuDeleteDB"
+        android:title="删除数据库"
+        android:orderInCategory="1"
+        app:showAsAction="never"/>
 </menu>

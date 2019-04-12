@@ -3,7 +3,6 @@ package com.wk.projects.activities.data.add
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
@@ -63,9 +62,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         }
         super.onClick(v)
     }
-
-
-
 
     override fun initVSView(vsView: View) {
 //        editTextHelper.showFocus(etAddItem, window)

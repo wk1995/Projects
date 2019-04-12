@@ -24,6 +24,7 @@ class RxBus private constructor() {
         fun getInstance() = RxBusVH.INSTANCE
     }
 
+
     private val mBus by lazy { SerializedSubject<Any, Any>(PublishSubject.create()) }
 
 

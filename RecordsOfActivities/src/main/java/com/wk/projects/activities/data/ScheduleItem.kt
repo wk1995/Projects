@@ -13,11 +13,22 @@ import org.litepal.crud.LitePalSupport
  *      desc   :
  * </pre>
  */
+
+/**
+ * @param itemName      项目名称
+ * @param startTime     项目开始的时间
+ * @param endTime       项目结束的时间
+ * @param note          项目的备注
+ * @param parentId      项目所属的类别id
+ * @param extraMsg      额外的信息
+ *
+ * */
 data class ScheduleItem(@Column(nullable = false) var itemName: String,
-                        @Column(nullable = true) var startTime: Long? = null,
-                        @Column(nullable = true) var endTime: Long? = null,
+                        @Column(nullable = false) var startTime: Long = 0,
+                        @Column(nullable = false) var endTime: Long = 0,
                         @Column(nullable = true) var note: String? = null,
-                        @Column(nullable = true) var parentId: Long? = null)
+                        @Column(nullable = true) var parentId:Long?=null,
+                        @Column(nullable = true) var extraMsg:LitePalSupport?=null)
     : LitePalSupport() {
     companion object {
         const val  COLUMN_ITEM_NAME="itemName"
@@ -25,6 +36,7 @@ data class ScheduleItem(@Column(nullable = false) var itemName: String,
         const val  COLUMN_END_TIME="endTime"
         const val  COLUMN_ITEM_NOTE="note"
         const val  COLUMN_PARENT_ID="parentId"
+        const val  COLUMN_EXTRA_MSG="extraMsg"
     }
     public override  fun getBaseObjId(): Long {
         return super.getBaseObjId()

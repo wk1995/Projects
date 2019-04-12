@@ -7,8 +7,8 @@ rootProject.ext {
     versionName = "1.00"
 
 
-    activitiesVersionCode=2
-    activitiesVersionName="1.01"
+    activitiesVersionCode=3
+    activitiesVersionName="1.02"
 
 
     consumptionVersionCode=1

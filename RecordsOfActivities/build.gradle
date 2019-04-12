@@ -41,8 +41,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        versionCode rootProject.ext.activitiesVersionCode
+        versionName rootProject.ext.activitiesVersionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -131,8 +131,7 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${rootProject.butterKnife}"
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':common')
-    //时间选择
-    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
     //路由

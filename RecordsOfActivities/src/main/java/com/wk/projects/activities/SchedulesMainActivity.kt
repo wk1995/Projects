@@ -19,20 +19,22 @@ import com.wk.projects.activities.communication.constant.ActivityRequestCode
 import com.wk.projects.activities.communication.constant.ActivityResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.activities.data.add.CategoryDialog
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
-import com.wk.projects.activities.date.DateTime
-import com.wk.projects.activities.date.DateTime.getDayEnd
-import com.wk.projects.activities.date.DateTime.getDayStart
+import com.wk.projects.common.date.DateTime
+import com.wk.projects.common.date.DateTime.getDayEnd
+import com.wk.projects.common.date.DateTime.getDayStart
 import com.wk.projects.activities.permission.PermissionDialog
 import com.wk.projects.activities.permission.RefuseDialog
 import com.wk.projects.activities.ui.recycler.SchedulesMainAdapter
-import com.wk.projects.activities.ui.time.TimePickerCreator
+import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import com.wk.projects.activities.update.DeleteScheduleItemDialog
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.constant.CommonFilePath
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
@@ -41,6 +43,7 @@ import org.litepal.LitePal
 import permissions.dispatcher.*
 import rx.functions.Action1
 import timber.log.Timber
+import java.io.File
 import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
@@ -56,10 +59,11 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         setSupportActionBar(tbSchedules)
+        startService(Intent(this, AppInitIntentService::class.java))
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         initClickListener()
-        rxBus.getObservable().subscribe(this)
+        mSubscription = rxBus.getObservable().subscribe(this)
     }
 
     private fun initRecyclerView() {
@@ -87,7 +91,6 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
                 val popupMenu = PopupMenu(this@SchedulesMainActivity, view ?: return)
                 //加载菜单文件
                 popupMenu.menuInflater.inflate(R.menu.activities_main_delete_and_update, popupMenu.menu)
-
                 popupMenu.setOnMenuItemClickListener {
                     val id = it.itemId
                     when (id) {
@@ -110,7 +113,6 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
                     }
                     true
                 }
-
                 popupMenu.show()
 
             }
@@ -152,14 +154,16 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create(object : OnTimeSelectListener {
+                TimePickerCreator.create(this, object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         tvDaySelected.text = DateTime.getDateString(date?.time)
                         initData()
                     }
                 })
         //增加数据库中没有的项目
-            fabAddScheduleItem -> ScheduleItemAddDialog.create().show(supportFragmentManager)
+            fabAddScheduleItem ->
+//                CategoryDialog.create().show(supportFragmentManager)
+                ScheduleItemAddDialog.create().show(supportFragmentManager)
         }
     }
 
@@ -170,6 +174,15 @@ class SchedulesMainActivity : BaseProjectsActivity(), Action1<Any>,
             }
             R.id.menuItemIdea -> {
                 ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()
+            }
+            R.id.menuDeleteDB -> {
+                val path = "wk/projects/database/schedules"
+                val path1 = CommonFilePath.ES_PATH + path
+                val file = File(path1)
+                Timber.i("$file 存在 ？ ${file.exists()}")
+                val result = file.parentFile
+                        .delete()
+                ToastUtil.show(if (result) "删除成功" else "删除失败")
             }
         }
         return true

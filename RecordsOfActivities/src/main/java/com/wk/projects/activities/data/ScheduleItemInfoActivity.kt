@@ -12,9 +12,9 @@ import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.ActivityResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.`class`.CategoryAdapter
-import com.wk.projects.activities.date.DateTime
-import com.wk.projects.activities.date.DateTime.getDateLong
-import com.wk.projects.activities.ui.time.TimePickerCreator
+import com.wk.projects.common.date.DateTime
+import com.wk.projects.common.date.DateTime.getDateLong
+import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.listener.BaseSimpleClickListener
@@ -53,7 +53,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
-            if(it==null) return@listen
+            if (it == null) return@listen
             Timber.d("42 $it")
             currentId = it.parentId
             newCategoryId = currentId
@@ -68,10 +68,10 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 }
 
         }
-        findAllCategory()
         initClick()
         rvItemClass.layoutManager = LinearLayoutManager(this)
         rvItemClass.adapter = mCategoryAdapter
+        findAllCategory()
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 if (adapter is CategoryAdapter) {
@@ -109,7 +109,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
                     ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
-                    val bundle=Bundle()
+                    val bundle = Bundle()
                     intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
                     intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
                     setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity, intent)
@@ -120,7 +120,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             btCancel -> finish()
             tvScheduleStartTime,
             tvScheduleEndTime -> {
-                TimePickerCreator.create(object : OnTimeSelectListener {
+                TimePickerCreator.create(this, object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         (v as? TextView)?.text = DateTime.getDateString(date?.time)
                     }
@@ -140,7 +140,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                             .findAsync(WkActivity::class.java)
                             .listen {
                                 if (it.size > 0) {
-                                    ToastUtil.show("$addCategoryName 已存在，添加失败",ToastUtil.LENGTH_SHORT)
+                                    ToastUtil.show("$addCategoryName 已存在，添加失败", ToastUtil.LENGTH_SHORT)
                                     newCategoryId = it[0].baseObjId
                                     Timber.d("newCategoryId: $newCategoryId")
                                     etAddCategory.setText(addCategoryName)
@@ -155,7 +155,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                                             mCategoryAdapter.data.add(newWkActivity)
                                             mCategoryAdapter.notifyItemChanged(mCategoryAdapter.data.size - 1)
                                         } else
-                                            ToastUtil.show(WkContextCompat.getString(R.string.common_str_save_failed),ToastUtil.LENGTH_SHORT)
+                                            ToastUtil.show(WkContextCompat.getString(R.string.common_str_save_failed), ToastUtil.LENGTH_SHORT)
 
                                     }
 
@@ -175,6 +175,10 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     //取出所有类型
     private fun findAllCategory() {
         LitePal.findAllAsync(WkActivity::class.java).listen {
+            Timber.d("现有的类别数： ${it.size}")
+            it.forEach {
+                Timber.d("现有的类别： ${it.itemName}")
+            }
             mCategoryAdapter.setNewData(it)
         }
     }

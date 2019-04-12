@@ -34,10 +34,11 @@ abstract class BaseFragment : SupportFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         beforeViewCreated()
         super.onViewCreated(view, savedInstanceState)
-
+        initView()
     }
 
     abstract fun initResLay(): Any?
     protected open fun beforeCreateView() {}
     protected open fun beforeViewCreated() {}
+    protected open fun initView() {}
 }
