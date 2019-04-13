@@ -1,14 +1,9 @@
 package com.wk.projects.activities.data.query
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.wk.projects.activities.R
-import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.activities.data.ScheduleItemInfoActivity
 
 /**
  * <pre>

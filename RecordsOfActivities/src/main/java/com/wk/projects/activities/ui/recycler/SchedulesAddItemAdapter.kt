@@ -6,10 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.wk.projects.common.communication.IRvClickListener
-import com.wk.projects.common.communication.constant.BundleKey.SCHEDULE_ITEM_NAME
 import com.wk.projects.activities.R
-import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.activities.communication.constant.SchedulesBundleKey
+import com.wk.projects.common.communication.IRvClickListener
 
 /**
  * <pre>
@@ -40,7 +39,7 @@ class SchedulesAddItemAdapter(private val itemList: ArrayList<String>,
             tvName.text=itemName
             v.setOnClickListener{
                 val bundle=Bundle()
-                bundle.putString(SCHEDULE_ITEM_NAME,itemName)
+                bundle.putString(SchedulesBundleKey.SCHEDULE_ITEM_NAME,itemName)
                 rvClickListener?.onItemClick(bundle)
             }
         }

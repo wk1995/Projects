@@ -22,6 +22,15 @@
         android:textSize="@dimen/s20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+    <Button
+        android:id="@+id/tvModifyScheduleName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tvScheduleName"
+        app:layout_constraintBottom_toBottomOf="@id/tvScheduleName"
+        app:layout_constraintLeft_toRightOf="@id/tvScheduleName"
+        android:text="@string/common_str_modify"
+        />
     <!--开始时间-->
     <LinearLayout
         android:id="@+id/llStartTime"

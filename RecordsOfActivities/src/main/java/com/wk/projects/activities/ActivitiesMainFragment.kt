@@ -1,6 +1,5 @@
 package com.wk.projects.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -14,15 +13,14 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
+import com.wk.projects.activities.communication.constant.SchedulesBundleKey.SCHEDULE_OPERATION
+import com.wk.projects.activities.data.ActivitiesInfoFragment.Companion.OPERATION_MODIFY
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.activities.data.add.ScheduleItemAddDialog
 import com.wk.projects.activities.ui.recycler.SchedulesMainAdapter
 import com.wk.projects.activities.update.DeleteScheduleItemDialog
 import com.wk.projects.common.BaseFragment
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.eventBus.EventMsg
-import com.wk.projects.common.communication.eventBus.EventMsg.Companion.INIT_RECYCLER
-import com.wk.projects.common.communication.eventBus.EventMsg.Companion.UPDATE_DATA
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
 import com.wk.projects.common.resource.WkContextCompat
@@ -32,8 +30,6 @@ import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import kotlinx.android.synthetic.main.activities_fragment_main.*
 import me.yokeyword.fragmentation.ISupportFragment
 import org.litepal.LitePal
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import timber.log.Timber
 import java.util.*
 
@@ -48,7 +44,7 @@ import java.util.*
  * </pre>
  */
 @Route(path = ARoutePath.ActivitiesMainFragment)
-class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any> {
+class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelectListener {
 
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
@@ -62,9 +58,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         initClickListener()
         initRecyclerView()
-        mSubscription = rxBus.getObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this)
+
     }
 
     private fun initClickListener() {
@@ -77,8 +71,13 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
             val data = (t.any) as? Bundle
             when (t.flag) {
             //增加新项目
+                EventMsg.ADD_ITEM -> {
+                    scheduleMainAdapter.data.add((t.any) as ScheduleItem)
+                    rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount - 1 - scheduleMainAdapter.footerLayoutCount)
+                }
+            //增加新项目
                 EventMsg.SCHEDULE_ITEM_DIALOG -> {
-                    val itemName = data?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
+                    val itemName = data?.getString(SchedulesBundleKey.SCHEDULE_ITEM_NAME) ?: return
                     val id = data.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
                     val item = ScheduleItem(itemName)
                     item.assignBaseObjId(id.toInt())
@@ -102,23 +101,9 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
                     }
                 }
 
-                EventMsg.QUREY_ALL_DATA ->
+                EventMsg.QUERY_ALL_DATA ->
                     start(ARouter.getInstance()
                             .build(ARoutePath.AllDataInfoFragment).navigation() as ISupportFragment)
-
-                INIT_RECYCLER -> initRecyclerView()
-
-                UPDATE_DATA -> {
-                    val position = data?.getInt(BundleKey.LIST_POSITION, -1) ?: return
-                    if (position < 0)
-                        return
-                    val endTime = data.getLong(ScheduleItem.COLUMN_END_TIME, 0)
-                    val startTime = data.getLong(ScheduleItem.COLUMN_START_TIME, 0)
-                    val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
-                    scheduleItem.endTime = endTime
-                    scheduleItem.startTime = startTime
-                    scheduleMainAdapter.notifyItemChanged(position)
-                }
             }
         }
     }
@@ -196,17 +181,20 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
                 }
     }
 
+    override fun onTimeSelect(date: Date?, v: View?) {
+        tvDaySelected.text = DateTime.getDateString(date?.time)
+        initData()
+    }
+
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create(_mActivity, object : OnTimeSelectListener {
-                    override fun onTimeSelect(date: Date?, view: View?) {
-                        tvDaySelected.text = DateTime.getDateString(date?.time)
-                        initData()
-                    }
-                })
+                TimePickerCreator.create(_mActivity, this)
         //增加数据库中没有的项目
-            fabAddScheduleItem -> ScheduleItemAddDialog.create().show(childFragmentManager)
+            fabAddScheduleItem -> start(
+                    ARouter.getInstance()
+                            .build(ARoutePath.ActivitiesInfoFragment)
+                            .navigation() as ISupportFragment)
         }
     }
 
@@ -216,15 +204,22 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, Action1<Any
         Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
         if (requestCode == RequestCode.RequestCode_SchedulesMainActivity &&
                 resultCode == ResultCode.ResultCode_ScheduleItemInfoActivity) {
-            val position = data?.getInt(BundleKey.LIST_POSITION, -1) ?: return
-            if (position < 0)
-                return
-            val endTime = data.getLong(ScheduleItem.COLUMN_END_TIME, 0)
-            val startTime = data.getLong(ScheduleItem.COLUMN_START_TIME, 0)
-            val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
-            scheduleItem.endTime = endTime
-            scheduleItem.startTime = startTime
-            scheduleMainAdapter.notifyItemChanged(position)
+            val operationType = data?.getString(SCHEDULE_OPERATION)
+            when (operationType) {
+            //填入信息 or 修改
+                OPERATION_MODIFY -> {
+                    val position = data.getInt(BundleKey.LIST_POSITION, -1)
+                    if (position < 0)
+                        return
+                    val endTime = data.getLong(SchedulesBundleKey.SCHEDULE_END_TIME, 0)
+                    val startTime = data.getLong(SchedulesBundleKey.SCHEDULE_START_TIME, 0)
+                    val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
+                    scheduleItem.endTime = endTime
+                    scheduleItem.startTime = startTime
+                    scheduleMainAdapter.notifyItemChanged(position)
+                }
+            }
+
         }
     }
 }

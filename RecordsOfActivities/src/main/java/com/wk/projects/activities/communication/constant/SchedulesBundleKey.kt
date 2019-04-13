@@ -10,7 +10,14 @@ package com.wk.projects.activities.communication.constant
  *      desc   :
  * </pre>
  */
-object SchedulesBundleKey{
+object SchedulesBundleKey {
 
-    const val SCHEDULE_ITEM_ID="SCHEDULE_ITEM_ID"
+    const val SCHEDULE_ITEM_ID = "SCHEDULE_ITEM_ID"
+    const val SCHEDULE_OPERATION = "SCHEDULE_OPERATION"
+    const val SCHEDULE_ITEM_NAME = "itemName"
+    const val SCHEDULE_START_TIME = "startTime"
+    const val SCHEDULE_END_TIME = "endTime"
+    const val SCHEDULE_ITEM_NOTE = "note"
+    const val SCHEDULE_PARENT_ID = "parentId"
+    const val SCHEDULE_EXTRA_MSG = "extraMsg"
 }

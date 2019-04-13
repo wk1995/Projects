@@ -31,12 +31,12 @@ data class ScheduleItem(@Column(nullable = false) var itemName: String,
                         @Column(nullable = true) var extraMsg:LitePalSupport?=null)
     : LitePalSupport() {
     companion object {
-        const val  COLUMN_ITEM_NAME="itemName"
-        const val  COLUMN_START_TIME="startTime"
-        const val  COLUMN_END_TIME="endTime"
-        const val  COLUMN_ITEM_NOTE="note"
-        const val  COLUMN_PARENT_ID="parentId"
-        const val  COLUMN_EXTRA_MSG="extraMsg"
+        const val  SCHEDULE_ITEM_NAME="itemName"
+        const val  SCHEDULE_START_TIME="startTime"
+        const val  SCHEDULE_END_TIME="endTime"
+        const val  SCHEDULE_ITEM_NOTE="note"
+        const val  SCHEDULE_PARENT_ID="parentId"
+        const val  SCHEDULE_EXTRA_MSG="extraMsg"
     }
     public override  fun getBaseObjId(): Long {
         return super.getBaseObjId()

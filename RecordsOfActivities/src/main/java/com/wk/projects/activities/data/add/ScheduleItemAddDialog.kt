@@ -1,5 +1,6 @@
 package com.wk.projects.activities.data.add
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -7,7 +8,10 @@ import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.ActivitiesMsg
+import com.wk.projects.activities.communication.constant.RequestCode
+import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
+import com.wk.projects.activities.communication.constant.SchedulesBundleKey.SCHEDULE_ITEM_NAME
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.communication.constant.BundleKey
@@ -56,8 +60,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun onClick(v: View?) {
         when (v) {
             btnComSimpleDialogOk -> {
-                val itemName = etAddItem.text.toString()
-                saveItem(itemName)
+                transferName(etAddItem.text.toString())
             }
         }
         super.onClick(v)
@@ -65,7 +68,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     override fun initVSView(vsView: View) {
 //        editTextHelper.showFocus(etAddItem, window)
-        rvExistItem.layoutManager =LinearLayoutManager(mActivity)
+        rvExistItem.layoutManager = LinearLayoutManager(mActivity)
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -76,7 +79,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                         val data = adapter?.data ?: return
                         val itemName = data[position] as? String
                         Timber.d("95  $itemName")
-                        saveItem(itemName)
+                        transferName(itemName)
                         disMiss()
                     }
                 }
@@ -104,6 +107,14 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         })
     }
 
+    private fun transferName(name: String?) {
+//        rxBus.post(ActivitiesMsg(TRANSFER_NAME,etAddItem.text.toString()))
+        val transIntent = Intent()
+        transIntent.putExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME, name)
+        targetFragment?.onActivityResult(
+                RequestCode.RequestCode_ActivitiesInfoFragment,
+                ResultCode.ScheduleItemAddDialog, transIntent)
+    }
 
     //保存数据库中
     private fun saveItem(itemName: String?) {
@@ -120,7 +131,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     val bundle = Bundle()
                     msg = WkContextCompat.getString(R.string.common_str_save_successful)
                     Timber.d("80 id is ${scheduleItem.baseObjId}")
-                    bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, itemName)
+                    bundle.putString(SchedulesBundleKey.SCHEDULE_ITEM_NAME, itemName)
                     bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
                     rxBus.post(ActivitiesMsg(EventMsg.SCHEDULE_ITEM_DIALOG, bundle))
                 }

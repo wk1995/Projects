@@ -12,7 +12,7 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.permission.PermissionDialog
 import com.wk.projects.activities.permission.RefuseDialog
 import com.wk.projects.common.BaseProjectsActivity
-import com.wk.projects.common.communication.eventBus.EventMsg.Companion.QUREY_ALL_DATA
+import com.wk.projects.common.communication.eventBus.EventMsg.Companion.QUERY_ALL_DATA
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.constant.CommonFilePath
 import com.wk.projects.common.ui.notification.ToastUtil
@@ -43,7 +43,7 @@ class SchedulesMainActivity : BaseProjectsActivity(),
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         Timber.i("p0?.itemId:: ${p0?.itemId}")
         when (p0?.itemId) {
-            R.id.menuItemAllData ->rxBus.post(ActivitiesMsg(QUREY_ALL_DATA))
+            R.id.menuItemAllData ->rxBus.post(ActivitiesMsg(QUERY_ALL_DATA))
 
             R.id.menuItemSearch -> {
             }

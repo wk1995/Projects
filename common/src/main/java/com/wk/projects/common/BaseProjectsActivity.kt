@@ -8,6 +8,7 @@ import butterknife.Unbinder
 import com.wk.projects.common.communication.eventBus.RxBus
 import me.yokeyword.fragmentation.SupportActivity
 import rx.Subscription
+import rx.functions.Action1
 
 /**
  * <pre>
@@ -19,7 +20,7 @@ import rx.Subscription
  *      desc   : BaseProjectsActivity所有Activity父类
  * </pre>
  */
-abstract class BaseProjectsActivity : SupportActivity() {
+abstract class BaseProjectsActivity : SupportActivity(),Action1<Any> {
 
     private lateinit var activityUnBinder: Unbinder
     protected val rxBus by lazy { RxBus.getInstance() }
@@ -42,6 +43,10 @@ abstract class BaseProjectsActivity : SupportActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onPause() {
         super.onPause()
         if (mSubscription?.isUnsubscribed == false)
@@ -55,8 +60,7 @@ abstract class BaseProjectsActivity : SupportActivity() {
 
 
     open fun beforeContentView() {}
-
-
+    override fun call(t: Any?) {}
     abstract fun initResLay(): Any
     abstract fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity)
 }

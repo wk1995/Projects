@@ -13,4 +13,5 @@ package com.wk.projects.activities.communication.constant
 object ResultCode {
 
     const val ResultCode_ScheduleItemInfoActivity=1
+    const val ScheduleItemAddDialog=2
 }

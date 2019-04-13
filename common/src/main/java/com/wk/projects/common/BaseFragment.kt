@@ -8,6 +8,8 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.wk.projects.common.communication.eventBus.RxBus
 import me.yokeyword.fragmentation.SupportFragment
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 
 /**
  * <pre>
@@ -19,7 +21,7 @@ import rx.Subscription
  *      desc   : Fragment 父类
  * </pre>
  */
-abstract class BaseFragment : SupportFragment() {
+abstract class BaseFragment : SupportFragment(), Action1<Any?> {
     protected val rxBus by lazy { RxBus.getInstance() }
     protected val aRouter: ARouter by lazy { ARouter.getInstance() }
     protected var mSubscription: Subscription? = null
@@ -39,6 +41,13 @@ abstract class BaseFragment : SupportFragment() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        mSubscription = rxBus.getObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this)
+    }
+
     override fun onPause() {
         super.onPause()
         if (mSubscription?.isUnsubscribed == false)
@@ -47,8 +56,9 @@ abstract class BaseFragment : SupportFragment() {
 
     //显示的布局文件id,或者控件
     abstract fun initResLay(): Any?
+
     protected open fun beforeCreateView() {}
     protected open fun beforeViewCreated() {}
     protected open fun initView() {}
-
+    override fun call(t: Any?) {}
 }
