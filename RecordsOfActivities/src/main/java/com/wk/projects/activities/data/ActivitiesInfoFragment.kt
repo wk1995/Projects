@@ -12,10 +12,9 @@ import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.`class`.CategoryAdapter
-import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.BaseFragment
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
-import com.wk.projects.common.date.DateTime.getDateLong
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
@@ -29,16 +28,16 @@ import java.util.*
  * <pre>
  *      author : wk
  *      e-mail : 122642603@qq.com
- *      time   : 2018/11/27
+ *      time   : 2019/3/26
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
  *      desc   : 具体项目的详细信息
  * </pre>
  */
-@Route(path = ARoutePath.ScheduleItemInfoActivity)
-class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, OnTimeSelectListener {
+@Route(path = ARoutePath.ActivitiesInfoFragment)
+class ActivitiesInfoFragment : BaseFragment(), View.OnClickListener, OnTimeSelectListener {
     private val itemId: Long by lazy {
-        val itemId = intent?.extras?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1L)
+        val itemId = arguments?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1L)
                 ?: throw Exception("itemId 有问题")
         if (itemId < 0) throw Exception("itemId 有问题")
         itemId
@@ -48,10 +47,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     private var currentId: Long? = -1L
     private val mCategoryAdapter by lazy { CategoryAdapter() }
 
-
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
-
-    override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+    override fun initView() {
+        super.initView()
         LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
             if (it == null) return@listen
             Timber.d("42 $it")
@@ -69,7 +67,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
         }
         initClick()
-        rvItemClass.layoutManager = LinearLayoutManager(this)
+        rvItemClass.layoutManager = LinearLayoutManager(_mActivity)
         rvItemClass.adapter = mCategoryAdapter
         findAllCategory()
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
@@ -109,17 +107,18 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
                     ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
-                    val bundle = Bundle()
-                    intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
-                    intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
-                    setResult(ResultCode.ResultCode_ScheduleItemInfoActivity, intent)
-                    finish()
+                    if (arguments == null)
+                        arguments = Bundle()
+                    arguments?.putLong(ScheduleItem.COLUMN_START_TIME, DateTime.getDateLong(startTime))
+                    arguments?.putLong(ScheduleItem.COLUMN_END_TIME, DateTime.getDateLong(endTime))
+                    setFragmentResult(ResultCode.ResultCode_ScheduleItemInfoActivity, arguments)
+                    pop()
                 }
 
             }
             tvScheduleStartTime,
             tvScheduleEndTime -> {
-                TimePickerCreator.create(this, object : OnTimeSelectListener {
+                TimePickerCreator.create(_mActivity, object : OnTimeSelectListener {
                     override fun onTimeSelect(date: Date?, view: View?) {
                         (v as? TextView)?.text = DateTime.getDateString(date?.time)
                     }
@@ -129,6 +128,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         //快捷方式直接设置当前时间
             btEndTime -> {
                 tvScheduleEndTime.text = DateTime.getDateString(System.currentTimeMillis())
+            }
+            btStartTime -> {
+                tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
             }
             btAddCategory -> {
                 //将要添加的类别
@@ -189,5 +191,6 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         btOk.setOnClickListener(this)
         btEndTime.setOnClickListener(this)
         btAddCategory.setOnClickListener(this)
+        btStartTime.setOnClickListener(this)
     }
 }

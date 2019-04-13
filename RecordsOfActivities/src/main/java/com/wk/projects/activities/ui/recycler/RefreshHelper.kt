@@ -27,7 +27,7 @@ class RefreshHelper(private val context: Context,
         sr.isRefreshing = true
         try {
             LitePal.findAllAsync(ScheduleItem::class.java).listen {
-                val mAllDataAdapter = AllDataAdapter(context)
+                val mAllDataAdapter = AllDataAdapter()
                 rv.adapter = mAllDataAdapter
                 mAllDataAdapter.setNewData(it)
                 sr.isRefreshing = false

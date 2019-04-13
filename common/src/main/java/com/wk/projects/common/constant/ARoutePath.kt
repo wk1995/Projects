@@ -13,9 +13,11 @@ package com.wk.projects.common.constant
 object ARoutePath {
     //module_schedules
     const val SchedulesMainActivity="/schedules/activity/SchedulesMainActivity"
-    const val AllDataInfoActivity="/schedules/activity/AllDataInfoActivity"
+    const val AllDataInfoFragment="/schedules/activity/AllDataInfoFragment"
     const val ScheduleItemInfoActivity="/schedules/activity/ScheduleItemInfoActivity"
     const val ScheduleIdeaActivity="/schedules/activity/ScheduleIdeaActivity"
+    const val ActivitiesMainFragment="/schedules/activity/ActivitiesMainFragment"
+    const val ActivitiesInfoFragment="/schedules/activity/ActivitiesInfoFragment"
 
 
     //module_RecordsOfConsumption

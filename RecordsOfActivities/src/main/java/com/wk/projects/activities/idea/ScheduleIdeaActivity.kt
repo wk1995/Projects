@@ -7,6 +7,7 @@ import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.helper.file.IFileStatusListener
 import com.wk.projects.common.idea.IdeaActivity
 
+
 @Route(path = ARoutePath.ScheduleIdeaActivity)
 class ScheduleIdeaActivity : IdeaActivity(), IFileStatusListener.IReadStatusListener {
 

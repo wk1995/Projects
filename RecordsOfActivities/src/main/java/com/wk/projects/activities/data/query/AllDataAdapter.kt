@@ -20,7 +20,7 @@ import com.wk.projects.activities.data.ScheduleItemInfoActivity
  *      desc   :
  * </pre>
  */
-class AllDataAdapter(private val context: Context)
+class AllDataAdapter
     : BaseQuickAdapter<ScheduleItem, BaseViewHolder>(R.layout.schedules_all_data_item) {
 
     override fun convert(helper: BaseViewHolder?, item: ScheduleItem?) {
@@ -28,16 +28,6 @@ class AllDataAdapter(private val context: Context)
             helper?.setText(R.id.tvScheduleName, itemName)
                     ?.setText(R.id.tvScheduleStartTime, startTime.toString())
                     ?.setText(R.id.tvScheduleEndTime, endTime.toString())
-
-            val rootView = helper?.itemView ?: return
-            rootView.setOnClickListener {
-                val intent = Intent(context, ScheduleItemInfoActivity::class.java)
-                val bundle= Bundle(1)
-                bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID,baseObjId)
-                intent.putExtras(bundle)
-                context.startActivity(intent)
-            }
-
         }
     }
 }

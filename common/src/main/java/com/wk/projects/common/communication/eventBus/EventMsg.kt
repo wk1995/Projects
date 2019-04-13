@@ -16,5 +16,6 @@ abstract class EventMsg{
         const val DELETE_ITEM_DIALOG=3
         const val INIT_RECYCLER=2
         const val UPDATE_DATA=4
+        const val QUREY_ALL_DATA=5
     }
 }
