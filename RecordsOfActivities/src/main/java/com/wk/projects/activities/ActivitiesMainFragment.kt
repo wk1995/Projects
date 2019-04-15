@@ -126,7 +126,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                                 .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
                                 .withInt(BundleKey.LIST_POSITION, position)
                                 .navigation() as ISupportFragment,
-                                RequestCode.RequestCode_SchedulesMainActivity)
+                                RequestCode.SchedulesMainActivity)
                     }
                 }
             }
@@ -202,7 +202,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
     override fun onFragmentResult(requestCode: Int, resultCode: Int, data: Bundle?) {
         super.onFragmentResult(requestCode, resultCode, data)
         Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
-        if (requestCode == RequestCode.RequestCode_SchedulesMainActivity &&
+        if (requestCode == RequestCode.SchedulesMainActivity &&
                 resultCode == ResultCode.ResultCode_ScheduleItemInfoActivity) {
             val operationType = data?.getString(SCHEDULE_OPERATION)
             when (operationType) {

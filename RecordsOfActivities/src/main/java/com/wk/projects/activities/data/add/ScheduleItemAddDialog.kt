@@ -109,10 +109,20 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     private fun transferName(name: String?) {
 //        rxBus.post(ActivitiesMsg(TRANSFER_NAME,etAddItem.text.toString()))
+        if(name==null || name.isBlank())
+            ToastUtil.show("不能为空")
         val transIntent = Intent()
-        transIntent.putExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME, name)
+        when (targetRequestCode) {
+            RequestCode.ActivitiesInfoFragment_itemName -> {
+                transIntent.putExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME, name)
+
+            }
+            RequestCode.ActivitiesInfoFragment_CategoryName -> {
+                transIntent.putExtra(SchedulesBundleKey.CATEGORY_NAME, name)
+            }
+        }
         targetFragment?.onActivityResult(
-                RequestCode.RequestCode_ActivitiesInfoFragment,
+                targetRequestCode,
                 ResultCode.ScheduleItemAddDialog, transIntent)
     }
 

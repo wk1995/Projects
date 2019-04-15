@@ -57,6 +57,9 @@ class ActivitiesInfoFragment : BaseFragment(),
     private var currentId: Long? = -1L
     private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
+    private val mScheduleItemAddDialog by lazy {
+        ScheduleItemAddDialog.create()
+    }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
     var i = 1
@@ -97,12 +100,10 @@ class ActivitiesInfoFragment : BaseFragment(),
                     LitePal.where("parentId=?", wkActivityId.toString())
                             .findAsync(WkActivity::class.java).listen {
                                 Timber.i("size: ${it.size}")
-                                if (it.size <= 0) {
-                                    wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1, wkActivityBean))
-                                }
                                 it.forEach {
                                     wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1, wkActivityBean))
                                 }
+                                wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1, wkActivityBean))
                                 adapter.expand(position)
                             }
 
@@ -119,47 +120,34 @@ class ActivitiesInfoFragment : BaseFragment(),
                 super.onItemClick(adapter, view, position)
                 if (adapter !is CategoryListAdapter) return
                 Timber.i("onItemClick position:  $position")
-                val wkActivityBean = adapter.getItem(position) as ActivitiesBean
-                val wkActivity = wkActivityBean.wkActivity
+                currentBean = adapter.getItem(position) as ActivitiesBean
+                val wkActivity = currentBean?.wkActivity
                 //说明是个额外的item
                 if (wkActivity == null) {
                     ToastUtil.show("增加")
-                    //上一层
-                    val parentBean = wkActivityBean.parentBean
-                    //说明不是根类别
-                    if (parentBean != null) {
-                        val parentPosition = adapter.data.indexOf(parentBean)
-                        Timber.i("parent name: ${parentBean.wkActivity?.itemName} ")
-                        val subSize = parentBean.subItems.size
-                        parentBean.addSubItem(subSize - 1,
-                                ActivitiesBean(
-                                        WkActivity("wk$i", System.currentTimeMillis(), parentBean.wkActivity?.baseObjId
-                                                ?: WkActivity.NO_PARENT),
-                                        parentBean.wkLevel + 1,
-                                        parentBean))
-                        i++
-                        if (parentBean.isExpanded) {
-                            adapter.collapse(parentPosition)
-                            adapter.expand(parentPosition)
-                        }
-                    } else {
-
-                    }
-
+                    mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CategoryName)
+                    mScheduleItemAddDialog.show(fragmentManager)
 
                 } else
                     ToastUtil.show("选中 ${wkActivity.itemName}")
 
             }
+
+            override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                //删除
+                super.onItemLongClick(adapter, view, position)
+
+            }
         })
     }
+
+    private var currentBean: ActivitiesBean? = null
 
     override fun onClick(v: View?) {
         when (v) {
         //修改项目名称
             tvModifyScheduleName -> {
-                val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
-                mScheduleItemAddDialog.setTargetFragment(this, RequestCode.RequestCode_ActivitiesInfoFragment)
+                mScheduleItemAddDialog.setTargetFragment(this, RequestCode.ActivitiesInfoFragment_itemName)
                 mScheduleItemAddDialog.show(fragmentManager)
             }
         //返回
@@ -267,10 +255,53 @@ class ActivitiesInfoFragment : BaseFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Timber.i("requestCode :  $requestCode  resultCode:  $resultCode ")
-        if (requestCode == RequestCode.RequestCode_ActivitiesInfoFragment &&
-                resultCode == ResultCode.ScheduleItemAddDialog) {
-            tvScheduleName.text = data?.getStringExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
-        }
+        if (resultCode == ResultCode.ScheduleItemAddDialog)
+            when (requestCode) {
+                RequestCode.ActivitiesInfoFragment_itemName ->
+                    tvScheduleName.text = data?.getStringExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
+                RequestCode.ActivitiesInfoFragment_CategoryName -> {
+                    val categoryName = data?.getStringExtra(SchedulesBundleKey.CATEGORY_NAME)
+                            ?: throw Exception("ActivitiesInfoFragment category name is null ")
+                    if (categoryName.isBlank()) {
+                        return
+                    }
+                    Timber.i("增加的类别名称： $categoryName")
+                    //上一层
+                    val parentBean = currentBean?.parentBean
+                    //说明不是根类别
+                    if (parentBean != null) {
+                        val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean.wkActivity?.baseObjId
+                                ?: WkActivity.NO_PARENT)
+                        newWkActivity.saveAsync().listen {
+                            if (!it) {
+                                ToastUtil.show("新建类别失败")
+                                return@listen
+                            }
+                            val parentPosition = mCategoryListAdapter.getParentPosition(currentBean!!)
+                   /*         Timber.i("parent position:  parentPosition")
+                            val parentPosition = mCategoryListAdapter.data.indexOf(parentBean)*/
+                            Timber.i("parent name: ${parentBean.wkActivity?.itemName} ")
+                            val subSize = parentBean.subItems.size
+                            parentBean.addSubItem(subSize - 1,
+                                    ActivitiesBean(
+                                            newWkActivity,
+                                            parentBean.wkLevel + 1,
+                                            parentBean))
+                            i++
+                            if (parentBean.isExpanded) {
+                                mCategoryListAdapter.collapse(parentPosition)
+                                mCategoryListAdapter.expand(parentPosition)
+                            }
+                        }
+
+                    } else {
+                        //这是根类别
+                    }
+
+
+                }
+            }
+
     }
 
 }

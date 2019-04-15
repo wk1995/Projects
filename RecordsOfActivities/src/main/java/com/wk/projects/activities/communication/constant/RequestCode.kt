@@ -12,6 +12,7 @@ package com.wk.projects.activities.communication.constant
  */
 object RequestCode {
 
-    const val RequestCode_SchedulesMainActivity=1
-    const val RequestCode_ActivitiesInfoFragment=2
+    const val SchedulesMainActivity=1
+    const val ActivitiesInfoFragment_itemName=2
+    const val ActivitiesInfoFragment_CategoryName=3
 }
