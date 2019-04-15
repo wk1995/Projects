@@ -8,7 +8,7 @@
         android:id="@+id/tvExpend"
         android:text="+"
         android:gravity="center"
-        android:textSize="@dimen/s24sp"
+        android:textSize="@dimen/s30sp"
         android:layout_width="@dimen/d60dp"
         android:layout_height="@dimen/d60dp" />
     <TextView

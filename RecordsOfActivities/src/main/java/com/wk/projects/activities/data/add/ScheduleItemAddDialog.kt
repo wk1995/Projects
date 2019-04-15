@@ -11,10 +11,8 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
-import com.wk.projects.activities.communication.constant.SchedulesBundleKey.SCHEDULE_ITEM_NAME
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.common.BaseSimpleDialog
-import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
@@ -60,6 +58,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun onClick(v: View?) {
         when (v) {
             btnComSimpleDialogOk -> {
+
                 transferName(etAddItem.text.toString())
             }
         }
@@ -86,6 +85,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
         })
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
+
         Observable.just("select distinct itemname from scheduleitem")
                 .map {
                     Timber.d("54 $it")

@@ -2,7 +2,6 @@ package com.wk.projects.activities.data.add.adapter
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem
 import com.wk.projects.activities.data.WkActivity
-import com.wk.projects.activities.data.WkActivity.Companion.NO_PARENT
 
 /**
  * <pre>
@@ -14,8 +13,9 @@ import com.wk.projects.activities.data.WkActivity.Companion.NO_PARENT
  *      desc   :
  * </pre>
  */
-class ActivitiesBean(val wkActivity: WkActivity,val wkLevel:Int) : AbstractExpandableItem<ActivitiesBean>() {
+class ActivitiesBean(val wkActivity: WkActivity?, val wkLevel: Int, val parentBean: ActivitiesBean? = null)
+    : AbstractExpandableItem<ActivitiesBean>() {
 
-     override fun getLevel() =wkLevel
+    override fun getLevel() = wkLevel
 
 }

@@ -14,8 +14,9 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
-import com.wk.projects.activities.data.`class`.CategoryAdapter
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
+import com.wk.projects.activities.data.add.adapter.ActivitiesBean
+import com.wk.projects.activities.data.add.adapter.CategoryListAdapter
 import com.wk.projects.common.BaseFragment
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.ADD_ITEM
 import com.wk.projects.common.constant.ARoutePath
@@ -54,9 +55,11 @@ class ActivitiesInfoFragment : BaseFragment(),
     //改变后的parentId
     private var newCategoryId: Long? = -1L
     private var currentId: Long? = -1L
-    private val mCategoryAdapter by lazy { CategoryAdapter() }
+    private val mCategoryListAdapter by lazy { CategoryListAdapter() }
+    private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
+    var i = 1
     override fun initView() {
         super.initView()
         if (itemId >= 0)
@@ -76,21 +79,76 @@ class ActivitiesInfoFragment : BaseFragment(),
                     }
 
             }
+        else
+            tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
         initClick()
         rvItemClass.layoutManager = LinearLayoutManager(_mActivity)
-        rvItemClass.adapter = mCategoryAdapter
-        findAllCategory()
+        rvItemClass.adapter = mCategoryListAdapter
+        findRootCategory()
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                if (adapter is CategoryAdapter) {
-                    val data = adapter.data
-                    when (view?.id) {
-                        R.id.tvCommon -> {
-                            tvItemClassName.text = data[position].itemName
-                            newCategoryId = data[position].baseObjId
-                        }
-                    }
+                //展开
+                Timber.i("onItemChildClick position:  $position")
+                val wkActivityBean = adapter?.getItem(position) as ActivitiesBean
+                val wkActivity = wkActivityBean.wkActivity ?: return
+                //如果没有下一层级的
+                if (!wkActivityBean.hasSubItem()) {
+                    val wkActivityId = wkActivity.baseObjId
+                    LitePal.where("parentId=?", wkActivityId.toString())
+                            .findAsync(WkActivity::class.java).listen {
+                                Timber.i("size: ${it.size}")
+                                if (it.size <= 0) {
+                                    wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1, wkActivityBean))
+                                }
+                                it.forEach {
+                                    wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1, wkActivityBean))
+                                }
+                                adapter.expand(position)
+                            }
+
+                } else {//如果有
+                    if (wkActivityBean.isExpanded)
+                        adapter.collapse(position)
+                    else
+                        adapter.expand(position)
                 }
+            }
+
+            //选择选中的类别
+            override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                super.onItemClick(adapter, view, position)
+                if (adapter !is CategoryListAdapter) return
+                Timber.i("onItemClick position:  $position")
+                val wkActivityBean = adapter.getItem(position) as ActivitiesBean
+                val wkActivity = wkActivityBean.wkActivity
+                //说明是个额外的item
+                if (wkActivity == null) {
+                    ToastUtil.show("增加")
+                    //上一层
+                    val parentBean = wkActivityBean.parentBean
+                    //说明不是根类别
+                    if (parentBean != null) {
+                        val parentPosition = adapter.data.indexOf(parentBean)
+                        Timber.i("parent name: ${parentBean.wkActivity?.itemName} ")
+                        val subSize = parentBean.subItems.size
+                        parentBean.addSubItem(subSize - 1,
+                                ActivitiesBean(
+                                        WkActivity("wk$i", System.currentTimeMillis(), parentBean.wkActivity?.baseObjId
+                                                ?: WkActivity.NO_PARENT),
+                                        parentBean.wkLevel + 1,
+                                        parentBean))
+                        i++
+                        if (parentBean.isExpanded) {
+                            adapter.collapse(parentPosition)
+                            adapter.expand(parentPosition)
+                        }
+                    } else {
+
+                    }
+
+
+                } else
+                    ToastUtil.show("选中 ${wkActivity.itemName}")
 
             }
         })
@@ -173,40 +231,7 @@ class ActivitiesInfoFragment : BaseFragment(),
             btStartTime -> {
                 tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
             }
-            btAddCategory -> {
-                //将要添加的类别
-                val addCategoryName = etAddCategory.text.toString().trim()
-                if (addCategoryName.isNotBlank())
-                //如果类别名不为空，先判断数据库中是否有相同名字的WkActivity
-                    LitePal.where("itemName=?", addCategoryName)
-                            .findAsync(WkActivity::class.java)
-                            .listen {
-                                if (it.size > 0) {
-                                    ToastUtil.show("$addCategoryName 已存在，添加失败", ToastUtil.LENGTH_SHORT)
-                                    newCategoryId = it[0].baseObjId
-                                    Timber.d("newCategoryId: $newCategoryId")
-                                    etAddCategory.setText(addCategoryName)
-                                } else {
-                                    //不存在的话，保存一新的WkActivity
-                                    val newWkActivity = WkActivity(addCategoryName)
-                                    newWkActivity.saveAsync().listen {
-                                        if (it) {
-                                            newCategoryId = newWkActivity.baseObjId
-                                            Timber.d("newCategoryId: $newCategoryId")
-                                            tvItemClassName.text = (addCategoryName)
-                                            mCategoryAdapter.data.add(newWkActivity)
-                                            mCategoryAdapter.notifyItemChanged(mCategoryAdapter.data.size - 1)
-                                        } else
-                                            ToastUtil.show(WkContextCompat.getString(R.string.common_str_save_failed), ToastUtil.LENGTH_SHORT)
-
-                                    }
-
-                                }
-                            }
-
-            }
         }
-
     }
 
     override fun onTimeSelect(date: Date?, v: View?) {
@@ -215,14 +240,18 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     //取出所有类型
-    private fun findAllCategory() {
-        LitePal.findAllAsync(WkActivity::class.java).listen {
-            Timber.d("现有的类别数： ${it.size}")
-            it.forEach {
-                Timber.d("现有的类别： ${it.itemName}")
-            }
-            mCategoryAdapter.setNewData(it)
-        }
+    private fun findRootCategory() {
+        //先取出最大的类别
+        LitePal.where("parentId=?", WkActivity.NO_PARENT.toString())
+                .findAsync(WkActivity::class.java).listen {
+                    it.forEach {
+                        cateGoryList.add(ActivitiesBean(it, 0))
+                    }
+                    /* mCategoryListAdapter.addFooterView(
+                             getFooterView(R.layout.activities_category_list_item, this, true)
+                     )*/
+                    mCategoryListAdapter.setNewData(cateGoryList)
+                }
     }
 
     //注册各种监听
@@ -231,10 +260,8 @@ class ActivitiesInfoFragment : BaseFragment(),
         tvScheduleEndTime.setOnClickListener(this)
         btOk.setOnClickListener(this)
         btEndTime.setOnClickListener(this)
-        btAddCategory.setOnClickListener(this)
         btStartTime.setOnClickListener(this)
         tvModifyScheduleName.setOnClickListener(this)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

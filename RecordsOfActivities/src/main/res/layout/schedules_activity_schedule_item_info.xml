@@ -130,24 +130,7 @@
         app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
         tools:text="书" />
 
-    <Button
-        android:id="@+id/btAddCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/common_str_add"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvItemClass" />
 
-    <EditText
-        android:id="@+id/etAddCategory"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="@string/schedules_add_category_hint"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="@id/btAddCategory"
-        app:layout_constraintLeft_toRightOf="@id/btAddCategory"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btAddCategory" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvItemClass"
@@ -155,5 +138,5 @@
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/btOk"
-        app:layout_constraintTop_toBottomOf="@id/etAddCategory" />
+        app:layout_constraintTop_toBottomOf="@id/tvItemClassName" />
 </android.support.constraint.ConstraintLayout>

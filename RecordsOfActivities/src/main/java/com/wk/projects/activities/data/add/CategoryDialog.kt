@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
 import com.wk.projects.activities.data.WkActivity
@@ -13,6 +14,7 @@ import com.wk.projects.activities.data.add.adapter.ActivitiesBean
 import com.wk.projects.activities.data.add.adapter.CategoryListAdapter
 import com.wk.projects.common.BaseDialogFragment
 import com.wk.projects.common.listener.BaseSimpleClickListener
+import com.wk.projects.common.ui.notification.ToastUtil
 import org.litepal.LitePal
 import timber.log.Timber
 
@@ -37,7 +39,7 @@ class CategoryDialog : BaseDialogFragment(), View.OnClickListener {
     }
 
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
-    private val mCategoryListAdapter by lazy { CategoryListAdapter(ArrayList()) }
+    private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     override fun initResLayId() = R.layout.common_only_recycler
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
@@ -51,13 +53,20 @@ class CategoryDialog : BaseDialogFragment(), View.OnClickListener {
                 Timber.i("onItemChildClick position:  $position")
                 val wkActivityBean = adapter?.getItem(position) as ActivitiesBean
                 val wkActivity = wkActivityBean.wkActivity
-                LitePal.where("parentId=?", wkActivity.baseObjId.toString())
-                        .findAsync(WkActivity::class.java).listen {
-                            it.forEach {
-                                wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1))
-                            }
+                if (wkActivity != null) {
+                    LitePal.where("parentId=?", wkActivity.baseObjId.toString())
+                            .findAsync(WkActivity::class.java).listen {
+                                if (it.size <= 0) {
+                                    wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1))
+                                }
+                                it.forEach {
+                                    wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1))
+                                }
 
-                        }
+                            }
+                } else {
+                    ToastUtil.show("增加")
+                }
             }
 
             override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -79,9 +88,9 @@ class CategoryDialog : BaseDialogFragment(), View.OnClickListener {
                         cateGoryList.add(ActivitiesBean(it, 0))
                     }
 
-                   /* mCategoryListAdapter.addFooterView(
-                            getFooterView(R.layout.activities_category_list_item, this, true)
-                    )*/
+                    /* mCategoryListAdapter.addFooterView(
+                             getFooterView(R.layout.activities_category_list_item, this, true)
+                     )*/
                     mCategoryListAdapter.setNewData(cateGoryList)
                 }
     }
