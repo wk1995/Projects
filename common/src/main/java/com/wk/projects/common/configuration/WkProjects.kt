@@ -1,6 +1,7 @@
 package com.wk.projects.common.configuration
 
 import android.content.Context
+import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.ConfigureKey.CONTEXT
 import com.wk.projects.common.configuration.WkProjects.UNUSED
 
@@ -16,17 +17,17 @@ import com.wk.projects.common.configuration.WkProjects.UNUSED
  */
 @Suppress(UNUSED)
 object WkProjects {
-    const val UNUSED="unused"
+    const val UNUSED = "unused"
     @JvmStatic
-    fun init(context: Context): WkConfiguration {
-        getInfo().put(CONTEXT, context.applicationContext)
+    fun init(application: BaseApplication): WkConfiguration {
+        getInfo().put(CONTEXT, application)
         return WkConfiguration.getInstance()
     }
 
     @JvmStatic
     private fun getInfo() = WkConfiguration.getInstance().info
 
-    fun getContext():Context=getInfo()[CONTEXT] as Context
+    fun getContext(): Context = getInfo()[CONTEXT] as Context
 
     @JvmStatic
     fun <T> getConfiguration(key: Int) =

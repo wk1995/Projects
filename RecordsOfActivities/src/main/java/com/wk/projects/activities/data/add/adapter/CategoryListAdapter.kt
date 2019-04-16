@@ -1,5 +1,6 @@
 package com.wk.projects.activities.data.add.adapter
 
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -21,20 +22,19 @@ class CategoryListAdapter
 
     override fun convert(helper: BaseViewHolder?, item: ActivitiesBean?) {
         item?.run {
-            val tvExpend = helper?.getView<TextView>(R.id.tvExpend) ?: return
-            val layoutParams = tvExpend.layoutParams as LinearLayout.LayoutParams
-            layoutParams.setMargins(wkLevel * 60, 0, 0, 0)
-            tvExpend.layoutParams=layoutParams
+            val rootView = helper?.itemView as? LinearLayout ?: return
+            rootView.setPadding(wkLevel * 60, 0, 0, 0)
+            val tvExpend = helper.getView<TextView>(R.id.tvExpend) ?: return
             if (wkActivity == null) {
                 //说明是增加的
                 helper.setText(R.id.tvItemName, "增加")
-                        ?.setVisible(R.id.tvExpend, false)
+                tvExpend.visibility = View.GONE
 
-            } else
+            } else {
                 helper.setText(R.id.tvItemName, wkActivity.itemName)
-                        ?.setVisible(R.id.tvExpend, true)
                         ?.addOnClickListener(R.id.tvExpend)
-
+                tvExpend.visibility = View.VISIBLE
+            }
             tvExpend.text = if (isExpanded) "-" else "+"
 
         }

@@ -120,7 +120,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 super.onItemClick(adapter, view, position)
                 if (adapter !is CategoryListAdapter) return
                 Timber.i("onItemClick position:  $position")
-                currentBean = adapter.getItem(position) as ActivitiesBean
+                currentBean = adapter.getItem(position)
                 val wkActivity = currentBean?.wkActivity
                 //说明是个额外的item
                 if (wkActivity == null) {
@@ -136,10 +136,23 @@ class ActivitiesInfoFragment : BaseFragment(),
             override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 //删除
                 super.onItemLongClick(adapter, view, position)
-
+                if (adapter !is CategoryListAdapter) return
+                val deleteItem = adapter.getItem(position) ?: return
+                deleteBean(deleteItem)
+                adapter.collapse(position)
             }
         })
     }
+
+    private fun deleteBean(activitiesBean: ActivitiesBean) {
+        activitiesBean.subItems?.forEach {
+            deleteBean(it)
+        }
+        mCategoryListAdapter.data.remove(activitiesBean)
+        //这里有必要,每次删除都会改变position
+        mCategoryListAdapter.notifyDataSetChanged()
+    }
+
 
     private var currentBean: ActivitiesBean? = null
 
@@ -278,8 +291,8 @@ class ActivitiesInfoFragment : BaseFragment(),
                                 return@listen
                             }
                             val parentPosition = mCategoryListAdapter.getParentPosition(currentBean!!)
-                   /*         Timber.i("parent position:  parentPosition")
-                            val parentPosition = mCategoryListAdapter.data.indexOf(parentBean)*/
+                            /*         Timber.i("parent position:  parentPosition")
+                                     val parentPosition = mCategoryListAdapter.data.indexOf(parentBean)*/
                             Timber.i("parent name: ${parentBean.wkActivity?.itemName} ")
                             val subSize = parentBean.subItems.size
                             parentBean.addSubItem(subSize - 1,
