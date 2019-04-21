@@ -85,10 +85,12 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
         })
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
-
-        Observable.just("select distinct itemname from scheduleitem")
+        val table = when (targetRequestCode) {
+            RequestCode.ActivitiesInfoFragment_CategoryName -> "wkactivity"
+            else -> "scheduleitem"
+        }
+        Observable.just("select distinct itemname from $table")
                 .map {
-                    Timber.d("54 $it")
                     LitePal.findBySQL(it)
                 }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,7 +111,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     private fun transferName(name: String?) {
 //        rxBus.post(ActivitiesMsg(TRANSFER_NAME,etAddItem.text.toString()))
-        if(name==null || name.isBlank())
+        if (name == null || name.isBlank())
             ToastUtil.show("不能为空")
         val transIntent = Intent()
         when (targetRequestCode) {

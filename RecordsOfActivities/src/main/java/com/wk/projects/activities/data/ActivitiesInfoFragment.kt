@@ -27,6 +27,10 @@ import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 
@@ -57,9 +61,6 @@ class ActivitiesInfoFragment : BaseFragment(),
     private var currentId: Long? = -1L
     private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
-    private val mScheduleItemAddDialog by lazy {
-        ScheduleItemAddDialog.create()
-    }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
     var i = 1
@@ -125,6 +126,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 //说明是个额外的item
                 if (wkActivity == null) {
                     ToastUtil.show("增加")
+                    val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                     mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CategoryName)
                     mScheduleItemAddDialog.show(fragmentManager)
 
@@ -138,19 +140,42 @@ class ActivitiesInfoFragment : BaseFragment(),
                 super.onItemLongClick(adapter, view, position)
                 if (adapter !is CategoryListAdapter) return
                 val deleteItem = adapter.getItem(position) ?: return
-                deleteBean(deleteItem)
-                adapter.collapse(position)
+                val deleteActivities = deleteItem.wkActivity ?: return
+                Observable.just(deleteActivities)
+                        .map {
+                            deleteActivities(it)
+                        }.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Subscriber<Unit>() {
+                            override fun onNext(t: Unit?) {
+
+                            }
+
+                            override fun onCompleted() {
+                                mCategoryListAdapter.data.remove(deleteItem)
+                                mCategoryListAdapter.notifyDataSetChanged()
+                            }
+
+                            override fun onError(e: Throwable?) {
+                                Timber.i("删除失败： ${e?.message}")
+                            }
+                        })
             }
         })
     }
 
-    private fun deleteBean(activitiesBean: ActivitiesBean) {
-        activitiesBean.subItems?.forEach {
-            deleteBean(it)
-        }
-        mCategoryListAdapter.data.remove(activitiesBean)
-        //这里有必要,每次删除都会改变position
-        mCategoryListAdapter.notifyDataSetChanged()
+    //从数据库中移除wkActivity及其子类
+    private fun deleteActivities(wkActivity: WkActivity) {
+        val activityId = wkActivity.baseObjId
+        //找到其子类
+        val subList = LitePal.where("parentId=?", activityId.toString())
+                .find(WkActivity::class.java)
+        if (subList.isNotEmpty())
+            subList.forEach {
+                deleteActivities(it)
+            }
+        LitePal.delete(WkActivity::class.java, activityId)
+
     }
 
 
@@ -160,6 +185,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         when (v) {
         //修改项目名称
             tvModifyScheduleName -> {
+                val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this, RequestCode.ActivitiesInfoFragment_itemName)
                 mScheduleItemAddDialog.show(fragmentManager)
             }
