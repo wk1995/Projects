@@ -77,14 +77,27 @@ class ActivitiesInfoFragment : BaseFragment(),
                 tvScheduleStartTime.text = DateTime.getDateString(it.startTime)
                 tvScheduleEndTime.text = DateTime.getDateString(it.endTime)
                 etScheduleNote.setText(it.note)
-                if (currentId != null)
-                    LitePal.findAsync(WkActivity::class.java, currentId!!).listen {
-                        tvItemClassName.text = it?.itemName ?: ""
+                if (currentId == null || currentId == -1L) return@listen
+                LitePal.findAsync(WkActivity::class.java, currentId
+                        ?: -1).listen { parentWkaActivity ->
+                    //说明该WkActivity已经无效，比如被删除了
+                    if (parentWkaActivity == null) {
+                        val mContentValues = ContentValues()
+                        mContentValues.put(ScheduleItem.SCHEDULE_PARENT_ID,
+                                -1)
+                        LitePal.updateAsync(ScheduleItem::class.java,
+                                mContentValues, itemId).listen { num ->
+                            Timber.i("num : $num")
+                        }
                     }
+                    tvItemClassName.text = parentWkaActivity?.itemName ?: ""
+                }
 
             }
-        else
+        else {
             tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
+            tvScheduleEndTime.text = DateTime.getDateString(0)
+        }
         initClick()
         rvItemClass.layoutManager = LinearLayoutManager(_mActivity)
         rvItemClass.adapter = mCategoryListAdapter
@@ -130,8 +143,10 @@ class ActivitiesInfoFragment : BaseFragment(),
                     mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CategoryName)
                     mScheduleItemAddDialog.show(fragmentManager)
 
-                } else
-                    ToastUtil.show("选中 ${wkActivity.itemName}")
+                } else {
+                    tvItemClassName.text = wkActivity.itemName
+                    newCategoryId = wkActivity.baseObjId
+                }
 
             }
 
@@ -199,7 +214,12 @@ class ActivitiesInfoFragment : BaseFragment(),
                 val startTime = DateTime.getDateLong(tvScheduleStartTime.text.toString())
                 val endTime = DateTime.getDateLong(tvScheduleEndTime.text.toString())
                 val note = etScheduleNote.text.toString()
-
+                val mScheduleItemName = tvScheduleName.text.toString()
+                if (mScheduleItemName.isBlank()) {
+                    ToastUtil.show("活动名称为空")
+                    return
+                }
+                //修改信息
                 if (itemId >= 0) {
                     val mContentValues = ContentValues()
                     mContentValues.put(ScheduleItem.SCHEDULE_START_TIME,
@@ -220,17 +240,13 @@ class ActivitiesInfoFragment : BaseFragment(),
                             arguments = Bundle()
                         arguments?.putLong(SchedulesBundleKey.SCHEDULE_START_TIME, startTime)
                         arguments?.putLong(SchedulesBundleKey.SCHEDULE_END_TIME, endTime)
+                        arguments?.putString(SchedulesBundleKey.SCHEDULE_ITEM_NAME, mScheduleItemName)
                         arguments?.putString(SchedulesBundleKey.SCHEDULE_OPERATION, OPERATION_MODIFY)
                         setFragmentResult(ResultCode.ResultCode_ScheduleItemInfoActivity, arguments)
                         pop()
                     }
                 } else {
                     //增加项目
-                    val mScheduleItemName = tvScheduleName.text.toString()
-                    if (mScheduleItemName.isBlank()) {
-                        ToastUtil.show("活动名称为空")
-                        return
-                    }
                     val mScheduleItem = ScheduleItem(mScheduleItemName,
                             startTime, endTime,
                             etScheduleNote.text.toString(), newCategoryId)

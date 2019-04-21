@@ -206,16 +206,19 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                 resultCode == ResultCode.ResultCode_ScheduleItemInfoActivity) {
             val operationType = data?.getString(SCHEDULE_OPERATION)
             when (operationType) {
-            //填入信息 or 修改
+            // 修改
                 OPERATION_MODIFY -> {
                     val position = data.getInt(BundleKey.LIST_POSITION, -1)
                     if (position < 0)
                         return
                     val endTime = data.getLong(SchedulesBundleKey.SCHEDULE_END_TIME, 0)
                     val startTime = data.getLong(SchedulesBundleKey.SCHEDULE_START_TIME, 0)
+                    val mScheduleItemName = data.getString(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
+                            ?: throw Exception("没有活动名")
                     val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
                     scheduleItem.endTime = endTime
                     scheduleItem.startTime = startTime
+                    scheduleItem.itemName = mScheduleItemName
                     scheduleMainAdapter.notifyItemChanged(position)
                 }
             }
