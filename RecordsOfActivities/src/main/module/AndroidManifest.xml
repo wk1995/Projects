@@ -27,11 +27,11 @@
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />-->
         <activity android:name=".collapse.SchedulesWatchActivity" />
         <activity
+            android:exported="false"
             android:name=".collapse.SchedulesCollapseActivity"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="com.wk.projects.collapse" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

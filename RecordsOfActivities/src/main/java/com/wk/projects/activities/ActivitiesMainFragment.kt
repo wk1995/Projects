@@ -16,6 +16,7 @@ import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey.SCHEDULE_OPERATION
 import com.wk.projects.activities.data.ActivitiesInfoFragment.Companion.OPERATION_MODIFY
 import com.wk.projects.activities.data.ScheduleItem
+import com.wk.projects.activities.data.add.ScheduleItemAddDialog
 import com.wk.projects.activities.ui.recycler.SchedulesMainAdapter
 import com.wk.projects.activities.update.DeleteScheduleItemDialog
 import com.wk.projects.common.BaseFragment
@@ -68,25 +69,17 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
 
     override fun call(t: Any?) {
         if (t is ActivitiesMsg) {
-            val data = (t.any) as? Bundle
+
             when (t.flag) {
             //增加新项目
                 EventMsg.ADD_ITEM -> {
                     scheduleMainAdapter.data.add((t.any) as ScheduleItem)
                     rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount - 1 - scheduleMainAdapter.footerLayoutCount)
                 }
-            //增加新项目
-                EventMsg.SCHEDULE_ITEM_DIALOG -> {
-                    val itemName = data?.getString(SchedulesBundleKey.SCHEDULE_ITEM_NAME) ?: return
-                    val id = data.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
-                    val item = ScheduleItem(itemName)
-                    item.assignBaseObjId(id.toInt())
-                    scheduleMainAdapter.data.add(item)
-                    rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount - 1 - scheduleMainAdapter.footerLayoutCount)
-                }
 
             //删除项目
                 EventMsg.DELETE_ITEM_DIALOG -> {
+                    val data = (t.any) as? Bundle
                     val id = data?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
                             ?: throw Exception("id 有问题")
                     val position = data.getInt(BundleKey.LIST_POSITION, -1)
@@ -126,7 +119,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                                 .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
                                 .withInt(BundleKey.LIST_POSITION, position)
                                 .navigation() as ISupportFragment,
-                                RequestCode.SchedulesMainActivity)
+                                RequestCode.ActivitiesMainFragment_QUERY_INFO)
                     }
                 }
             }
@@ -191,10 +184,15 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
             tvDaySelected ->
                 TimePickerCreator.create(_mActivity, this)
         //增加数据库中没有的项目
-            fabAddScheduleItem -> start(
+            fabAddScheduleItem -> {
+                val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
+                mScheduleItemAddDialog.setTargetFragment(this@ActivitiesMainFragment, RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES)
+                mScheduleItemAddDialog.show(fragmentManager)
+                /*  start(
                     ARouter.getInstance()
                             .build(ARoutePath.ActivitiesInfoFragment)
-                            .navigation() as ISupportFragment)
+                            .navigation() as ISupportFragment)*/
+            }
         }
     }
 
@@ -202,7 +200,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
     override fun onFragmentResult(requestCode: Int, resultCode: Int, data: Bundle?) {
         super.onFragmentResult(requestCode, resultCode, data)
         Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
-        if (requestCode == RequestCode.SchedulesMainActivity &&
+        if (requestCode == RequestCode.ActivitiesMainFragment_QUERY_INFO &&
                 resultCode == ResultCode.ResultCode_ScheduleItemInfoActivity) {
             val operationType = data?.getString(SCHEDULE_OPERATION)
             when (operationType) {
@@ -224,5 +222,6 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
             }
 
         }
+
     }
 }

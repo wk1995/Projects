@@ -14,13 +14,10 @@ import com.wk.projects.activities.permission.RefuseDialog
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.QUERY_ALL_DATA
 import com.wk.projects.common.constant.ARoutePath
-import com.wk.projects.common.constant.CommonFilePath
-import com.wk.projects.common.ui.notification.ToastUtil
 import kotlinx.android.synthetic.main.schedules_activity_main.*
 import me.yokeyword.fragmentation.ISupportFragment
 import permissions.dispatcher.*
 import timber.log.Timber
-import java.io.File
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
@@ -50,14 +47,8 @@ class SchedulesMainActivity : BaseProjectsActivity(),
             R.id.menuItemIdea -> {
                 ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()
             }
-            R.id.menuDeleteDB -> {
-                val path = "wk/projects/database/schedules"
-                val path1 = CommonFilePath.ES_PATH + path
-                val file = File(path1)
-                Timber.i("$file 存在 ？ ${file.exists()}")
-                val result = file.parentFile
-                        .delete()
-                ToastUtil.show(if (result) "删除成功" else "删除失败")
+            R.id.menuNotification -> {
+
             }
         }
         return true

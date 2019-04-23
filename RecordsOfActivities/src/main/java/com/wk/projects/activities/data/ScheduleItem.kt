@@ -37,6 +37,8 @@ data class ScheduleItem(@Column(nullable = false) var itemName: String,
         const val  SCHEDULE_ITEM_NOTE="note"
         const val  SCHEDULE_PARENT_ID="parentId"
         const val  SCHEDULE_EXTRA_MSG="extraMsg"
+
+        const val SCHEDULE_NO_PARENT_ID=-1L
     }
     public override  fun getBaseObjId(): Long {
         return super.getBaseObjId()

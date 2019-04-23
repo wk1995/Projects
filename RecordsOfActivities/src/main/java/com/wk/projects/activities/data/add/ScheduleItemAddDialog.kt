@@ -110,7 +110,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
     private fun transferName(name: String?) {
-//        rxBus.post(ActivitiesMsg(TRANSFER_NAME,etAddItem.text.toString()))
         if (name == null || name.isBlank())
             ToastUtil.show("不能为空")
         val transIntent = Intent()
@@ -121,6 +120,10 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
             RequestCode.ActivitiesInfoFragment_CategoryName -> {
                 transIntent.putExtra(SchedulesBundleKey.CATEGORY_NAME, name)
+            }
+            RequestCode.ActivitiesMainFragment_QUERY_INFO -> {
+                saveItem(name)
+                return
             }
         }
         targetFragment?.onActivityResult(
@@ -140,12 +143,9 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             when (it) {
                 true -> {
                     //传到主页面
-                    val bundle = Bundle()
                     msg = WkContextCompat.getString(R.string.common_str_save_successful)
                     Timber.d("80 id is ${scheduleItem.baseObjId}")
-                    bundle.putString(SchedulesBundleKey.SCHEDULE_ITEM_NAME, itemName)
-                    bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
-                    rxBus.post(ActivitiesMsg(EventMsg.SCHEDULE_ITEM_DIALOG, bundle))
+                    rxBus.post(ActivitiesMsg(EventMsg.ADD_ITEM, scheduleItem))
                 }
                 else ->
                     msg = "未知原因,保存失败"

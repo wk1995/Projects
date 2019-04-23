@@ -24,7 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".collapse.ConsumptionCollapseActivity"
+        <activity
+            android:exported="false"
+            android:name=".collapse.ConsumptionCollapseActivity"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="com.wk.projects.collapse" />

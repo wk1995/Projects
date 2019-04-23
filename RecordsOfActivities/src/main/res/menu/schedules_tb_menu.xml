@@ -18,8 +18,8 @@
         android:orderInCategory="1"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/menuDeleteDB"
-        android:title="删除数据库"
+        android:id="@+id/menuNotification"
+        android:title="创建通知栏"
         android:orderInCategory="1"
         app:showAsAction="never"/>
 </menu>
