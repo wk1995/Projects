@@ -69,7 +69,6 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
 
     override fun call(t: Any?) {
         if (t is ActivitiesMsg) {
-
             when (t.flag) {
             //增加新项目
                 EventMsg.ADD_ITEM -> {
@@ -166,7 +165,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         Timber.d("69 toDayStart ${DateTime.getDateString(toDayStart.toLong())} toDayEnd ${DateTime.getDateString(toDayEnd.toLong())}")
 
         //开始的时间是当天,对结束的时间没有限制
-        LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
+        LitePal.where("(startTime>? and startTime<?) or (startTime>=endTime)", toDayStart, toDayEnd)
                 .order("startTime")
                 .findAsync(ScheduleItem::class.java)
                 .listen {
