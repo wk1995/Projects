@@ -181,8 +181,10 @@ class ActivitiesInfoFragment : BaseFragment(),
                                         }
 
                                         override fun onCompleted() {
-                                            mCategoryListAdapter.data.remove(targetItem)
-                                            mCategoryListAdapter.notifyDataSetChanged()
+                                            val parentPosition = adapter.getParentPosition(targetItem
+                                                    ?: return)
+                                            adapter.collapse(parentPosition)
+                                            targetItem?.parentBean?.removeSubItem(targetItem)
                                         }
 
                                         override fun onError(e: Throwable?) {
