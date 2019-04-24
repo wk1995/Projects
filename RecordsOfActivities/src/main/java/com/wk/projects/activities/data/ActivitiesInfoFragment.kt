@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.view.View
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -14,10 +15,12 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
+import com.wk.projects.activities.data.add.CategoryDialog
 import com.wk.projects.activities.data.add.ScheduleItemAddDialog
 import com.wk.projects.activities.data.add.adapter.ActivitiesBean
 import com.wk.projects.activities.data.add.adapter.CategoryListAdapter
 import com.wk.projects.common.BaseFragment
+import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.ADD_ITEM
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
@@ -80,7 +83,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 etScheduleNote.setText(it.note)
                 if (currentId == null || currentId == ScheduleItem.SCHEDULE_NO_PARENT_ID) return@listen
                 LitePal.findAsync(WkActivity::class.java, currentId
-                        ?:WkActivity.NO_PARENT).listen { parentWkaActivity ->
+                        ?: WkActivity.NO_PARENT).listen { parentWkaActivity ->
                     //说明该WkActivity已经无效，比如被删除了
                     if (parentWkaActivity == null) {
                         val mContentValues = ContentValues()
@@ -152,33 +155,66 @@ class ActivitiesInfoFragment : BaseFragment(),
             }
 
             override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                //删除
+
                 super.onItemLongClick(adapter, view, position)
                 if (adapter !is CategoryListAdapter) return
-                val deleteItem = adapter.getItem(position) ?: return
-                val deleteActivities = deleteItem.wkActivity ?: return
-                Observable.just(deleteActivities)
-                        .map {
-                            deleteActivities(it)
-                        }.subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Subscriber<Unit>() {
-                            override fun onNext(t: Unit?) {
+                targetItem = adapter.getItem(position)
+                        ?: return
+                val targetActivity = targetItem?.wkActivity
+                        ?: return
+                val popupMenu = PopupMenu(_mActivity, view ?: return)
+                //加载菜单文件
+                popupMenu.menuInflater.inflate(R.menu.activities_category_delete_and_move, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.menuCategoryDelete -> {
+                            //删除
 
-                            }
+                            Observable.just(targetActivity)
+                                    .map {
+                                        deleteActivities(it)
+                                    }.subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(object : Subscriber<Unit>() {
+                                        override fun onNext(t: Unit?) {
 
-                            override fun onCompleted() {
-                                mCategoryListAdapter.data.remove(deleteItem)
-                                mCategoryListAdapter.notifyDataSetChanged()
-                            }
+                                        }
 
-                            override fun onError(e: Throwable?) {
-                                Timber.i("删除失败： ${e?.message}")
-                            }
-                        })
+                                        override fun onCompleted() {
+                                            mCategoryListAdapter.data.remove(targetItem)
+                                            mCategoryListAdapter.notifyDataSetChanged()
+                                        }
+
+                                        override fun onError(e: Throwable?) {
+                                            Timber.i("删除失败： ${e?.message}")
+                                        }
+                                    })
+                        }
+                    //更换父类别
+                        R.id.menuCategoryMove -> {
+                            //需要变更父类的WkActivity
+                            val parentPosition = adapter.getParentPosition(targetItem
+                                    ?: return@setOnMenuItemClickListener true)
+                            adapter.collapse(parentPosition)
+                            val needMoveId = targetActivity.baseObjId
+                            Timber.i("targetActivityId: $needMoveId")
+                            val bundle = Bundle()
+                            bundle.putLong(WkActivity.ACTIVITY_ID, needMoveId)
+                            val mCategoryDialog = CategoryDialog.create(bundle)
+                            mCategoryDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID)
+                            mCategoryDialog.show(fragmentManager)
+                        }
+                    }
+                    true
+                }
+                popupMenu.show()
+
             }
         })
     }
+
+    //需要更换父类的WkActivity
+    private var targetItem: ActivitiesBean? = null
 
     //从数据库中移除wkActivity及其子类
     private fun deleteActivities(wkActivity: WkActivity) {
@@ -318,7 +354,6 @@ class ActivitiesInfoFragment : BaseFragment(),
                     val scheduleItemName = data?.getStringExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
                             ?: ""
                     tvScheduleName.text = scheduleItemName
-
                 }
                 RequestCode.ActivitiesInfoFragment_CategoryName -> {
                     val categoryName = data?.getStringExtra(SchedulesBundleKey.CATEGORY_NAME)
@@ -329,40 +364,59 @@ class ActivitiesInfoFragment : BaseFragment(),
                     Timber.i("增加的类别名称： $categoryName")
                     //上一层
                     val parentBean = currentBean?.parentBean
-                    //说明不是根类别
-                    if (parentBean != null) {
-                        val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean.wkActivity?.baseObjId
-                                ?: WkActivity.NO_PARENT)
-                        newWkActivity.saveAsync().listen {
-                            if (!it) {
-                                ToastUtil.show("新建类别失败")
-                                return@listen
-                            }
+                    val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean?.wkActivity?.baseObjId
+                            ?: WkActivity.NO_PARENT)
+                    newWkActivity.saveAsync().listen {
+                        if (!it) {
+                            ToastUtil.show("新建类别失败")
+                            return@listen
+                        }
+                        parentBean?.run {
                             val parentPosition = mCategoryListAdapter.getParentPosition(currentBean!!)
-                            /*         Timber.i("parent position:  parentPosition")
-                                     val parentPosition = mCategoryListAdapter.data.indexOf(parentBean)*/
-                            Timber.i("parent name: ${parentBean.wkActivity?.itemName} ")
-                            val subSize = parentBean.subItems.size
-                            parentBean.addSubItem(subSize - 1,
+                            Timber.i("parent name: ${wkActivity?.itemName} ")
+                            val subSize = subItems.size
+                            addSubItem(subSize - 1,
                                     ActivitiesBean(
                                             newWkActivity,
                                             parentBean.wkLevel + 1,
                                             parentBean))
                             i++
-                            if (parentBean.isExpanded) {
+                            if (isExpanded) {
                                 mCategoryListAdapter.collapse(parentPosition)
                                 mCategoryListAdapter.expand(parentPosition)
                             }
                         }
 
-                    } else {
-                        //这是根类别
                     }
 
 
                 }
             }
 
+        if (requestCode == RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID
+                && resultCode == ResultCode.CategoryDialog) {
+            val moveId = data?.getLongExtra(SchedulesBundleKey.ACTIVITY_PARENT_ID, -1) ?: -1
+            val newParentPosition = data?.getIntExtra(BundleKey.LIST_POSITION, -1) ?: -1
+            Timber.i("moveId: $moveId  newParentPosition:  $newParentPosition")
+            if (moveId >= 0 && newParentPosition >= 0) {
+                mCategoryListAdapter.collapse(newParentPosition)
+                val newParent = mCategoryListAdapter.getItem(newParentPosition)
+                val mContentValues = ContentValues()
+                mContentValues.put(WkActivity.ACTIVITY_PARENT_ID,
+                        moveId)
+                targetItem?.run {
+                    LitePal.updateAsync(WkActivity::class.java, mContentValues, wkActivity?.baseObjId
+                            ?: -1).listen {
+                        Timber.i("it $it")
+                        if (it > 0) {
+                            Timber.i("移动成功")
+                            newParent?.subItems?.clear()
+                            parentBean?.subItems?.clear()
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

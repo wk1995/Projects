@@ -21,4 +21,5 @@ object SchedulesBundleKey {
     const val SCHEDULE_PARENT_ID = "parentId"
     const val SCHEDULE_EXTRA_MSG = "extraMsg"
     const val CATEGORY_NAME = "CATEGORY_NAME"
+    const val ACTIVITY_PARENT_ID = "ACTIVITY_PARENT_ID"
 }

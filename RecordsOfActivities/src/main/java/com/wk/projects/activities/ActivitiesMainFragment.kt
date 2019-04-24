@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback
 import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
@@ -24,6 +26,8 @@ import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
+import com.wk.projects.common.listener.BaseOnItemDragListener
+import com.wk.projects.common.listener.BaseOnItemSwipeListener
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
@@ -33,6 +37,7 @@ import me.yokeyword.fragmentation.ISupportFragment
 import org.litepal.LitePal
 import timber.log.Timber
 import java.util.*
+
 
 /**
  * <pre>
@@ -50,16 +55,20 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
+    private val onItemDragListener = object : BaseOnItemDragListener() {
+    }
+    private val onItemSwipeListener = object : BaseOnItemSwipeListener() {}
+
     private val linearLayoutManager by lazy { LinearLayoutManager(_mActivity) }
 
     override fun initResLay() = R.layout.activities_fragment_main
+
 
     override fun initView() {
         super.initView()
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         initClickListener()
         initRecyclerView()
-
     }
 
     private fun initClickListener() {
@@ -95,7 +104,8 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
 
                 EventMsg.QUERY_ALL_DATA ->
                     start(ARouter.getInstance()
-                            .build(ARoutePath.AllDataInfoFragment).navigation() as ISupportFragment)
+                            .build(ARoutePath.AllDataInfoFragment)
+                            .navigation() as ISupportFragment)
             }
         }
     }
@@ -131,9 +141,6 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                 popupMenu.setOnMenuItemClickListener {
                     val id = it.itemId
                     when (id) {
-                        R.id.menuItemRename -> {
-                            ToastUtil.show("重命名")
-                        }
                         R.id.menuItemDelete -> {
                             val item = adapter?.getItem(position) as? ScheduleItem?
                             if (item != null) {
@@ -156,6 +163,21 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         rvSchedules.addItemDecoration(
                 DividerItemDecoration(_mActivity, DividerItemDecoration.VERTICAL))
         initData()
+    }
+
+    // 开启拖拽.滑动删除
+    private fun openDragAndSwipe() {
+        val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(scheduleMainAdapter)
+        val itemTouchHelper = ItemTouchHelper(itemDragAndSwipeCallback)
+        itemTouchHelper.attachToRecyclerView(rvSchedules)
+
+        // 开启拖拽
+        scheduleMainAdapter.enableDragItem(itemTouchHelper, R.id.clScheduleItem, true)
+        scheduleMainAdapter.setOnItemDragListener(onItemDragListener)
+
+        // 开启滑动删除
+        scheduleMainAdapter.enableSwipeItem()
+        scheduleMainAdapter.setOnItemSwipeListener(onItemSwipeListener)
     }
 
     private fun initData() {

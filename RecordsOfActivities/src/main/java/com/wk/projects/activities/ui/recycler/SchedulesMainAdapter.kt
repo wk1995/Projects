@@ -25,7 +25,7 @@ class SchedulesMainAdapter(itemList: ArrayList<ScheduleItem>)
 
     override fun convert(helper: BaseViewHolder?, item: ScheduleItem?) {
         item?.run {
-            val finish = endTime ?: 0 > startTime ?: 0
+            val finish = endTime > startTime
             helper?.setText(R.id.tvScheduleItemName, itemName)
                     ?.setTextColor(R.id.tvScheduleItemName,
                             if (finish)//表示现在正在进行,还未结束
@@ -34,7 +34,7 @@ class SchedulesMainAdapter(itemList: ArrayList<ScheduleItem>)
                     )
                     ?.setText(R.id.tvScheduleItemTime,
                             if (finish)
-                                getTime((item.endTime ?: 0)-(item.startTime ?: 0))
+                                getTime((item.endTime) - (item.startTime))
                             else ""
                     )
                     ?.addOnClickListener(R.id.clScheduleItem)
@@ -43,12 +43,7 @@ class SchedulesMainAdapter(itemList: ArrayList<ScheduleItem>)
         }
     }
 
-    fun addItem(mScheduleItem: ScheduleItem) {
-        data.add(mScheduleItem)
-        notifyItemChanged(itemCount - 1)
-    }
-
     override fun getItemCount(): Int {
-        return data.size+footerLayoutCount+headerLayoutCount
+        return data.size + footerLayoutCount + headerLayoutCount
     }
 }

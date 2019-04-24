@@ -29,6 +29,11 @@ data class WkActivity(@Column(nullable = false) var itemName: String,
 
     companion object {
         const val NO_PARENT = -1L
+        const val ACTIVITY_ITEM_NAME="itemName"
+        const val ACTIVITY_CREATE_TIME="createTime"
+        const val ACTIVITY_PARENT_ID="parentId"
+        const val ACTIVITY_IS_SYSTEM="isSystem"
+        const val ACTIVITY_ID="activityId"
     }
 
     public override fun getBaseObjId(): Long {

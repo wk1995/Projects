@@ -15,5 +15,8 @@ object RequestCode {
     const val ActivitiesMainFragment_QUERY_INFO=1
     const val ActivitiesInfoFragment_itemName=2
     const val ActivitiesInfoFragment_CategoryName=3
+
+    //改变WkActivity的parentId
+    const val ActivitiesInfoFragment_CHANGE_PARENTID=5
     const val ActivitiesMainFragment_ADD_ACTIVITIES=4
 }

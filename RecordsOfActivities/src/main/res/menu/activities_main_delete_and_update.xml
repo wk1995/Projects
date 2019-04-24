@@ -2,9 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/common_str_rename"
-        android:id="@+id/menuItemRename"/>
-    <item
         android:title="@string/common_str_delete"
         android:id="@+id/menuItemDelete"/>
 

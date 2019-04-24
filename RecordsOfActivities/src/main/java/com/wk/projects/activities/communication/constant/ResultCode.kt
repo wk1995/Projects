@@ -14,4 +14,5 @@ object ResultCode {
 
     const val ResultCode_ScheduleItemInfoActivity=1
     const val ScheduleItemAddDialog=2
+    const val CategoryDialog=3
 }

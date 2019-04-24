@@ -58,7 +58,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun onClick(v: View?) {
         when (v) {
             btnComSimpleDialogOk -> {
-
                 transferName(etAddItem.text.toString())
             }
         }
@@ -121,7 +120,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             RequestCode.ActivitiesInfoFragment_CategoryName -> {
                 transIntent.putExtra(SchedulesBundleKey.CATEGORY_NAME, name)
             }
-            RequestCode.ActivitiesMainFragment_QUERY_INFO -> {
+            RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES -> {
                 saveItem(name)
                 return
             }
