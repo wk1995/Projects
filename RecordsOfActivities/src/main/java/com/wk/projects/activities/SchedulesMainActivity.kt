@@ -40,7 +40,7 @@ class SchedulesMainActivity : BaseProjectsActivity(),
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         Timber.i("p0?.itemId:: ${p0?.itemId}")
         when (p0?.itemId) {
-            R.id.menuItemAllData ->rxBus.post(ActivitiesMsg(QUERY_ALL_DATA))
+            R.id.menuItemAllData -> rxBus.post(ActivitiesMsg(QUERY_ALL_DATA))
 
             R.id.menuItemSearch -> {
             }
@@ -60,7 +60,8 @@ class SchedulesMainActivity : BaseProjectsActivity(),
         SchedulesMainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun getStorage() {
         startService(Intent(this, AppInitIntentService::class.java))
@@ -69,13 +70,15 @@ class SchedulesMainActivity : BaseProjectsActivity(),
                     ARouter.getInstance().build(ARoutePath.ActivitiesMainFragment).navigation() as ISupportFragment)
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE,
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun refusePermission() {
         RefuseDialog().show(this)
     }
 
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE,
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun showRationale(request: PermissionRequest) {
         PermissionDialog().withRequest(request).show(this)

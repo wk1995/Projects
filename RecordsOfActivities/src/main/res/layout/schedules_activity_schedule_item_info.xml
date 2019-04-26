@@ -22,15 +22,15 @@
         android:textSize="@dimen/s20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
     <Button
         android:id="@+id/tvModifyScheduleName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/tvScheduleName"
+        android:text="@string/common_str_modify"
         app:layout_constraintBottom_toBottomOf="@id/tvScheduleName"
         app:layout_constraintLeft_toRightOf="@id/tvScheduleName"
-        android:text="@string/common_str_modify"
-        />
+        app:layout_constraintTop_toTopOf="@id/tvScheduleName" />
     <!--开始时间-->
     <LinearLayout
         android:id="@+id/llStartTime"
@@ -78,6 +78,7 @@
             android:layout_weight="2"
             android:gravity="center"
             android:text="@string/schedules_end_time" />
+
         <TextView
             android:id="@+id/tvScheduleEndTime"
             android:layout_width="0dp"
@@ -87,6 +88,7 @@
             android:paddingEnd="@dimen/d20dp"
             android:paddingStart="@dimen/d20dp"
             tools:text="@string/common_str_title" />
+
         <Button
             android:id="@+id/btEndTime"
             android:layout_width="0dp"
@@ -95,13 +97,72 @@
             android:gravity="center"
             android:text="@string/schedules_item_end_time" />
     </LinearLayout>
+    <!--起点-->
+    <LinearLayout
+        android:id="@+id/llStartCoordinate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/llEndTime">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="起点经度" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="起点纬度" />
+
+        <Button
+            android:id="@+id/btGetStartCoordinate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="起点" />
+    </LinearLayout>
+    <!--终点-->
+    <LinearLayout
+        android:id="@+id/llEndCoordinate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/llStartCoordinate">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="终点经度" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="终点经度" />
+
+        <Button
+            android:id="@+id/btGetEndCoordinate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="终点" />
+    </LinearLayout>
+
     <!--备注-->
     <TextView
         android:id="@+id/tvScheduleNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/common_str_note"
-        app:layout_constraintTop_toBottomOf="@id/llEndTime" />
+        app:layout_constraintTop_toBottomOf="@id/llEndCoordinate" />
     <!--备注内容-->
     <EditText
         android:id="@+id/etScheduleNote"
@@ -129,7 +190,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
         tools:text="书" />
-
 
 
     <android.support.v7.widget.RecyclerView

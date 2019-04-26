@@ -1,8 +1,16 @@
 package com.wk.projects.activities.data
 
+import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.View
@@ -37,6 +45,7 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 
+
 /**
  * <pre>
  *      author : wk
@@ -56,6 +65,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         const val OPERATION_MODIFY = "OPERATION_MODIFY"
     }
 
+    private val locationManager by lazy { _mActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     private val itemId: Long by lazy {
         arguments?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, ScheduleItem.SCHEDULE_NO_PARENT_ID)
                 ?: ScheduleItem.SCHEDULE_NO_PARENT_ID
@@ -65,6 +75,34 @@ class ActivitiesInfoFragment : BaseFragment(),
     private var currentId: Long? = -1L
     private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
+    // 位置监听器
+    private val locationListener by lazy {
+        val locationListener = object : LocationListener {
+
+            // 当位置改变时触发
+            override fun onLocationChanged(location: Location) {
+                Timber.i("onLocationChanged  location  $location")
+
+            }
+
+            // Provider失效时触发
+            override fun onProviderDisabled(arg0: String) {
+                Timber.i("onProviderDisabled arg0: $arg0")
+
+            }
+
+            // Provider可用时触发
+            override fun onProviderEnabled(arg0: String) {
+                Timber.i("onProviderEnabled arg0: $arg0")
+            }
+
+            // Provider状态改变时触发
+            override fun onStatusChanged(arg0: String, arg1: Int, arg2: Bundle) {
+                Timber.i("onStatusChanged arg0: $arg0  arg1 : $arg1  arg2  $arg2")
+            }
+        }
+        locationListener
+    }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
     var i = 1
@@ -232,6 +270,47 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     }
 
+    private fun getLocation() {
+        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (check == PackageManager.PERMISSION_GRANTED) {
+            // 定义Criteria对象
+            val criteria = Criteria()
+            // 设置定位精确度 Criteria.ACCURACY_COARSE 比较粗略， Criteria.ACCURACY_FINE则比较精细
+            criteria.accuracy = Criteria.ACCURACY_FINE
+            // 设置是否需要海拔信息 Altitude
+            criteria.isAltitudeRequired = true
+            // 设置是否需要方位信息 Bearing
+            criteria.isBearingRequired = true
+            // 设置是否允许运营商收费
+            criteria.isCostAllowed = true
+            // 设置对电源的需求
+            criteria.powerRequirement = Criteria.POWER_LOW
+
+            // 获取GPS信息提供者
+            val bestProvider = locationManager.getBestProvider(criteria, true)
+            Timber.i("bestProvider = $bestProvider")
+            // 获取定位信息
+            val location = locationManager.getLastKnownLocation(bestProvider)
+            Timber.i("location: $location  经度： ${location?.longitude}  纬度：  ${location?.latitude}")
+            // 500毫秒更新一次，忽略位置变化
+            locationManager.requestLocationUpdates(bestProvider, 500, 0f, locationListener)
+        } else
+            Timber.i("没有Gps相关权限")
+    }
+
+    private fun getLocation1() {
+        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (check == PackageManager.PERMISSION_GRANTED) {
+            val providers = locationManager.allProviders
+
+            providers.forEach {
+                Timber.i("provider: $it")
+                val location = locationManager.getLastKnownLocation(it)
+                Timber.i("location: $location  经度： ${location?.longitude}  纬度：  ${location?.latitude}")
+            }
+        } else
+            Timber.i("没有Gps相关权限")
+    }
 
     private var currentBean: ActivitiesBean? = null
 
@@ -314,6 +393,10 @@ class ActivitiesInfoFragment : BaseFragment(),
             btStartTime -> {
                 tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
             }
+            btGetStartCoordinate -> {
+                checkOpenGps()
+                getLocation1()
+            }
         }
     }
 
@@ -345,6 +428,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         btEndTime.setOnClickListener(this)
         btStartTime.setOnClickListener(this)
         tvModifyScheduleName.setOnClickListener(this)
+        btGetStartCoordinate.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -421,4 +505,22 @@ class ActivitiesInfoFragment : BaseFragment(),
         }
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        locationManager.removeUpdates(locationListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (check == PackageManager.PERMISSION_GRANTED)
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 0f, locationListener)
+    }
+
+    private fun checkOpenGps() {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            ToastUtil.show("请开启GPS导航...")
+        }
+    }
 }

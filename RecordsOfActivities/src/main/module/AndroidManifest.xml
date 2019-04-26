@@ -7,6 +7,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- 粗略定位授权 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 精细定位授权 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- 网络访问授权 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".debug.ScheduleApp"
         android:allowBackup="true"
@@ -22,14 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <!-- <activity
-            android:name=".data.ScheduleItemInfoActivity"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />-->
+        <!-- <activity
+             android:name=".data.ScheduleItemInfoActivity"
+             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />-->
         <activity android:name=".collapse.SchedulesWatchActivity" />
         <activity
-            android:exported="false"
             android:name=".collapse.SchedulesCollapseActivity"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.wk.projects.collapse" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -38,9 +46,10 @@
         <activity
             android:name=".idea.ScheduleIdeaActivity"
             android:label="@string/title_activity_idea" />
+
         <service
             android:name=".AppInitIntentService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>
