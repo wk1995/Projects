@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.wk.projects.activities">
+    package="com.wk.projects.activities"
+    tools:ignore="GoogleAppIndexingWarning">
 
     <!-- 允许程序设置内置sd卡的读写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,6 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 精细定位授权 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--允许程序访问有关GSM网络信息(Allows applications to access information about networks)-->
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
 
     <!-- 网络访问授权 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,9 +28,9 @@
         android:theme="@style/ScheduleAppTheme"
         tools:replace="android:label">
         <activity android:name=".SchedulesMainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

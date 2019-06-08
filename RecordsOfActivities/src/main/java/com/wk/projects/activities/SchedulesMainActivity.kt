@@ -40,13 +40,18 @@ class SchedulesMainActivity : BaseProjectsActivity(),
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         Timber.i("p0?.itemId:: ${p0?.itemId}")
         when (p0?.itemId) {
+            //查询所有数据
             R.id.menuItemAllData -> rxBus.post(ActivitiesMsg(QUERY_ALL_DATA))
 
+            //搜索
             R.id.menuItemSearch -> {
             }
+
+            //新想法
             R.id.menuItemIdea -> {
                 ARouter.getInstance().build(ARoutePath.ScheduleIdeaActivity).navigation()
             }
+
             R.id.menuNotification -> {
 
             }

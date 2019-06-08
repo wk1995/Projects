@@ -79,24 +79,32 @@ class ActivitiesInfoFragment : BaseFragment(),
     private val locationListener by lazy {
         val locationListener = object : LocationListener {
 
-            // 当位置改变时触发
+            /**
+             * 当位置改变时触发
+             * */
             override fun onLocationChanged(location: Location) {
                 Timber.i("onLocationChanged  location  $location")
 
             }
 
-            // Provider失效时触发
+            /**
+             * Provider失效时触发
+             * */
             override fun onProviderDisabled(arg0: String) {
                 Timber.i("onProviderDisabled arg0: $arg0")
 
             }
 
-            // Provider可用时触发
+            /**
+             * Provider可用时触发
+             * */
             override fun onProviderEnabled(arg0: String) {
                 Timber.i("onProviderEnabled arg0: $arg0")
             }
 
-            // Provider状态改变时触发
+            /**
+             * Provider状态改变时触发
+             * */
             override fun onStatusChanged(arg0: String, arg1: Int, arg2: Bundle) {
                 Timber.i("onStatusChanged arg0: $arg0  arg1 : $arg1  arg2  $arg2")
             }
@@ -105,7 +113,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
-    var i = 1
+    private var i = 1
     override fun initView() {
         super.initView()
         if (itemId >= 0)
@@ -171,7 +179,9 @@ class ActivitiesInfoFragment : BaseFragment(),
                 }
             }
 
-            //选择选中的类别
+            /**
+             * 选择选中的类别
+             * */
             override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 super.onItemClick(adapter, view, position)
                 if (adapter !is CategoryListAdapter) return
@@ -230,7 +240,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                                         }
                                     })
                         }
-                    //更换父类别
+                        //更换父类别
                         R.id.menuCategoryMove -> {
                             //需要变更父类的WkActivity
                             val parentPosition = adapter.getParentPosition(targetItem
@@ -270,59 +280,17 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     }
 
-    private fun getLocation() {
-        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (check == PackageManager.PERMISSION_GRANTED) {
-            // 定义Criteria对象
-            val criteria = Criteria()
-            // 设置定位精确度 Criteria.ACCURACY_COARSE 比较粗略， Criteria.ACCURACY_FINE则比较精细
-            criteria.accuracy = Criteria.ACCURACY_FINE
-            // 设置是否需要海拔信息 Altitude
-            criteria.isAltitudeRequired = true
-            // 设置是否需要方位信息 Bearing
-            criteria.isBearingRequired = true
-            // 设置是否允许运营商收费
-            criteria.isCostAllowed = true
-            // 设置对电源的需求
-            criteria.powerRequirement = Criteria.POWER_LOW
-
-            // 获取GPS信息提供者
-            val bestProvider = locationManager.getBestProvider(criteria, true)
-            Timber.i("bestProvider = $bestProvider")
-            // 获取定位信息
-            val location = locationManager.getLastKnownLocation(bestProvider)
-            Timber.i("location: $location  经度： ${location?.longitude}  纬度：  ${location?.latitude}")
-            // 500毫秒更新一次，忽略位置变化
-            locationManager.requestLocationUpdates(bestProvider, 500, 0f, locationListener)
-        } else
-            Timber.i("没有Gps相关权限")
-    }
-
-    private fun getLocation1() {
-        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (check == PackageManager.PERMISSION_GRANTED) {
-            val providers = locationManager.allProviders
-
-            providers.forEach {
-                Timber.i("provider: $it")
-                val location = locationManager.getLastKnownLocation(it)
-                Timber.i("location: $location  经度： ${location?.longitude}  纬度：  ${location?.latitude}")
-            }
-        } else
-            Timber.i("没有Gps相关权限")
-    }
-
     private var currentBean: ActivitiesBean? = null
 
     override fun onClick(v: View?) {
         when (v) {
-        //修改项目名称
+            //修改项目名称
             tvModifyScheduleName -> {
                 val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this, RequestCode.ActivitiesInfoFragment_itemName)
                 mScheduleItemAddDialog.show(fragmentManager)
             }
-        //返回
+            //返回
             btOk -> {
                 //修改信息
                 /*  if (tvItemClassName.text.isBlank()) {
@@ -380,13 +348,13 @@ class ActivitiesInfoFragment : BaseFragment(),
                     }
                 }
             }
-        //选择时间
+            //选择时间
             tvScheduleStartTime,
             tvScheduleEndTime -> {
                 TimePickerCreator.create(_mActivity, this)
             }
 
-        //快捷方式直接设置当前时间
+            //快捷方式直接设置当前时间
             btEndTime -> {
                 tvScheduleEndTime.text = DateTime.getDateString(System.currentTimeMillis())
             }
@@ -395,7 +363,6 @@ class ActivitiesInfoFragment : BaseFragment(),
             }
             btGetStartCoordinate -> {
                 checkOpenGps()
-                getLocation1()
             }
         }
     }

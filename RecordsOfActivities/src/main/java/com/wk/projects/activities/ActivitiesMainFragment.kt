@@ -28,6 +28,7 @@ import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
 import com.wk.projects.common.listener.BaseOnItemDragListener
 import com.wk.projects.common.listener.BaseOnItemSwipeListener
+import com.wk.projects.common.location.gps.GPSSingleton
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
@@ -165,7 +166,9 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         initData()
     }
 
-    // 开启拖拽.滑动删除
+    /**
+     * 开启拖拽.滑动删除
+     * */
     private fun openDragAndSwipe() {
         val itemDragAndSwipeCallback = ItemDragAndSwipeCallback(scheduleMainAdapter)
         val itemTouchHelper = ItemTouchHelper(itemDragAndSwipeCallback)
@@ -206,9 +209,10 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                 TimePickerCreator.create(_mActivity, this)
         //增加数据库中没有的项目
             fabAddScheduleItem -> {
-                val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
+                GPSSingleton.getInstance().getLocation()
+              /*  val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this@ActivitiesMainFragment, RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES)
-                mScheduleItemAddDialog.show(fragmentManager)
+                mScheduleItemAddDialog.show(fragmentManager)*/
                 /*  start(
                     ARouter.getInstance()
                             .build(ARoutePath.ActivitiesInfoFragment)
