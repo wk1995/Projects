@@ -282,10 +282,13 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     private var currentBean: ActivitiesBean? = null
 
+
+    private val TIME_OUT=1000
+    private var tmpTime=0L
     override fun onClick(v: View?) {
         when (v) {
             //修改项目名称
-            tvModifyScheduleName -> {
+            tvScheduleName -> {
                 val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this, RequestCode.ActivitiesInfoFragment_itemName)
                 mScheduleItemAddDialog.show(fragmentManager)
@@ -293,17 +296,27 @@ class ActivitiesInfoFragment : BaseFragment(),
             //返回
             btOk -> {
                 //修改信息
-                /*  if (tvItemClassName.text.isBlank()) {
-                      ToastUtil.show("请选择类别")
-                      return
-                  }*/
+                val startTime = DateTime.getDateLong(tvScheduleStartTime.text.toString())
+                val endTime = DateTime.getDateLong(tvScheduleEndTime.text.toString())
+                //很有可能是点错了,防止误点到以保存的活动
+                if(endTime>startTime){
+                    if(tmpTime==0L) {
+                        tmpTime = System.currentTimeMillis()
+                        return
+                    }else{
+                        if(System.currentTimeMillis()-tmpTime<TIME_OUT){
+                            ToastUtil.show("再点一次保存")
+                            return
+                        }
+                    }
+
+                }
                 val mScheduleItemName = tvScheduleName.text.toString()
                 if (mScheduleItemName.isBlank()) {
                     ToastUtil.show("活动名称为空")
                     return
                 }
-                val startTime = DateTime.getDateLong(tvScheduleStartTime.text.toString())
-                val endTime = DateTime.getDateLong(tvScheduleEndTime.text.toString())
+
                 val note = etScheduleNote.text.toString()
 
                 //修改信息
@@ -361,9 +374,6 @@ class ActivitiesInfoFragment : BaseFragment(),
             btStartTime -> {
                 tvScheduleStartTime.text = DateTime.getDateString(System.currentTimeMillis())
             }
-            btGetStartCoordinate -> {
-                checkOpenGps()
-            }
         }
     }
 
@@ -394,8 +404,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         btOk.setOnClickListener(this)
         btEndTime.setOnClickListener(this)
         btStartTime.setOnClickListener(this)
-        tvModifyScheduleName.setOnClickListener(this)
-        btGetStartCoordinate.setOnClickListener(this)
+        tvScheduleName.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

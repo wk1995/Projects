@@ -18,6 +18,7 @@
     <string name="common_str_account">账户</string>
     <string name="common_str_income">收入</string>
     <string name="common_str_check_time">确认时间</string>
+    <string name="common_str_time">时间</string>
     <string name="common_entertainment">娱乐</string>
     <string name="common_study">学习</string>
     <string name="common_daily">日常</string>

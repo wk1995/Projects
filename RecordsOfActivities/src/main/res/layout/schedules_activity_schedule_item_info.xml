@@ -23,14 +23,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
-        android:id="@+id/tvModifyScheduleName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/common_str_modify"
-        app:layout_constraintBottom_toBottomOf="@id/tvScheduleName"
-        app:layout_constraintLeft_toRightOf="@id/tvScheduleName"
-        app:layout_constraintTop_toTopOf="@id/tvScheduleName" />
     <!--开始时间-->
     <LinearLayout
         android:id="@+id/llStartTime"
@@ -97,7 +89,52 @@
             android:gravity="center"
             android:text="@string/schedules_item_end_time" />
     </LinearLayout>
-    <!--起点-->
+
+    <!--添加路程-->
+    <LinearLayout
+        android:id="@+id/llAddLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/llEndTime">
+
+        <TextView
+            android:id="@+id/tvAddLocationTime"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/d50dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/common_str_time" />
+
+        <EditText
+            android:id="@+id/tvLocationName"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/d50dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingEnd="@dimen/d20dp"
+            android:paddingStart="@dimen/d20dp"
+            tools:text="@string/common_str_title" />
+
+        <Button
+            android:id="@+id/btAddLocation"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/d50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@android:string/ok" />
+    </LinearLayout>
+
+    <!---->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvLocations"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/llAddLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+  <!--  &lt;!&ndash;起点&ndash;&gt;
     <LinearLayout
         android:id="@+id/llStartCoordinate"
         android:layout_width="match_parent"
@@ -126,7 +163,7 @@
             android:layout_weight="1"
             android:text="起点" />
     </LinearLayout>
-    <!--终点-->
+    &lt;!&ndash;终点&ndash;&gt;
     <LinearLayout
         android:id="@+id/llEndCoordinate"
         android:layout_width="match_parent"
@@ -154,7 +191,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="终点" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <!--备注-->
     <TextView
@@ -162,7 +199,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/common_str_note"
-        app:layout_constraintTop_toBottomOf="@id/llEndCoordinate" />
+        app:layout_constraintTop_toBottomOf="@id/rvLocations" />
     <!--备注内容-->
     <EditText
         android:id="@+id/etScheduleNote"
