@@ -12,7 +12,7 @@ import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener

@@ -2,7 +2,7 @@ package com.wk.projects.activities.permission
 
 import android.view.View
 import android.widget.TextView
-import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.R
 import permissions.dispatcher.PermissionRequest
 

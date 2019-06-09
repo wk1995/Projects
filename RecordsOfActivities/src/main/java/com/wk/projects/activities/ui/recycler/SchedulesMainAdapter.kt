@@ -37,7 +37,6 @@ class SchedulesMainAdapter(itemList: ArrayList<ScheduleItem>)
                                 getTime((item.endTime) - (item.startTime))
                             else ""
                     )
-                    ?.addOnClickListener(R.id.clScheduleItem)
                     ?.addOnLongClickListener(R.id.clScheduleItem)
 
         }

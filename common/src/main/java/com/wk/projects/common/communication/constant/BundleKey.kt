@@ -18,4 +18,9 @@ object BundleKey {
 
     const val FILE="FILE"
     const val PATH="PATH"
+
+    const val DIALOG_TITLE="DIALOG_TITLE"
+    const val DIALOG_CONTENT="DIALOG_CONTENT"
+    const val DIALOG_CANCEL="DIALOG_CANCEL"
+    const val DIALOG_OK="DIALOG_OK"
 }

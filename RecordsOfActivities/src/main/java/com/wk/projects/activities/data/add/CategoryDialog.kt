@@ -15,7 +15,7 @@ import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.WkActivity
 import com.wk.projects.activities.data.add.adapter.ActivitiesBean
 import com.wk.projects.activities.data.add.adapter.CategoryListAdapter
-import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.ui.notification.ToastUtil

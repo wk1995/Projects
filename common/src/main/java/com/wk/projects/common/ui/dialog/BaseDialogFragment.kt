@@ -1,4 +1,4 @@
-package com.wk.projects.common
+package com.wk.projects.common.ui.dialog
 
 import android.content.Context
 import android.os.Build
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import butterknife.ButterKnife
 import butterknife.Unbinder
+import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.eventBus.RxBus
 import com.wk.projects.common.helper.PhysicsHelper
 
@@ -97,5 +98,9 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     abstract fun initResLayId(): Int
+
+    /**
+     * 在{@link onViewCreated}之后
+     * */
     abstract fun bindView(savedInstanceState: Bundle?, rootView: View?)
 }

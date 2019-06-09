@@ -281,10 +281,6 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     private var currentBean: ActivitiesBean? = null
-
-
-    private val TIME_OUT=1000
-    private var tmpTime=0L
     override fun onClick(v: View?) {
         when (v) {
             //修改项目名称
@@ -298,19 +294,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 //修改信息
                 val startTime = DateTime.getDateLong(tvScheduleStartTime.text.toString())
                 val endTime = DateTime.getDateLong(tvScheduleEndTime.text.toString())
-                //很有可能是点错了,防止误点到以保存的活动
-                if(endTime>startTime){
-                    if(tmpTime==0L) {
-                        tmpTime = System.currentTimeMillis()
-                        return
-                    }else{
-                        if(System.currentTimeMillis()-tmpTime<TIME_OUT){
-                            ToastUtil.show("再点一次保存")
-                            return
-                        }
-                    }
 
-                }
                 val mScheduleItemName = tvScheduleName.text.toString()
                 if (mScheduleItemName.isBlank()) {
                     ToastUtil.show("活动名称为空")

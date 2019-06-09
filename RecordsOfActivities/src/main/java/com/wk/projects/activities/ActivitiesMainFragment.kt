@@ -28,7 +28,6 @@ import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
 import com.wk.projects.common.listener.BaseOnItemDragListener
 import com.wk.projects.common.listener.BaseOnItemSwipeListener
-import com.wk.projects.common.location.gps.GPSSingleton
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
@@ -52,6 +51,13 @@ import java.util.*
  */
 @Route(path = ARoutePath.ActivitiesMainFragment)
 class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelectListener {
+
+    companion object {
+        /**
+         * 为了防止点到已经保存好的项目
+         * */
+        private const val TIMEOUT = 1000
+    }
 
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
@@ -80,13 +86,13 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
     override fun call(t: Any?) {
         if (t is ActivitiesMsg) {
             when (t.flag) {
-            //增加新项目
+                //增加新项目
                 EventMsg.ADD_ITEM -> {
                     scheduleMainAdapter.data.add((t.any) as ScheduleItem)
                     rvSchedules.scrollToPosition(scheduleMainAdapter.itemCount - 1 - scheduleMainAdapter.footerLayoutCount)
                 }
 
-            //删除项目
+                //删除项目
                 EventMsg.DELETE_ITEM_DIALOG -> {
                     val data = (t.any) as? Bundle
                     val id = data?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
@@ -111,6 +117,8 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         }
     }
 
+
+    private var tmpTime = 0L
     private fun initRecyclerView() {
         //两行是为了倒序显示
         linearLayoutManager.reverseLayout = true
@@ -120,22 +128,38 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         scheduleMainAdapter.bindToRecyclerView(rvSchedules)
         scheduleMainAdapter.setEmptyView(R.layout.common_list_empty)
         rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
-                when (view?.id) {
-                    R.id.clScheduleItem -> {
-                        startForResult(ARouter.getInstance()
-                                .build(ARoutePath.ActivitiesInfoFragment)
-                                .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                                .withInt(BundleKey.LIST_POSITION, position)
-                                .navigation() as ISupportFragment,
-                                RequestCode.ActivitiesMainFragment_QUERY_INFO)
+            override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                val mScheduleItem = adapter?.getItem(position) as? ScheduleItem ?: return
+                val endTime = mScheduleItem.endTime
+                val startTime = mScheduleItem.startTime
+                //很有可能是点错了,防止误点到已保存的活动
+                if (endTime > startTime) {
+                    if (tmpTime == 0L) {
+                        ToastUtil.show("1s后再点一次")
+                        tmpTime = System.currentTimeMillis()
+                        return
+                    } else {
+                        if (System.currentTimeMillis() - tmpTime < TIMEOUT) {
+                            tmpTime = System.currentTimeMillis()
+                            ToastUtil.show("阁1s再点一次")
+                            return
+                        }
                     }
                 }
+                tmpTime = 0L
+                val baseObjId = mScheduleItem.baseObjId
+                startForResult(ARouter.getInstance()
+                        .build(ARoutePath.ActivitiesInfoFragment)
+                        .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                        .withInt(BundleKey.LIST_POSITION, position)
+                        .navigation() as ISupportFragment,
+                        RequestCode.ActivitiesMainFragment_QUERY_INFO)
+
+
             }
 
             //长按
-            override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+            override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 val popupMenu = PopupMenu(_mActivity, view ?: return)
                 //加载菜单文件
                 popupMenu.menuInflater.inflate(R.menu.activities_main_delete_and_update, popupMenu.menu)
@@ -159,6 +183,11 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                     true
                 }
                 popupMenu.show()
+            }
+
+
+            override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+
             }
         })
         rvSchedules.addItemDecoration(
@@ -207,16 +236,16 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
         when (v) {
             tvDaySelected ->
                 TimePickerCreator.create(_mActivity, this)
-        //增加数据库中没有的项目
+            //增加数据库中没有的项目
             fabAddScheduleItem -> {
-                GPSSingleton.getInstance().getLocation()
-              /*  val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
+//                GPSSingleton.getInstance().getLocation()
+                val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this@ActivitiesMainFragment, RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES)
-                mScheduleItemAddDialog.show(fragmentManager)*/
-                /*  start(
-                    ARouter.getInstance()
-                            .build(ARoutePath.ActivitiesInfoFragment)
-                            .navigation() as ISupportFragment)*/
+                mScheduleItemAddDialog.show(fragmentManager)
+                start(
+                        ARouter.getInstance()
+                                .build(ARoutePath.ActivitiesInfoFragment)
+                                .navigation() as ISupportFragment)
             }
         }
     }
@@ -229,7 +258,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                 resultCode == ResultCode.ResultCode_ScheduleItemInfoActivity) {
             val operationType = data?.getString(SCHEDULE_OPERATION)
             when (operationType) {
-            // 修改
+                // 修改
                 OPERATION_MODIFY -> {
                     val position = data.getInt(BundleKey.LIST_POSITION, -1)
                     if (position < 0)

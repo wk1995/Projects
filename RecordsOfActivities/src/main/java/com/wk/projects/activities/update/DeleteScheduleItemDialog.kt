@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import com.wk.projects.activities.communication.ActivitiesMsg
-import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.R
 import com.wk.projects.common.communication.constant.BundleKey.LIST_ITEM_NAME
 import com.wk.projects.common.communication.eventBus.EventMsg

@@ -1,13 +1,14 @@
-package com.wk.projects.common
+package com.wk.projects.common.ui.dialog
 
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
-import android.support.v4.app.FragmentManager
 import android.view.View
 import android.view.ViewStub
 import android.widget.Button
 import android.widget.TextView
 import butterknife.BindView
+import com.wk.projects.common.R
+import com.wk.projects.common.R2
 
 /**
  * <pre>
@@ -30,6 +31,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     protected lateinit var tvComSimpleDialogTheme: TextView
     @BindView(R2.id.btnComSimpleDialogCancel)
     protected lateinit var btnComSimpleDialogCancel: Button
+
 
 
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
@@ -58,12 +60,16 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
 
 
-    //加载ViewSub中的View
+    /**
+     * 加载ViewSub中的View
+     * */
     open fun initVSView(vsView: View) {
 
     }
 
-    //设置ViewSub被替换的布局
+    /**
+     * 设置ViewSub被替换的布局
+     * */
     abstract fun initViewSubLayout(): Int
 
 
