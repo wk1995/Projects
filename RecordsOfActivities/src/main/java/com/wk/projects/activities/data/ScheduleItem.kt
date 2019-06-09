@@ -20,15 +20,12 @@ import org.litepal.crud.LitePalSupport
  * @param endTime       项目结束的时间
  * @param note          项目的备注
  * @param parentId      项目所属的类别id
- * @param extraMsg      额外的信息
- *
  * */
 data class ScheduleItem(@Column(nullable = false) var itemName: String,
                         @Column(nullable = false) var startTime: Long = 0,
                         @Column(nullable = false) var endTime: Long = 0,
                         @Column(nullable = true) var note: String? = null,
-                        @Column(nullable = true) var parentId:Long?=null,
-                        @Column(nullable = true) var extraMsg:LitePalSupport?=null)
+                        @Column(nullable = true) var parentId:Long?=null)
     : LitePalSupport() {
     companion object {
         const val  SCHEDULE_ITEM_NAME="itemName"

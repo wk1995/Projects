@@ -15,16 +15,14 @@ import org.litepal.crud.LitePalSupport
  */
 
 /**
- * @param startLon  起点坐标经度
- * @param startLat  起点坐标纬度
- * @param endLon    终点坐标经度
- * @param endLat    终点点坐标纬度
+ * @param lon  经度， null 表示暂未获取到坐标
+ * @param lat  纬度， null 表示暂未获取到坐标
+ * @param descList    该点的描述
  *
  * */
-class ActivitiesDistance (@Column(nullable = false) var startLon: Double,
-                          @Column(nullable = false) var startLat: Double,
-                          @Column(nullable = false) var endLon: Double,
-                          @Column(nullable = false) var endLat: Double)
+class Coordinate (@Column(nullable = true) var lon: Double?=null,
+                  @Column(nullable = true) var lat: Double?=null,
+                  @Column(nullable = true) var descList: List<String>?)
     : LitePalSupport(){
 
     public override  fun getBaseObjId(): Long {

@@ -1,16 +1,8 @@
 package com.wk.projects.activities.data
 
-import android.Manifest
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.View
@@ -61,11 +53,9 @@ class ActivitiesInfoFragment : BaseFragment(),
         View.OnClickListener, OnTimeSelectListener {
 
     companion object {
-        const val OPERATION_ADD = "OPERATION_ADD"
         const val OPERATION_MODIFY = "OPERATION_MODIFY"
     }
 
-    private val locationManager by lazy { _mActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     private val itemId: Long by lazy {
         arguments?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, ScheduleItem.SCHEDULE_NO_PARENT_ID)
                 ?: ScheduleItem.SCHEDULE_NO_PARENT_ID
@@ -75,42 +65,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     private var currentId: Long? = -1L
     private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
-    // 位置监听器
-    private val locationListener by lazy {
-        val locationListener = object : LocationListener {
 
-            /**
-             * 当位置改变时触发
-             * */
-            override fun onLocationChanged(location: Location) {
-                Timber.i("onLocationChanged  location  $location")
-
-            }
-
-            /**
-             * Provider失效时触发
-             * */
-            override fun onProviderDisabled(arg0: String) {
-                Timber.i("onProviderDisabled arg0: $arg0")
-
-            }
-
-            /**
-             * Provider可用时触发
-             * */
-            override fun onProviderEnabled(arg0: String) {
-                Timber.i("onProviderEnabled arg0: $arg0")
-            }
-
-            /**
-             * Provider状态改变时触发
-             * */
-            override fun onStatusChanged(arg0: String, arg1: Int, arg2: Bundle) {
-                Timber.i("onStatusChanged arg0: $arg0  arg1 : $arg1  arg2  $arg2")
-            }
-        }
-        locationListener
-    }
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
     private var i = 1
@@ -465,22 +420,4 @@ class ActivitiesInfoFragment : BaseFragment(),
         }
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        locationManager.removeUpdates(locationListener)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val check = ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (check == PackageManager.PERMISSION_GRANTED)
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 0f, locationListener)
-    }
-
-    private fun checkOpenGps() {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            ToastUtil.show("请开启GPS导航...")
-        }
-    }
 }
