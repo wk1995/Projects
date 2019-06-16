@@ -1,4 +1,3 @@
-println "version gradle start"
 rootProject.ext {
     compileSdkVersion = 28
     minSdkVersion = 17
@@ -15,18 +14,10 @@ rootProject.ext {
     consumptionVersionName="1.00"
 
 
-
     supportAppcompatV7 = "28.0.0"
     permissionsDispatcher = "2.3.1"
-    butterKnife = "9.0.0-rc1"
+    butterKnife = "9.0.0-rc2"
     fragmentationVersion="1.3.6"
 }
 
-project.task("versionConfig") {
-    doLast {
-        println "versionConfig: ${project.name}"
-    }
-}
 
-
-println "version gradle end"
