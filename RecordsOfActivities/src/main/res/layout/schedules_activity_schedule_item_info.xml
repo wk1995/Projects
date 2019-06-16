@@ -96,7 +96,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/llEndTime">
 
         <TextView
@@ -129,69 +128,10 @@
     <!--路程-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvLocations"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/llAddLocation"
+        android:background="@android:color/holo_orange_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-  <!--  &lt;!&ndash;起点&ndash;&gt;
-    <LinearLayout
-        android:id="@+id/llStartCoordinate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/llEndTime">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="起点经度" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="起点纬度" />
-
-        <Button
-            android:id="@+id/btGetStartCoordinate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="起点" />
-    </LinearLayout>
-    &lt;!&ndash;终点&ndash;&gt;
-    <LinearLayout
-        android:id="@+id/llEndCoordinate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/llStartCoordinate">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="终点经度" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="终点经度" />
-
-        <Button
-            android:id="@+id/btGetEndCoordinate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="终点" />
-    </LinearLayout>-->
 
     <!--备注-->
     <TextView
