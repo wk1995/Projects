@@ -20,12 +20,14 @@ import org.litepal.crud.LitePalSupport
  * @param endTime       项目结束的时间
  * @param note          项目的备注
  * @param parentId      项目所属的类别id
+ * @param extraData      额外的数据，比如：一段路程，额外的数据有起点与终点
  * */
 data class ScheduleItem(@Column(nullable = false) var itemName: String,
                         @Column(nullable = false) var startTime: Long = 0,
                         @Column(nullable = false) var endTime: Long = 0,
                         @Column(nullable = true) var note: String? = null,
-                        @Column(nullable = true) var parentId:Long?=null)
+                        @Column(nullable = true) var parentId:Long?=null,
+                        @Column(nullable = true) var extraData:List<LitePalSupport>?=null)
     : LitePalSupport() {
     companion object {
         const val  SCHEDULE_ITEM_NAME="itemName"

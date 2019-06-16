@@ -17,12 +17,12 @@ import org.litepal.crud.LitePalSupport
 /**
  * @param lon  经度， null 表示暂未获取到坐标
  * @param lat  纬度， null 表示暂未获取到坐标
- * @param descList    该点的描述
+ * @param descList    该坐标的描述
  *
  * */
 class Coordinate (@Column(nullable = true) var lon: Double?=null,
                   @Column(nullable = true) var lat: Double?=null,
-                  @Column(nullable = true) var descList: List<String>?)
+                  @Column(nullable = true) var descList: List<String>)
     : LitePalSupport(){
 
     public override  fun getBaseObjId(): Long {
