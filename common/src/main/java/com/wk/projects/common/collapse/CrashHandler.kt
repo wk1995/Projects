@@ -22,7 +22,7 @@ class CrashHandler private constructor(private val context: Context,
                                        private val moduleName: String)
     : Thread.UncaughtExceptionHandler {
     //先把原先的取出来
-    private val mDefaultCrashHandler: Thread.UncaughtExceptionHandler?  by lazy {Thread.getDefaultUncaughtExceptionHandler()}
+    private val mDefaultCrashHandler: Thread.UncaughtExceptionHandler?  by lazy { Thread.getDefaultUncaughtExceptionHandler() }
     private val logPath by lazy { ES_PATH + COMMON_ROOT_PATH + moduleName + LOG }
 
     init {
@@ -95,7 +95,7 @@ class CrashHandler private constructor(private val context: Context,
         }
         val stackTrace = ex.stackTrace
 
-        var errorText = "错误：" + ex.toString() + "  \n  "
+        var errorText = "错误：$ex \n"
         for (i in stackTrace.indices) {
             errorText += (stackTrace[i].fileName + " class:"
                     + stackTrace[i].className + " method:"
@@ -152,8 +152,13 @@ class CrashHandler private constructor(private val context: Context,
 
         //CUP架构
         pw.print("CUP ABI: ")
-        Build.SUPPORTED_ABIS.forEach {
-            pw.println(it)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            Build.SUPPORTED_ABIS.forEach {
+                pw.println(it)
+            }
+        else {
+            pw.println(Build.CPU_ABI)
+            pw.println(Build.CPU_ABI2)
         }
 
 
