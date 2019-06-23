@@ -8,7 +8,7 @@ import org.litepal.crud.LitePalSupport
  *      author : wk <br/>
  *      e-mail : 1226426603@qq.com<br/>
  *      time   : ${date}<br/>
- *      desc   : 用来记录路程的单独表 <br/>
+ *      desc   : 路线，用来记录路程的单独表 <br/>
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * </pre>*/
@@ -49,7 +49,7 @@ class Route() : LitePalSupport(), ActivityExtraData {
      * 所属活动
      * */
     @Column(nullable = false)
-    lateinit var scheduleItem: ScheduleItem
+    lateinit var belongScheduleItem: ScheduleItem
 
     constructor(startCoordinate: Coordinate, startTime: Long, endCoordinate: Coordinate, endTime: Long, note: String?, scheduleItem: ScheduleItem)
             : this() {
@@ -58,7 +58,7 @@ class Route() : LitePalSupport(), ActivityExtraData {
         this.endCoordinate=endCoordinate
         this.endTime=endTime
         this.note=note
-        this.scheduleItem=scheduleItem
+        this.belongScheduleItem=scheduleItem
     }
 
     public override fun getBaseObjId(): Long {

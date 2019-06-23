@@ -20,6 +20,13 @@ import java.util.ArrayList;
 @SuppressWarnings(WkProjects.UNUSED)
 public class WkActivity extends LitePalSupport {
 
+    public static final long NO_PARENT=-1;
+    public static final String ACTIVITY_ITEM_NAME="itemName";
+    public static final String ACTIVITY_CREATE_TIME="createTime";
+    public static final String ACTIVITY_PARENT_ID="parentId";
+    public static final String ACTIVITY_IS_SYSTEM="isSystem";
+    public static final String ACTIVITY_ID="activityId";
+
     /**
      * 类别名称
      * */
@@ -31,7 +38,7 @@ public class WkActivity extends LitePalSupport {
     private Long createTime;
 
     /**
-     * 所属的类别 -1表示没有
+     * 所属的类别 {@link #NO_PARENT}-1表示没有
      * */
     private Long parentId;
 
@@ -44,15 +51,6 @@ public class WkActivity extends LitePalSupport {
      * 所属的活动
      * */
     private ArrayList<ScheduleItem> scheduleItems=new ArrayList<>();
-
-
-    public static final long NO_PARENT=-1;
-    public static final String ACTIVITY_ITEM_NAME="itemName";
-    public static final String ACTIVITY_CREATE_TIME="createTime";
-    public static final String ACTIVITY_PARENT_ID="parentId";
-    public static final String ACTIVITY_IS_SYSTEM="isSystem";
-    public static final String ACTIVITY_ID="activityId";
-
 
     public WkActivity(String itemName, Long createTime, Long parentId, boolean isSystem) {
         this.itemName = itemName;

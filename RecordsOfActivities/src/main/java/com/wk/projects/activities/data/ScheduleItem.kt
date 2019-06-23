@@ -40,7 +40,10 @@ class ScheduleItem() : LitePalSupport() {
     @Column(nullable = true)
     var note: String? = null
 
-    @Column(nullable = false)
+    /**
+     * 类别，可以为null，就用“其他”来表示
+     * */
+    @Column(nullable = true)
     var belongActivity: WkActivity? = null
 
     /**
