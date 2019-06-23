@@ -60,30 +60,34 @@ class ActivitiesInfoFragment : BaseFragment(),
         arguments?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, ScheduleItem.SCHEDULE_NO_PARENT_ID)
                 ?: ScheduleItem.SCHEDULE_NO_PARENT_ID
     }
-    //改变后的parentId
-    private var newCategoryId: Long? = -1L
-    private var currentId: Long? = -1L
+    /**
+     * 改变后的parentId
+     * */
+    private var newBelongActivity: WkActivity? = null
+    private var currentBelongActivity: WkActivity? = null
     private val mCategoryListAdapter by lazy { CategoryListAdapter() }
     private val cateGoryList by lazy { ArrayList<ActivitiesBean>() }
 
 
     override fun initResLay() = R.layout.schedules_activity_schedule_item_info
+
     private var i = 1
+
     override fun initView() {
         super.initView()
         if (itemId >= 0)
             LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
                 if (it == null) return@listen
                 Timber.d("42 $it")
-                currentId = it.parentId
-                newCategoryId = currentId
-                Timber.d("currentId:  $currentId")
+                currentBelongActivity = it.belongActivity
+                newBelongActivity = currentBelongActivity
+                Timber.d("currentBelongActivity:  $currentBelongActivity")
                 tvScheduleName.text = it.itemName
                 tvScheduleStartTime.text = DateTime.getDateString(it.startTime)
                 tvScheduleEndTime.text = DateTime.getDateString(it.endTime)
                 etScheduleNote.setText(it.note)
-                if (currentId == null || currentId == ScheduleItem.SCHEDULE_NO_PARENT_ID) return@listen
-                LitePal.findAsync(WkActivity::class.java, currentId
+                if (currentBelongActivity == null) return@listen
+                LitePal.findAsync(WkActivity::class.java, currentBelongActivity?.baseObjId
                         ?: WkActivity.NO_PARENT).listen { parentWkaActivity ->
                     //说明该WkActivity已经无效，比如被删除了
                     if (parentWkaActivity == null) {
@@ -151,8 +155,9 @@ class ActivitiesInfoFragment : BaseFragment(),
                     mScheduleItemAddDialog.show(fragmentManager)
 
                 } else {
-                    tvItemClassName.text = wkActivity.itemName
-                    newCategoryId = wkActivity.baseObjId
+                    val categoryName = wkActivity.itemName
+                    tvItemClassName.text = categoryName
+                    newBelongActivity = wkActivity
                 }
 
             }
@@ -218,10 +223,14 @@ class ActivitiesInfoFragment : BaseFragment(),
         })
     }
 
-    //需要更换父类的WkActivity
+    /***
+     * 需要更换父类的WkActivity
+     * */
     private var targetItem: ActivitiesBean? = null
 
-    //从数据库中移除wkActivity及其子类
+    /**
+     * 从数据库中移除wkActivity及其子类
+     * */
     private fun deleteActivities(wkActivity: WkActivity) {
         val activityId = wkActivity.baseObjId
         //找到其子类
@@ -236,8 +245,13 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     private var currentBean: ActivitiesBean? = null
+
     override fun onClick(v: View?) {
         when (v) {
+            btAddLocation -> {
+
+            }
+
             //修改项目名称
             tvScheduleName -> {
                 val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
@@ -260,19 +274,14 @@ class ActivitiesInfoFragment : BaseFragment(),
 
                 //修改信息
                 if (itemId >= 0) {
-                    val mContentValues = ContentValues()
-                    mContentValues.put(ScheduleItem.SCHEDULE_START_TIME,
-                            startTime)
-                    mContentValues.put(ScheduleItem.SCHEDULE_END_TIME,
-                            endTime)
-                    mContentValues.put(ScheduleItem.SCHEDULE_ITEM_NOTE,
-                            note)
-                    Timber.d("newCategoryId : $newCategoryId    currentId:  $currentId")
-                    if (newCategoryId != currentId)
-                        mContentValues.put(ScheduleItem.SCHEDULE_PARENT_ID,
-                                newCategoryId)
-                    LitePal.updateAsync(ScheduleItem::class.java,
-                            mContentValues, itemId).listen {
+                    val mScheduleItem = ScheduleItem()
+                    mScheduleItem.startTime = startTime
+                    mScheduleItem.endTime = endTime
+                    mScheduleItem.note = note
+                    if (newBelongActivity != currentBelongActivity) {
+                        mScheduleItem.belongActivity=newBelongActivity
+                    }
+                    mScheduleItem.updateAsync(itemId).listen {
                         Timber.i("保存的个数 $it")
                         ToastUtil.show(WkContextCompat.getString(R.string.common_str_update_successful), ToastUtil.LENGTH_SHORT)
                         if (arguments == null)
@@ -288,7 +297,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     //增加项目
                     val mScheduleItem = ScheduleItem(mScheduleItemName,
                             startTime, endTime,
-                            etScheduleNote.text.toString(), newCategoryId)
+                            etScheduleNote.text.toString(), newBelongActivity)
                     mScheduleItem.saveAsync().listen {
                         if (it) {
                             rxBus.post(ActivitiesMsg(ADD_ITEM, mScheduleItem))
@@ -344,6 +353,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         btEndTime.setOnClickListener(this)
         btStartTime.setOnClickListener(this)
         tvScheduleName.setOnClickListener(this)
+        btAddLocation.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -366,7 +376,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     //上一层
                     val parentBean = currentBean?.parentBean
                     val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean?.wkActivity?.baseObjId
-                            ?: WkActivity.NO_PARENT)
+                            ?: WkActivity.NO_PARENT,false)
                     newWkActivity.saveAsync().listen {
                         if (!it) {
                             ToastUtil.show("新建类别失败")

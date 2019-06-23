@@ -3,7 +3,7 @@ package com.wk.projects.activities
 import android.app.IntentService
 import android.content.Intent
 import com.wk.projects.activities.data.WkActivity
-import com.wk.projects.activities.data.WkActivity.Companion.NO_PARENT
+import com.wk.projects.activities.data.WkActivity.NO_PARENT
 import com.wk.projects.common.configuration.ConfigureKey.INIT_ACTIVITIES
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.resource.WkContextCompat

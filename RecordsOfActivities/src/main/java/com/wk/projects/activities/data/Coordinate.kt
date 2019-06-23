@@ -13,19 +13,33 @@ import org.litepal.crud.LitePalSupport
  *      desc   : 活动中的路程项
  * </pre>
  */
+class Coordinate(): LitePalSupport() {
 
-/**
- * @param lon  经度， null 表示暂未获取到坐标
- * @param lat  纬度， null 表示暂未获取到坐标
- * @param descList    该点的描述
- *
- * */
-class Coordinate (@Column(nullable = true) var lon: Double?=null,
-                  @Column(nullable = true) var lat: Double?=null,
-                  @Column(nullable = true) var descList: List<String>?)
-    : LitePalSupport(){
+    /**
+     * 经度， null 表示暂未获取到坐标
+     * */
+    @Column(nullable = true) var lon: Double? = null
 
-    public override  fun getBaseObjId(): Long {
+    /**
+     * 纬度， null 表示暂未获取到坐标
+     * */
+    @Column(nullable = true) var lat: Double? = null
+
+    /**
+     * 该坐标的描述
+     * */
+    @Column(nullable = true) var descList: List<String> = ArrayList()
+
+    constructor(lon: Double?,lat: Double?):this(){
+        this.lat=lat
+        this.lon=lon
+    }
+    constructor(lon: Double?,lat: Double?,descList: List<String>):this(){
+        this.lat=lat
+        this.lon=lon
+        this.descList=descList
+    }
+    public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
 }

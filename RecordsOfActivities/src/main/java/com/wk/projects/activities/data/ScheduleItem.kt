@@ -14,30 +14,78 @@ import org.litepal.crud.LitePalSupport
  * </pre>
  */
 
-/**
- * @param itemName      项目名称
- * @param startTime     项目开始的时间
- * @param endTime       项目结束的时间
- * @param note          项目的备注
- * @param parentId      项目所属的类别id
- * */
-data class ScheduleItem(@Column(nullable = false) var itemName: String,
-                        @Column(nullable = false) var startTime: Long = 0,
-                        @Column(nullable = false) var endTime: Long = 0,
-                        @Column(nullable = true) var note: String? = null,
-                        @Column(nullable = true) var parentId:Long?=null)
-    : LitePalSupport() {
-    companion object {
-        const val  SCHEDULE_ITEM_NAME="itemName"
-        const val  SCHEDULE_START_TIME="startTime"
-        const val  SCHEDULE_END_TIME="endTime"
-        const val  SCHEDULE_ITEM_NOTE="note"
-        const val  SCHEDULE_PARENT_ID="parentId"
-        const val  SCHEDULE_EXTRA_MSG="extraMsg"
+class ScheduleItem() : LitePalSupport() {
 
-        const val SCHEDULE_NO_PARENT_ID=-1L
+    /**
+     * 项目名称
+     * */
+    @Column(nullable = false)
+    var itemName: String? = null
+
+    /**
+     * 项目开始的时间
+     * */
+    @Column(nullable = false)
+    var startTime: Long = 0
+
+    /**
+     * 项目结束的时间
+     * */
+    @Column(nullable = false)
+    var endTime: Long = 0
+
+    /**
+     * 项目的备注
+     * */
+    @Column(nullable = true)
+    var note: String? = null
+
+    @Column(nullable = false)
+    var belongActivity: WkActivity? = null
+
+    /**
+     * 额外的数据，比如：一段路程，额外的数据有起点与终点
+     * */
+    @Column(nullable = true)
+    var extraData: ArrayList<ActivityExtraData> = ArrayList()
+
+    constructor(itemName: String, startTime: Long ) : this() {
+        this.itemName = itemName
+        this.startTime = startTime
     }
-    public override  fun getBaseObjId(): Long {
+
+    constructor(itemName: String, startTime: Long = 0, endTime: Long = 0,
+                note: String?, belongActivity: WkActivity? = null) : this() {
+        this.itemName = itemName
+        this.startTime = startTime
+        this.endTime = endTime
+        this.note = note
+        this.belongActivity = belongActivity
+    }
+
+    constructor(itemName: String, startTime: Long = 0, endTime: Long = 0,
+                note: String?, belongActivity: WkActivity? = null, extraData: ArrayList<ActivityExtraData>)
+            : this() {
+        this.itemName = itemName
+        this.startTime = startTime
+        this.endTime = endTime
+        this.note = note
+        this.belongActivity = belongActivity
+        this.extraData = extraData
+    }
+
+    companion object {
+        const val SCHEDULE_ITEM_NAME = "itemName"
+        const val SCHEDULE_START_TIME = "startTime"
+        const val SCHEDULE_END_TIME = "endTime"
+        const val SCHEDULE_ITEM_NOTE = "note"
+        const val SCHEDULE_PARENT_ID = "parentId"
+        const val SCHEDULE_EXTRA_MSG = "extraMsg"
+
+        const val SCHEDULE_NO_PARENT_ID = -1L
+    }
+
+    public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
 
