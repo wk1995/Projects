@@ -111,4 +111,15 @@ public class WkActivity extends LitePalSupport {
     public long getBaseObjId() {
         return super.getBaseObjId();
     }
+
+    @Override
+    public String toString() {
+        return "WkActivity{" +
+                "itemName='" + itemName + '\'' +
+                ", createTime=" + createTime +
+                ", parentId=" + parentId +
+                ", isSystem=" + isSystem +
+                ", scheduleItems=" + scheduleItems +
+                '}';
+    }
 }

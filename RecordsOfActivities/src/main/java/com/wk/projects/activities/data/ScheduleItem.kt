@@ -83,13 +83,18 @@ class ScheduleItem() : LitePalSupport() {
         const val SCHEDULE_END_TIME = "endTime"
         const val SCHEDULE_ITEM_NOTE = "note"
         const val SCHEDULE_PARENT_ID = "parentId"
+        const val SCHEDULE_BELONG_ACTIVTTY="belongActivity"
         const val SCHEDULE_EXTRA_MSG = "extraMsg"
 
-        const val SCHEDULE_NO_PARENT_ID = -1L
+        const val SCHEDULE_INVALID = -1L
     }
 
     public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
+    }
+
+    override fun toString(): String {
+        return "ScheduleItem(itemName=$itemName, startTime=$startTime, endTime=$endTime, note=$note, belongActivity=$belongActivity, extraData=$extraData)"
     }
 
 
