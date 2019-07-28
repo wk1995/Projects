@@ -12,7 +12,7 @@ import com.wk.projects.activities.data.WkActivity
  *      time   : 2019/3/4
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 显示类别
+ *      coordinateDesc   : 显示类别
  * </pre>
  */
 class CategoryAdapter : BaseQuickAdapter<WkActivity, BaseViewHolder>(R.layout.common_only_text) {

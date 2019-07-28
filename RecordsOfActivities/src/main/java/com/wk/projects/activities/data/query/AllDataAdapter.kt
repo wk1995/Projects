@@ -12,7 +12,7 @@ import com.wk.projects.activities.data.ScheduleItem
  *      time   : 2018/12/10
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 class AllDataAdapter

@@ -1,6 +1,9 @@
 <resources>
     <string name="modules_name">日常活动</string>
     <string name="schedules_add_item">新增项目</string>
+    <string name="schedules_add_coordinate">新增坐标</string>
+    <string name="schedules_add_category">新增类别</string>
+    <string name="schedules_update_name">修改项目名</string>
     <string name="schedules_end_time">结束时间</string>
     <string name="schedules_check_item_end_time">确定结束时间</string>
     <string name="schedules_modify_item_start_time">修改开始时间</string>

@@ -14,7 +14,7 @@ import com.wk.projects.activities.R
  *      time   : 2019/4/4
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 class CategoryListAdapter

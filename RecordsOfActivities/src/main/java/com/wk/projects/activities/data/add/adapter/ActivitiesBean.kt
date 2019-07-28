@@ -10,7 +10,7 @@ import com.wk.projects.activities.data.WkActivity
  *      time   : 2019/4/4
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 类别Recycler的适配器中的Bean
+ *      coordinateDesc   : 类别Recycler的适配器中的Bean
  * </pre>
  */
 class ActivitiesBean(val wkActivity: WkActivity?, val wkLevel: Int, val parentBean: ActivitiesBean? = null)

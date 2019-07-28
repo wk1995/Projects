@@ -9,7 +9,7 @@ import com.wk.projects.common.communication.eventBus.EventMsg
  *      time   : 2019/3/24
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 data class ActivitiesMsg(val flag: Int, val any: Any?=null) : EventMsg()

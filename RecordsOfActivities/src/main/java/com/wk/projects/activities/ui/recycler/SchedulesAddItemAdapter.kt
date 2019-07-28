@@ -17,7 +17,7 @@ import com.wk.projects.common.communication.IRvClickListener
  *      time   : 2018/11/24
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 class SchedulesAddItemAdapter(private val itemList: ArrayList<String>,

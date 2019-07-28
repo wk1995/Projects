@@ -2,7 +2,6 @@ package com.wk.projects.activities.data
 
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
-import java.lang.StringBuilder
 
 /**
  * <pre>
@@ -11,7 +10,7 @@ import java.lang.StringBuilder
  *      time   : 2019/4/2
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 经纬度，以及其描述，
+ *      coordinateDesc   : 经纬度，以及其描述，
  * </pre>
  */
 class Coordinate(): LitePalSupport() {
@@ -29,7 +28,7 @@ class Coordinate(): LitePalSupport() {
     /**
      * 该坐标的描述
      * */
-    @Column(nullable = true)lateinit var desc:String
+    @Column(nullable = true)lateinit var coordinateDesc:String
 
     constructor(lon: Double?,lat: Double?):this(){
         this.lat=lat
@@ -38,14 +37,14 @@ class Coordinate(): LitePalSupport() {
     constructor(lon: Double?, lat: Double?, desc: String):this(){
         this.lat=lat
         this.lon=lon
-        this.desc=desc
+        this.coordinateDesc=desc
     }
     public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
 
     override fun toString(): String {
-        return "Coordinate(经度 lon=$lon,纬度 lat=$lat, desc='$desc')"
+        return "Coordinate(经度 lon=$lon,纬度 lat=$lat, coordinateDesc='$coordinateDesc')"
     }
 
 }

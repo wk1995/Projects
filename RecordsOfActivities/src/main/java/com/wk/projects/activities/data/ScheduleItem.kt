@@ -1,7 +1,9 @@
 package com.wk.projects.activities.data
 
+import org.litepal.LitePal
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
+import org.litepal.extension.find
 
 /**
  * <pre>
@@ -10,7 +12,7 @@ import org.litepal.crud.LitePalSupport
  *      time   : 2018/11/24
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 
@@ -50,8 +52,10 @@ class ScheduleItem() : LitePalSupport() {
      * 额外的数据，比如：一段路程，额外的数据有起点与终点
      * */
     @Column(nullable = true)
-    var extraData: ArrayList<ActivityExtraData> = ArrayList()
-
+    var routes: ArrayList<Route> = ArrayList()
+   /* get() {
+       return LitePal.where("news_id = ?", baseObjId.toString()).find()
+    }*/
     constructor(itemName: String, startTime: Long ) : this() {
         this.itemName = itemName
         this.startTime = startTime
@@ -67,14 +71,14 @@ class ScheduleItem() : LitePalSupport() {
     }
 
     constructor(itemName: String, startTime: Long = 0, endTime: Long = 0,
-                note: String?, belongActivity: WkActivity? = null, extraData: ArrayList<ActivityExtraData>)
+                note: String?, belongActivity: WkActivity? = null, routes: ArrayList<Route>)
             : this() {
         this.itemName = itemName
         this.startTime = startTime
         this.endTime = endTime
         this.note = note
         this.belongActivity = belongActivity
-        this.extraData = extraData
+        this.routes = routes
     }
 
     companion object {
@@ -84,7 +88,7 @@ class ScheduleItem() : LitePalSupport() {
         const val SCHEDULE_ITEM_NOTE = "note"
         const val SCHEDULE_PARENT_ID = "parentId"
         const val SCHEDULE_BELONG_ACTIVTTY="belongActivity"
-        const val SCHEDULE_EXTRA_MSG = "extraMsg"
+        const val SCHEDULE_ROUTES = "routes"
 
         const val SCHEDULE_INVALID = -1L
     }
@@ -94,7 +98,7 @@ class ScheduleItem() : LitePalSupport() {
     }
 
     override fun toString(): String {
-        return "ScheduleItem(itemName=$itemName, startTime=$startTime, endTime=$endTime, note=$note, belongActivity=$belongActivity, extraData=$extraData)"
+        return "ScheduleItem(itemName=$itemName, startTime=$startTime, endTime=$endTime, note=$note, belongActivity=$belongActivity, routes=$routes)"
     }
 
 

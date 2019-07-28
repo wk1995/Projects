@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *      author : wk <br/>
  *      e-mail : 1226426603@qq.com<br/>
  *      time   : 2019/06/23 <br/>
- *      desc   : 活动所属的类别  <br/>
+ *      coordinateDesc   : 活动所属的类别  <br/>
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * </pre>

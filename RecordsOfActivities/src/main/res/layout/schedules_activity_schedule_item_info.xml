@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:text="@string/common_str_title"
         android:textSize="@dimen/s20sp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -96,7 +97,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/llEndTime">
 
         <TextView
@@ -107,7 +107,8 @@
             android:gravity="center"
             android:text="@string/common_str_time" />
 
-        <EditText
+        <!--坐标的描述-->
+        <TextView
             android:id="@+id/tvLocationName"
             android:layout_width="0dp"
             android:layout_height="@dimen/d50dp"
@@ -115,7 +116,7 @@
             android:gravity="center"
             android:paddingEnd="@dimen/d20dp"
             android:paddingStart="@dimen/d20dp"
-            tools:text="@string/common_str_title" />
+            android:text="@string/common_str_title" />
 
         <Button
             android:id="@+id/btAddLocation"
@@ -126,77 +127,21 @@
             android:text="@android:string/ok" />
     </LinearLayout>
 
-    <!--路程-->
+    <!--坐标-->
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvLocations"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/llAddLocation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/rvLocations"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-  <!--  &lt;!&ndash;起点&ndash;&gt;
-    <LinearLayout
-        android:id="@+id/llStartCoordinate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/llEndTime">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="起点经度" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="起点纬度" />
-
-        <Button
-            android:id="@+id/btGetStartCoordinate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="起点" />
-    </LinearLayout>
-    &lt;!&ndash;终点&ndash;&gt;
-    <LinearLayout
-        android:id="@+id/llEndCoordinate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/llStartCoordinate">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="终点经度" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="终点经度" />
-
-        <Button
-            android:id="@+id/btGetEndCoordinate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="终点" />
-    </LinearLayout>-->
+        android:layout_height="@dimen/d100dp"
+        android:background="@android:color/holo_orange_light"
+        tools:layout_editor_absoluteY="177dp" />
 
     <!--备注-->
     <TextView
         android:id="@+id/tvScheduleNote"
         android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_height="wrap_content"
         android:text="@string/common_str_note"
         app:layout_constraintTop_toBottomOf="@id/rvLocations" />
@@ -215,6 +160,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/d40dp"
         android:text="@string/common_str_category"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etScheduleNote" />
     <!--显示的类别内容-->
     <TextView

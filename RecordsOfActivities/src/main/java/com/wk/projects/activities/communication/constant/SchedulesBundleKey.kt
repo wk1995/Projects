@@ -7,7 +7,7 @@ package com.wk.projects.activities.communication.constant
  *      time   : 2018/11/27
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 object SchedulesBundleKey {
@@ -21,5 +21,6 @@ object SchedulesBundleKey {
     const val SCHEDULE_PARENT_ID = "parentId"
     const val SCHEDULE_EXTRA_MSG = "extraMsg"
     const val CATEGORY_NAME = "CATEGORY_NAME"
+    const val COORDINATE_DESC="COORDINATE_DESC"
     const val ACTIVITY_PARENT_ID = "ACTIVITY_PARENT_ID"
 }

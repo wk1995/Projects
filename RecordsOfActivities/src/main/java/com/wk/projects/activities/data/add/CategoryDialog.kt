@@ -29,7 +29,7 @@ import timber.log.Timber
  *      time   : 2019/4/4
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 类别的列表
+ *      coordinateDesc   : 类别的列表
  * </pre>
  */
 class CategoryDialog : BaseSimpleDialog(), View.OnClickListener {

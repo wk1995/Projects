@@ -17,7 +17,7 @@ import com.wk.projects.common.communication.eventBus.EventMsg
  *      time   : 2018/11/27
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 删除的dialog
+ *      coordinateDesc   : 删除的dialog
  * </pre>
  */
 class DeleteScheduleItemDialog : BaseSimpleDialog() {

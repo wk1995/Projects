@@ -9,7 +9,7 @@ import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
  *      time   : 2018/11/28
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 object ScheduleFilePath {

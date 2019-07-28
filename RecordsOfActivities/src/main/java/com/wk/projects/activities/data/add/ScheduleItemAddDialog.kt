@@ -9,6 +9,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
+import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName
+import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination
+import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
@@ -33,7 +36,7 @@ import timber.log.Timber
  *      time   : 2018/11/25
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 新增项目
+ *      coordinateDesc   : 新增项目
  * </pre>
  */
 class ScheduleItemAddDialog : BaseSimpleDialog() {
@@ -46,13 +49,21 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             mScheduleItemDialogFragment.arguments = bundle
             return mScheduleItemDialogFragment
         }
+
     }
 
     override fun initViewSubLayout() = R.layout.schedules_main_dialog_simple_add_item
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         super.bindView(savedInstanceState, rootView)
-        tvComSimpleDialogTheme.setText(R.string.schedules_add_item)
+        tvComSimpleDialogTheme.setText(
+                when (targetRequestCode) {
+                    RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> R.string.schedules_add_coordinate
+                    RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName-> R.string.schedules_add_coordinate
+                    RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES->R.string.schedules_add_item
+                    else -> R.string.schedules_update_name
+                }
+        )
     }
 
     override fun onClick(v: View?) {
@@ -84,11 +95,27 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
         })
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
-        val table = when (targetRequestCode) {
-            RequestCode.ActivitiesInfoFragment_CategoryName -> "wkactivity"
-            else -> "scheduleitem"
+        val table :String
+        val attr:String
+        val columnIndex:Int
+        when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName ->{
+                table="wkactivity"
+                attr="itemname"
+                columnIndex=0
+            }
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
+                table= "coordinate"
+                attr="coordinatedesc"
+                columnIndex=2
+            }
+            else->{
+                table= "scheduleitem"
+                attr="itemname"
+                columnIndex=0
+            }
         }
-        Observable.just("select distinct itemname from $table")
+        Observable.just("select distinct $attr from $table")
                 .map {
                     LitePal.findBySQL(it)
                 }.subscribeOn(Schedulers.io())
@@ -97,7 +124,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     val items = ArrayList<String>()
                     Timber.d("60 ${it.position}")
                     while (it.moveToNext()) {
-                        items.add(it.getString(0))
+                        items.add(it.getString(columnIndex))
                     }
                     mItemAdapter.initData(items)
                 }
@@ -113,16 +140,21 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             ToastUtil.show("不能为空")
         val transIntent = Intent()
         when (targetRequestCode) {
-            RequestCode.ActivitiesInfoFragment_itemName -> {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName -> {
+
                 transIntent.putExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME, name)
 
             }
-            RequestCode.ActivitiesInfoFragment_CategoryName -> {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
                 transIntent.putExtra(SchedulesBundleKey.CATEGORY_NAME, name)
             }
             RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES -> {
+                //会造成内存泄漏
                 saveItem(name)
                 return
+            }
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
+                transIntent.putExtra(SchedulesBundleKey.COORDINATE_DESC, name)
             }
         }
         targetFragment?.onActivityResult(

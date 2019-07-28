@@ -46,7 +46,7 @@ import java.util.*
  *      time   : 2019/3/24
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : 主界面
+ *      coordinateDesc   : 主界面
  * </pre>
  */
 @Route(path = ARoutePath.ActivitiesMainFragment)
@@ -242,10 +242,10 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                 val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                 mScheduleItemAddDialog.setTargetFragment(this@ActivitiesMainFragment, RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES)
                 mScheduleItemAddDialog.show(fragmentManager)
-                start(
-                        ARouter.getInstance()
-                                .build(ARoutePath.ActivitiesInfoFragment)
-                                .navigation() as ISupportFragment)
+//                start(
+//                        ARouter.getInstance()
+//                                .build(ARoutePath.ActivitiesInfoFragment)
+//                                .navigation() as ISupportFragment)
             }
         }
     }

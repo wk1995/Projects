@@ -11,7 +11,7 @@ import com.wk.projects.activities.R
  *      time   : 2018/11/22
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   : Application
+ *      coordinateDesc   : Application
  * </pre>
  */
 class ScheduleApp : BaseApplication() {

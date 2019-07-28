@@ -7,7 +7,7 @@ package com.wk.projects.activities
  *      time   : 2018/11/27
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
+ *      coordinateDesc   :
  * </pre>
  */
 object SchedulesFilePath
