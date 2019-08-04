@@ -28,11 +28,14 @@ class Coordinate(): LitePalSupport() {
     /**
      * 该坐标的描述
      * */
-    @Column(nullable = true)lateinit var coordinateDesc:String
+    @Column(nullable = false,unique = true)lateinit var coordinateDesc:String
+
+
 
     constructor(lon: Double?,lat: Double?):this(){
         this.lat=lat
         this.lon=lon
+        this.coordinateDesc="lon: ${lon?:"null"}  lat: ${lat?:"null"}"
     }
     constructor(lon: Double?, lat: Double?, desc: String):this(){
         this.lat=lat

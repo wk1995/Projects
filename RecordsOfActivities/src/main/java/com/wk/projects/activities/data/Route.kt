@@ -60,4 +60,11 @@ class Route() : LitePalSupport(){
     public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
+
+    override fun toString(): String {
+        return "Route(startCoordinate=$startCoordinate, startTime=$startTime, endCoordinate=$endCoordinate, " +
+                "endTime=$endTime, note=$note, belongScheduleItem=$belongScheduleItem)"
+    }
+
+
 }

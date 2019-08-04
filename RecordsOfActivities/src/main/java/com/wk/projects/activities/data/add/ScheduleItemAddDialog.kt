@@ -97,22 +97,18 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
         val table :String
         val attr:String
-        val columnIndex:Int
         when (targetRequestCode) {
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName ->{
                 table="wkactivity"
                 attr="itemname"
-                columnIndex=0
             }
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
                 table= "coordinate"
                 attr="coordinatedesc"
-                columnIndex=2
             }
             else->{
                 table= "scheduleitem"
                 attr="itemname"
-                columnIndex=0
             }
         }
         Observable.just("select distinct $attr from $table")
@@ -124,9 +120,10 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     val items = ArrayList<String>()
                     Timber.d("60 ${it.position}")
                     while (it.moveToNext()) {
-                        items.add(it.getString(columnIndex))
+                        items.add(it.getString(0))
                     }
                     mItemAdapter.initData(items)
+                    it.close()
                 }
         etAddItem.addTextChangedListener(object : BaseTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
