@@ -19,7 +19,8 @@ class Route() : LitePalSupport(){
      * 起始坐标
      * */
     @Column(nullable = true)
-     var startCoordinate: Coordinate?=null
+     var startCoordinateId: Long=-1
+
 
     /**
      * 开始时间
@@ -31,7 +32,7 @@ class Route() : LitePalSupport(){
      * 终点
      * */
     @Column(nullable = true)
-    var endCoordinate: Coordinate? = null
+    var endCoordinateId: Long = -1
 
     /**
      * 结束时间
@@ -47,11 +48,11 @@ class Route() : LitePalSupport(){
 
     var belongScheduleItem: ScheduleItem? = null
 
-    constructor(startCoordinate: Coordinate, startTime: Long, endCoordinate: Coordinate?, endTime: Long, note: String?,belongScheduleItem: ScheduleItem?)
+    constructor(startCoordinateId: Long, startTime: Long, endCoordinateId: Long, endTime: Long, note: String?, belongScheduleItem: ScheduleItem?)
             : this() {
-        this.startCoordinate = startCoordinate
+        this.startCoordinateId = startCoordinateId
         this.startTime = startTime
-        this.endCoordinate = endCoordinate
+        this.endCoordinateId = endCoordinateId
         this.endTime = endTime
         this.note = note
         this.belongScheduleItem = belongScheduleItem
@@ -62,8 +63,8 @@ class Route() : LitePalSupport(){
     }
 
     override fun toString(): String {
-        return "Route(startCoordinate=$startCoordinate, startTime=$startTime, endCoordinate=$endCoordinate, " +
-                "endTime=$endTime, note=$note, belongScheduleItem=$belongScheduleItem)"
+        return "Route(startCoordinateId=$startCoordinateId, startTime=$startTime, endCoordinateId=$endCoordinateId, " +
+                "endTime=$endTime, note=$note)"
     }
 
 

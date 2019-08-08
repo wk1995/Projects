@@ -16,7 +16,7 @@ import com.wk.projects.activities.R
 class CoordinateAdapter : BaseQuickAdapter<ActivitiesInfoFragment.LocationBean, BaseViewHolder>(R.layout.activities_coordinate_list_item) {
     override fun convert(helper: BaseViewHolder?, item: ActivitiesInfoFragment.LocationBean?) {
         item?.run {
-            helper?.setText(R.id.tvDescCoordinate,mCoordinate.coordinateDesc)
+            helper?.setText(R.id.tvDescCoordinate,mCoordinateId.coordinateDesc)
                     ?.setText(R.id.tvTimeCoordinate,time.toString())
         }
     }

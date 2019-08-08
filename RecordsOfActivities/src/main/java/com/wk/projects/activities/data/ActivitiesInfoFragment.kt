@@ -3,6 +3,7 @@ package com.wk.projects.activities.data
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.View
@@ -24,6 +25,7 @@ import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.eventBus.EventMsg.Companion.ADD_ITEM
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.date.DateTime
+import com.wk.projects.common.helper.BaseHandler
 import com.wk.projects.common.helper.LogHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.resource.WkContextCompat
@@ -31,6 +33,7 @@ import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
+import org.litepal.extension.find
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -59,6 +62,20 @@ class ActivitiesInfoFragment : BaseFragment(),
         const val ADD_START = 0
         const val ADD_END = 1
     }
+
+    private class InfoHandler(mActivitiesInfoFragment: ActivitiesInfoFragment)
+        : BaseHandler<ActivitiesInfoFragment>(mActivitiesInfoFragment) {
+        override fun handleMessage(msg: Message?) {
+            if (!isValid()) {
+                return
+            }
+            val locationBeans = msg?.obj ?: return
+            if(locationBeans is java.util.ArrayList<*>)
+                getTarget()?.mCoordinateAdapter?.setNewData(locationBeans as? java.util.ArrayList<LocationBean>)?:throw IllegalArgumentException()
+        }
+    }
+
+    private lateinit var infoHandler: InfoHandler
 
     private val itemId: Long by lazy {
         arguments?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, ScheduleItem.SCHEDULE_INVALID)
@@ -89,6 +106,7 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     override fun initView() {
         super.initView()
+        infoHandler = InfoHandler(this)
         if (itemId >= 0) {
             LitePal.findAsync(ScheduleItem::class.java, itemId, true).listen { mScheduleItem ->
                 /*
@@ -248,34 +266,37 @@ class ActivitiesInfoFragment : BaseFragment(),
         //取出额外的数据，这里是坐标
         val extraDatas = transmitScheduleItem?.routes ?: return
         Timber.i(extraDatas.size.toString())
-        //是否是整条路线的起点标志
-        var isFirstRoute = true
-        val locationBeans = ArrayList<LocationBean>()
-        extraDatas.forEach { route ->
-            LogHelper.TimberI(route.toString())
-            val startCoordinate = route.startCoordinate ?: return
-            val endCoordinate = route.endCoordinate
-            //第一次是不需要判断是否跟上一个连续
-            if (isFirstRoute) {
-                locationBeans.add(LocationBean(startCoordinate, route.startTime))
-                if (endCoordinate != null)
-                    locationBeans.add(LocationBean(endCoordinate, route.endTime))
-                isFirstRoute = false
-            } else {//如果不是整个路线的起点，多段路程中，可能有一段的起点是上一段的终点
-                val lastEndCoordinate = locationBeans.last()
-                val endTime = lastEndCoordinate.time ?: 0L
-                if (lastEndCoordinate.mCoordinate == startCoordinate && (Math.abs(route.startTime - endTime) >= 6000)) {
-                    locationBeans.add(LocationBean(startCoordinate, route.startTime))
+
+        Thread {
+            //是否是整条路线的起点标志
+            var isFirstRoute = true
+            val locationBeans = ArrayList<LocationBean>()
+            extraDatas.forEach { route ->
+                LogHelper.TimberI(route.toString())
+                var startCoordinateId = route.startCoordinateId
+                val endCoordinateId = route.endCoordinateId
+                if (!isFirstRoute) {//如果不是整个路线的起点，多段路程中，可能有一段的起点是上一段的终点
+                    val lastEndCoordinate = locationBeans.last()
+                    val endTime = lastEndCoordinate.time ?: 0L
+                    if (lastEndCoordinate.mCoordinateId.baseObjId == startCoordinateId && (Math.abs(route.startTime - endTime) < 6000)) {
+                        startCoordinateId = -1
+                    }
                 }
-                if (endCoordinate != null)
-                    locationBeans.add(LocationBean(endCoordinate, route.endTime))
+                LitePal.find<Coordinate>(startCoordinateId)?.run {
+                    locationBeans.add(LocationBean(this, route.startTime))
+                }
+                LitePal.find<Coordinate>(endCoordinateId)?.run {
+                    locationBeans.add(LocationBean(this, route.endTime))
+                }
+                if (isFirstRoute)
+                    isFirstRoute = false
             }
-        }
-        mCoordinateAdapter.setNewData(locationBeans)
+            Message.obtain(infoHandler, 0, locationBeans).sendToTarget()
+        }.start()
     }
 
     /**专门为了这个CoordinateRecycler创建的bean*/
-    class LocationBean(var mCoordinate: Coordinate, var time: Long?)
+    class LocationBean(var mCoordinateId: Coordinate, var time: Long?)
 
     /***
      * 需要更换父类的WkActivity
@@ -436,32 +457,49 @@ class ActivitiesInfoFragment : BaseFragment(),
                 val mCoordinate = Coordinate()
                 mCoordinate.coordinateDesc = coordinateDesc
                 mCoordinate.saveOrUpdateAsync("coordinatedesc=?", coordinateDesc).listen {
-                    if(!it){
+                    if (!it) {
                         ToastUtil.show("Coordinate   saveOrUpdateAsync  failed  ")
                     }
-                    route.endCoordinate = mCoordinate
-                    route.endTime = System.currentTimeMillis()
-                    route.belongScheduleItem = transmitScheduleItem
-                    route.updateAsync(route.baseObjId).listen { updateCount ->
-                        if (updateCount > 0) {
-                            ToastUtil.show("Route更新成功")
-                            mCoordinateAdapter.addData(LocationBean(mCoordinate, route.endTime))
-                        } else
-                            ToastUtil.show("Route更新失败")
+
+                    if (route.endCoordinateId == -1L) {
+                        route.endCoordinateId = mCoordinate.baseObjId
+                        route.endTime = System.currentTimeMillis()
+                        route.belongScheduleItem = transmitScheduleItem
+                        route.updateAsync(route.baseObjId).listen { updateCount ->
+                            if (updateCount > 0) {
+                                ToastUtil.show("Route更新成功")
+                                mCoordinateAdapter.addData(LocationBean(mCoordinate, route.endTime))
+                            } else
+                                ToastUtil.show("Route更新失败")
+                        }
+                    } else {
+                        val newRoute = Route()
+                        newRoute.startCoordinateId = route.endCoordinateId
+                        newRoute.startTime = route.endTime
+                        newRoute.belongScheduleItem = route.belongScheduleItem
+                        newRoute.endCoordinateId = mCoordinate.baseObjId
+                        newRoute.endTime = System.currentTimeMillis()
+                        newRoute.saveAsync().listen { isSuccessful ->
+                            if (isSuccessful) {
+                                ToastUtil.show("Route保存成功")
+                                mCoordinateAdapter.addData(LocationBean(mCoordinate, newRoute.startTime))
+                            } else
+                                ToastUtil.show("Route保存失败")
+                        }
                     }
+
+
                 }
             }
             ADD_START -> {
                 val mCoordinate = Coordinate()
                 mCoordinate.coordinateDesc = coordinateDesc
                 mCoordinate.saveOrUpdateAsync("coordinatedesc=?", coordinateDesc).listen {
-                    if(!it){
+                    if (!it) {
                         ToastUtil.show("Coordinate   saveOrUpdateAsync  failed  ")
                     }
-                    route.startCoordinate = mCoordinate
+                    route.startCoordinateId = mCoordinate.baseObjId
                     route.startTime = System.currentTimeMillis()
-                    route.endCoordinate = null
-                    route.endTime = 0
                     route.belongScheduleItem = transmitScheduleItem
                     route.saveAsync().listen { isSuccessful ->
                         if (isSuccessful) {
@@ -486,20 +524,24 @@ class ActivitiesInfoFragment : BaseFragment(),
                     val coordinateDesc = data?.getStringExtra(SchedulesBundleKey.COORDINATE_DESC)
                             ?: return
                     val locationBeanSize = mCoordinateAdapter.itemCount
+                    LogHelper.TimberI("size: $locationBeanSize")
                     //已经有路线数据
                     if (locationBeanSize > 0) {
                         val lastLocationBean = mCoordinateAdapter.getItem(locationBeanSize - 1)
-                        val desc = lastLocationBean?.mCoordinate?.coordinateDesc
+                        val desc = lastLocationBean?.mCoordinateId?.coordinateDesc
                         //说明在一个地点停留了一段时间，这时候就应该新建一个route
                         if (desc == coordinateDesc) {
+                            LogHelper.TimberI("新的起点")
                             saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
                         } else {
                             //取出额外的数据，这里是坐标
+                            LogHelper.TimberI("增加终点")
                             val lastRoute = transmitScheduleItem?.routes?.last() ?: return
-                            saveOrUpdataRoute(lastRoute, ADD_START, coordinateDesc)
+                            saveOrUpdataRoute(lastRoute, ADD_END, coordinateDesc)
                         }
                         //一个坐标都没有
                     } else {
+                        LogHelper.TimberI("开始")
                         saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
                     }
                 }
