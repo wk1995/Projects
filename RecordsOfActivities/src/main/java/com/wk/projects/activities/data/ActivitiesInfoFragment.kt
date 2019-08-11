@@ -70,10 +70,142 @@ class ActivitiesInfoFragment : BaseFragment(),
                 return
             }
             val locationBeans = msg?.obj ?: return
-            if(locationBeans is java.util.ArrayList<*>)
-                getTarget()?.mCoordinateAdapter?.setNewData(locationBeans as? java.util.ArrayList<LocationBean>)?:throw IllegalArgumentException()
+            getTarget()?.mCoordinateAdapter?.setNewData(locationBeans as? java.util.ArrayList<LocationBean>)
         }
     }
+
+    private inner class InfoRecycleClickListener:BaseSimpleClickListener(){
+        override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+
+            when(adapter){
+                is CategoryListAdapter->{
+                    //展开
+                    Timber.i("onItemChildClick position:  $position")
+                    val wkActivityBean = adapter.getItem(position) as ActivitiesBean
+                    val wkActivity = wkActivityBean.wkActivity ?: return
+                    //如果没有下一层级的
+                    if (!wkActivityBean.hasSubItem()) {
+                        val wkActivityId = wkActivity.baseObjId
+                        LitePal.where("parentId=?", wkActivityId.toString())
+                                .findAsync(WkActivity::class.java).listen { wkActivities ->
+                                    Timber.i("size: ${wkActivities.size}")
+                                    wkActivities.forEach {
+                                        wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1, wkActivityBean))
+                                    }
+                                    wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1, wkActivityBean))
+                                    adapter.expand(position)
+                                }
+
+                    } else {//如果有
+                        if (wkActivityBean.isExpanded)
+                            adapter.collapse(position)
+                        else
+                            adapter.expand(position)
+                    }
+                }
+                is CoordinateAdapter->{
+
+                }
+            }
+
+        }
+
+        override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+            Timber.i("onItemClick position:  $position")
+            when (adapter) {
+
+                is CategoryListAdapter -> {
+                    selectActivityBean(adapter,position)
+                }
+                is CoordinateAdapter -> {
+
+                }
+            }
+        }
+
+        override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+            super.onItemLongClick(adapter, view, position)
+            when (adapter) {
+                is CategoryListAdapter -> {
+                    targetItem = adapter.getItem(position)
+                            ?: return
+                    val targetActivity = targetItem?.wkActivity
+                            ?: return
+                    val popupMenu = PopupMenu(_mActivity, view ?: return)
+                    //加载菜单文件
+                    popupMenu.menuInflater.inflate(R.menu.activities_category_delete_and_move, popupMenu.menu)
+                    popupMenu.setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.menuCategoryDelete -> {
+                                //删除
+                                Observable.just(targetActivity)
+                                        .map { wkActivity ->
+                                            deleteActivities(wkActivity)
+                                        }.subscribeOn(Schedulers.newThread())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(object : Subscriber<Unit>() {
+                                            override fun onNext(t: Unit?) {
+
+                                            }
+
+                                            override fun onCompleted() {
+                                                val parentPosition = adapter.getParentPosition(targetItem
+                                                        ?: return)
+                                                adapter.collapse(parentPosition)
+                                                targetItem?.parentBean?.removeSubItem(targetItem)
+                                            }
+
+                                            override fun onError(e: Throwable?) {
+                                                Timber.i("删除失败： ${e?.message}")
+                                            }
+                                        })
+                            }
+                            //更换父类别
+                            R.id.menuCategoryMove -> {
+                                //需要变更父类的WkActivity
+                                val parentPosition = adapter.getParentPosition(targetItem
+                                        ?: return@setOnMenuItemClickListener true)
+                                adapter.collapse(parentPosition)
+                                val needMoveId = targetActivity.baseObjId
+                                Timber.i("targetActivityId: $needMoveId")
+                                val bundle = Bundle()
+                                bundle.putLong(WkActivity.ACTIVITY_ID, needMoveId)
+                                val mCategoryDialog = CategoryDialog.create(bundle)
+                                mCategoryDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID)
+                                mCategoryDialog.show(fragmentManager)
+                            }
+                        }
+                        true
+                    }
+                    popupMenu.show()
+                }
+                is CoordinateAdapter -> {
+
+                }
+            }
+
+
+        }
+    }
+    /**选择选中的类别*/
+    fun selectActivityBean(adapter: CategoryListAdapter,position:Int){
+        currentBean = adapter.getItem(position)
+        val wkActivity = currentBean?.wkActivity
+        //说明是个额外的item
+        if (wkActivity == null) {
+            ToastUtil.show("增加")
+            val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
+            mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName)
+            mScheduleItemAddDialog.show(fragmentManager)
+
+        } else {
+            val categoryName = wkActivity.itemName
+            tvItemClassName.text = categoryName
+            newBelongActivity = wkActivity
+        }
+    }
+
+    private val mInfoRecycleClickListener by lazy { InfoRecycleClickListener() }
 
     private lateinit var infoHandler: InfoHandler
 
@@ -143,116 +275,7 @@ class ActivitiesInfoFragment : BaseFragment(),
         rvItemClass.layoutManager = LinearLayoutManager(_mActivity)
         rvItemClass.adapter = mCategoryListAdapter
         findRootCategory()
-        rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                //展开
-                Timber.i("onItemChildClick position:  $position")
-                val wkActivityBean = adapter?.getItem(position) as ActivitiesBean
-                val wkActivity = wkActivityBean.wkActivity ?: return
-                //如果没有下一层级的
-                if (!wkActivityBean.hasSubItem()) {
-                    val wkActivityId = wkActivity.baseObjId
-                    LitePal.where("parentId=?", wkActivityId.toString())
-                            .findAsync(WkActivity::class.java).listen { wkActivities ->
-                                Timber.i("size: ${wkActivities.size}")
-                                wkActivities.forEach {
-                                    wkActivityBean.addSubItem(ActivitiesBean(it, wkActivityBean.wkLevel + 1, wkActivityBean))
-                                }
-                                wkActivityBean.addSubItem(ActivitiesBean(null, wkActivityBean.wkLevel + 1, wkActivityBean))
-                                adapter.expand(position)
-                            }
-
-                } else {//如果有
-                    if (wkActivityBean.isExpanded)
-                        adapter.collapse(position)
-                    else
-                        adapter.expand(position)
-                }
-            }
-
-            /**
-             * 选择选中的类别
-             * */
-            override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                super.onItemClick(adapter, view, position)
-                if (adapter !is CategoryListAdapter) return
-                Timber.i("onItemClick position:  $position")
-                currentBean = adapter.getItem(position)
-                val wkActivity = currentBean?.wkActivity
-                //说明是个额外的item
-                if (wkActivity == null) {
-                    ToastUtil.show("增加")
-                    val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
-                    mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName)
-                    mScheduleItemAddDialog.show(fragmentManager)
-
-                } else {
-                    val categoryName = wkActivity.itemName
-                    tvItemClassName.text = categoryName
-                    newBelongActivity = wkActivity
-                }
-
-            }
-
-            override fun onItemLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-
-                super.onItemLongClick(adapter, view, position)
-                if (adapter !is CategoryListAdapter) return
-                targetItem = adapter.getItem(position)
-                        ?: return
-                val targetActivity = targetItem?.wkActivity
-                        ?: return
-                val popupMenu = PopupMenu(_mActivity, view ?: return)
-                //加载菜单文件
-                popupMenu.menuInflater.inflate(R.menu.activities_category_delete_and_move, popupMenu.menu)
-                popupMenu.setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.menuCategoryDelete -> {
-                            //删除
-                            Observable.just(targetActivity)
-                                    .map { wkActivity ->
-                                        deleteActivities(wkActivity)
-                                    }.subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(object : Subscriber<Unit>() {
-                                        override fun onNext(t: Unit?) {
-
-                                        }
-
-                                        override fun onCompleted() {
-                                            val parentPosition = adapter.getParentPosition(targetItem
-                                                    ?: return)
-                                            adapter.collapse(parentPosition)
-                                            targetItem?.parentBean?.removeSubItem(targetItem)
-                                        }
-
-                                        override fun onError(e: Throwable?) {
-                                            Timber.i("删除失败： ${e?.message}")
-                                        }
-                                    })
-                        }
-                        //更换父类别
-                        R.id.menuCategoryMove -> {
-                            //需要变更父类的WkActivity
-                            val parentPosition = adapter.getParentPosition(targetItem
-                                    ?: return@setOnMenuItemClickListener true)
-                            adapter.collapse(parentPosition)
-                            val needMoveId = targetActivity.baseObjId
-                            Timber.i("targetActivityId: $needMoveId")
-                            val bundle = Bundle()
-                            bundle.putLong(WkActivity.ACTIVITY_ID, needMoveId)
-                            val mCategoryDialog = CategoryDialog.create(bundle)
-                            mCategoryDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID)
-                            mCategoryDialog.show(fragmentManager)
-                        }
-                    }
-                    true
-                }
-                popupMenu.show()
-
-            }
-        })
-
+        rvItemClass.addOnItemTouchListener(mInfoRecycleClickListener)
     }
 
     private val mCoordinateAdapter by lazy { CoordinateAdapter() }
