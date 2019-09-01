@@ -18,6 +18,9 @@ class CoordinateAdapter : BaseQuickAdapter<ActivitiesInfoFragment.LocationBean, 
         item?.run {
             helper?.setText(R.id.tvDescCoordinate,mCoordinateId.coordinateDesc)
                     ?.setText(R.id.tvTimeCoordinate,time.toString())
+                    ?.addOnClickListener(R.id.tvDescCoordinate)
+                    ?.addOnClickListener(R.id.tvTimeCoordinate)
+                    ?.addOnLongClickListener(helper.itemView.id)
         }
     }
 }

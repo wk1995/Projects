@@ -74,9 +74,11 @@ class ActivitiesInfoFragment : BaseFragment(),
         }
     }
 
+    /**
+     * infoFragment里的recycleitem的点击事件
+     * */
     private inner class InfoRecycleClickListener:BaseSimpleClickListener(){
         override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-
             when(adapter){
                 is CategoryListAdapter->{
                     //展开
@@ -104,7 +106,21 @@ class ActivitiesInfoFragment : BaseFragment(),
                     }
                 }
                 is CoordinateAdapter->{
+                    ToastUtil.show("position: $position")
+                    when(view?.id){
+                        /*改变坐标，不能是改变坐标的desc
+                        * 可以新增，更换坐标*/
+                        R.id.tvDescCoordinate->{
+                            val mScheduleItemAddDialog=ScheduleItemAddDialog.create()
+                            mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination)
+                            mScheduleItemAddDialog.show(fragmentManager)
 
+                        }
+                        //改变路线坐标的时间
+                        R.id.tvTimeCoordinate->{
+                            
+                        }
+                    }
                 }
             }
 
@@ -113,12 +129,8 @@ class ActivitiesInfoFragment : BaseFragment(),
         override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
             Timber.i("onItemClick position:  $position")
             when (adapter) {
-
                 is CategoryListAdapter -> {
                     selectActivityBean(adapter,position)
-                }
-                is CoordinateAdapter -> {
-
                 }
             }
         }
@@ -180,7 +192,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     popupMenu.show()
                 }
                 is CoordinateAdapter -> {
-
+                    ToastUtil.show("长按")
                 }
             }
 
@@ -286,6 +298,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     private fun initCoordinateRecycler(transmitScheduleItem: ScheduleItem?) {
         rvLocations.layoutManager = LinearLayoutManager(_mActivity)
         rvLocations.adapter = mCoordinateAdapter
+        rvLocations.addOnItemTouchListener(mInfoRecycleClickListener)
         //取出额外的数据，这里是坐标
         val extraDatas = transmitScheduleItem?.routes ?: return
         Timber.i(extraDatas.size.toString())
@@ -343,6 +356,9 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     }
 
+    private fun addCordination(){
+        
+    }
 
     override fun onClick(v: View?) {
         when (v) {

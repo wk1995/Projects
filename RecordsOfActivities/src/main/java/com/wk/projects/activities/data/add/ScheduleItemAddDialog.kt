@@ -39,7 +39,7 @@ import timber.log.Timber
  *      coordinateDesc   : 新增项目
  * </pre>
  */
-class ScheduleItemAddDialog : BaseSimpleDialog() {
+open class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
     private val editTextHelper by lazy { EditTextHelper.getInstance() }
 
@@ -54,16 +54,20 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     override fun initViewSubLayout() = R.layout.schedules_main_dialog_simple_add_item
 
+
+    protected open fun getTitleResId():Int{
+        return  when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> R.string.schedules_add_coordinate
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName-> R.string.schedules_add_coordinate
+            RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES->R.string.schedules_add_item
+            else -> R.string.schedules_update_name
+        }
+
+    }
+
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         super.bindView(savedInstanceState, rootView)
-        tvComSimpleDialogTheme.setText(
-                when (targetRequestCode) {
-                    RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> R.string.schedules_add_coordinate
-                    RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName-> R.string.schedules_add_coordinate
-                    RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES->R.string.schedules_add_item
-                    else -> R.string.schedules_update_name
-                }
-        )
+        tvComSimpleDialogTheme.setText(getTitleResId())
     }
 
     override fun onClick(v: View?) {
@@ -75,8 +79,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         super.onClick(v)
     }
 
-    override fun initVSView(vsView: View) {
-//        editTextHelper.showFocus(etAddItem, window)
+    private fun initRecycle(){
         rvExistItem.layoutManager = LinearLayoutManager(mActivity)
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
@@ -95,23 +98,35 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
         })
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
-        val table :String
-        val attr:String
-        when (targetRequestCode) {
-            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName ->{
-                table="wkactivity"
-                attr="itemname"
+    }
+
+    protected open fun getTableName(): String {
+        return when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
+                "wkactivity"
             }
-            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
-                table= "coordinate"
-                attr="coordinatedesc"
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
+                "coordinate"
             }
-            else->{
-                table= "scheduleitem"
-                attr="itemname"
+            else -> {
+                "scheduleitem"
             }
         }
-        Observable.just("select distinct $attr from $table")
+    }
+
+    protected open fun getColumn(): String {
+        return when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
+                "coordinatedesc"
+            }
+            else -> {
+                "itemname"
+            }
+        }
+    }
+
+    private fun initRecycleData(){
+        Observable.just("select distinct ${getColumn()} from ${getTableName()}")
                 .map {
                     LitePal.findBySQL(it)
                 }.subscribeOn(Schedulers.io())
@@ -125,6 +140,12 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     mItemAdapter.initData(items)
                     it.close()
                 }
+    }
+
+    override fun initVSView(vsView: View) {
+//        editTextHelper.showFocus(etAddItem, window)
+        initRecycle()
+        initRecycleData()
         etAddItem.addTextChangedListener(object : BaseTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 mItemAdapter.search(s.toString())
@@ -132,31 +153,35 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         })
     }
 
-    private fun transferName(name: String?) {
-        if (name == null || name.isBlank())
+    protected open fun putExtra(name:String?):Intent?{
+        if (name?.isBlank()!=false) {
             ToastUtil.show("不能为空")
+            return null
+        }
         val transIntent = Intent()
         when (targetRequestCode) {
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName -> {
-
                 transIntent.putExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME, name)
-
             }
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
                 transIntent.putExtra(SchedulesBundleKey.CATEGORY_NAME, name)
             }
             RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES -> {
-                //会造成内存泄漏
+                //TODO 会造成内存泄漏
                 saveItem(name)
-                return
+                return null
             }
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
                 transIntent.putExtra(SchedulesBundleKey.COORDINATE_DESC, name)
             }
         }
+        return transIntent
+    }
+
+    private fun transferName(name: String?) {
         targetFragment?.onActivityResult(
                 targetRequestCode,
-                ResultCode.ScheduleItemAddDialog, transIntent)
+                ResultCode.ScheduleItemAddDialog, putExtra(name)?:return)
     }
 
     //保存数据库中
