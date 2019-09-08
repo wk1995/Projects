@@ -31,6 +31,7 @@ import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.widget.time.TimePickerCreator
+import kotlinx.android.synthetic.main.activities_coordinate_list_item.*
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
 import org.litepal.extension.find
@@ -75,12 +76,19 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     /**
+     * 点击路线的item的position
+     * 修改路线item的坐标或时间会用到
+     * */
+    private var changeCoordinatePosition = 0
+
+
+    /**
      * infoFragment里的recycleitem的点击事件
      * */
-    private inner class InfoRecycleClickListener:BaseSimpleClickListener(){
+    private inner class InfoRecycleClickListener : BaseSimpleClickListener() {
         override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-            when(adapter){
-                is CategoryListAdapter->{
+            when (adapter) {
+                is CategoryListAdapter -> {
                     //展开
                     Timber.i("onItemChildClick position:  $position")
                     val wkActivityBean = adapter.getItem(position) as ActivitiesBean
@@ -105,20 +113,23 @@ class ActivitiesInfoFragment : BaseFragment(),
                             adapter.expand(position)
                     }
                 }
-                is CoordinateAdapter->{
+                is CoordinateAdapter -> {
                     ToastUtil.show("position: $position")
-                    when(view?.id){
+                    when (view) {
                         /*改变坐标，不能是改变坐标的desc
                         * 可以新增，更换坐标*/
-                        R.id.tvDescCoordinate->{
-                            val mScheduleItemAddDialog=ScheduleItemAddDialog.create()
-                            mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination)
+                        tvDescCoordinate -> {
+                            val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
+                            mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE)
                             mScheduleItemAddDialog.show(fragmentManager)
 
                         }
-                        //改变路线坐标的时间
-                        R.id.tvTimeCoordinate->{
-                            
+                        /*
+                        改变路线坐标的时间
+                        */
+                        tvTimeCoordinate -> {
+                            changeCoordinatePosition = position
+                            TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment)
                         }
                     }
                 }
@@ -130,7 +141,7 @@ class ActivitiesInfoFragment : BaseFragment(),
             Timber.i("onItemClick position:  $position")
             when (adapter) {
                 is CategoryListAdapter -> {
-                    selectActivityBean(adapter,position)
+                    selectActivityBean(adapter, position)
                 }
             }
         }
@@ -199,8 +210,9 @@ class ActivitiesInfoFragment : BaseFragment(),
 
         }
     }
+
     /**选择选中的类别*/
-    fun selectActivityBean(adapter: CategoryListAdapter,position:Int){
+    fun selectActivityBean(adapter: CategoryListAdapter, position: Int) {
         currentBean = adapter.getItem(position)
         val wkActivity = currentBean?.wkActivity
         //说明是个额外的item
@@ -313,16 +325,16 @@ class ActivitiesInfoFragment : BaseFragment(),
                 val endCoordinateId = route.endCoordinateId
                 if (!isFirstRoute) {//如果不是整个路线的起点，多段路程中，可能有一段的起点是上一段的终点
                     val lastEndCoordinate = locationBeans.last()
-                    val endTime = lastEndCoordinate.time ?: 0L
-                    if (lastEndCoordinate.mCoordinateId.baseObjId == startCoordinateId && (Math.abs(route.startTime - endTime) < 6000)) {
+                    val endTime = lastEndCoordinate.route.endTime
+                    if (lastEndCoordinate.route.endCoordinateId == startCoordinateId && (Math.abs(route.startTime - endTime) < 6000)) {
                         startCoordinateId = -1
                     }
                 }
                 LitePal.find<Coordinate>(startCoordinateId)?.run {
-                    locationBeans.add(LocationBean(this, route.startTime))
+                    locationBeans.add(LocationBean(route, true))
                 }
                 LitePal.find<Coordinate>(endCoordinateId)?.run {
-                    locationBeans.add(LocationBean(this, route.endTime))
+                    locationBeans.add(LocationBean(route, false))
                 }
                 if (isFirstRoute)
                     isFirstRoute = false
@@ -332,7 +344,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
     /**专门为了这个CoordinateRecycler创建的bean*/
-    class LocationBean(var mCoordinateId: Coordinate, var time: Long?)
+    class LocationBean(var route: com.wk.projects.activities.data.Route, var isStart: Boolean)
 
     /***
      * 需要更换父类的WkActivity
@@ -356,26 +368,12 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     }
 
-    private fun addCordination(){
-        
+    private fun addCordination() {
+
     }
 
     override fun onClick(v: View?) {
         when (v) {
-            //增加坐标
-            btAddLocation -> {
-                if (tvLocationName.text.isBlank()) {
-                    ToastUtil.show("地点描述为空")
-                    return
-                } else {
-                    //增加
-                    val currentTime = System.currentTimeMillis()
-                    val coordinateDesc = tvLocationName.text.toString()
-                    val currentCoordinate = Coordinate(null, null, coordinateDesc)
-                    mCoordinateAdapter.addData(LocationBean(currentCoordinate, currentTime))
-                    rvLocations.scrollToPosition(mCoordinateAdapter.itemCount - 1)
-                }
-            }
             tvLocationName -> {
                 //弹窗，增加desc
                 val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
@@ -458,7 +456,26 @@ class ActivitiesInfoFragment : BaseFragment(),
 
     override fun onTimeSelect(date: Date?, v: View?) {
         Timber.d("76 $v")
-        (v as? TextView)?.text = DateTime.getDateString(date?.time)
+        //路线recycle中的item
+        if (v == tvTimeCoordinate) {
+            /*先找到相应的route，然后改掉其坐标的id
+            * 注意的是：如果是连续的话，需要改掉起点和终点为这个对应的坐标的小路线
+            * */
+            val mLocationBean = mCoordinateAdapter.data[changeCoordinatePosition]
+            val isStart = mLocationBean.isStart
+            val route = mLocationBean.route
+            if (isStart) {
+                route.startTime = date?.time ?: 0L
+            } else {
+                route.endTime = date?.time ?: 0L
+            }
+            route.saveAsync().listen {
+                mCoordinateAdapter.notifyDataSetChanged()
+            }
+        } else {
+            (v as? TextView)?.text = DateTime.getDateString(date?.time)
+        }
+
     }
 
     /**
@@ -507,7 +524,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         route.updateAsync(route.baseObjId).listen { updateCount ->
                             if (updateCount > 0) {
                                 ToastUtil.show("Route更新成功")
-                                mCoordinateAdapter.addData(LocationBean(mCoordinate, route.endTime))
+                                mCoordinateAdapter.addData(LocationBean(route, false))
                             } else
                                 ToastUtil.show("Route更新失败")
                         }
@@ -521,7 +538,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         newRoute.saveAsync().listen { isSuccessful ->
                             if (isSuccessful) {
                                 ToastUtil.show("Route保存成功")
-                                mCoordinateAdapter.addData(LocationBean(mCoordinate, newRoute.startTime))
+                                mCoordinateAdapter.addData(LocationBean(newRoute, true))
                             } else
                                 ToastUtil.show("Route保存失败")
                         }
@@ -543,7 +560,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     route.saveAsync().listen { isSuccessful ->
                         if (isSuccessful) {
                             ToastUtil.show("Route保存成功")
-                            mCoordinateAdapter.addData(LocationBean(mCoordinate, route.startTime))
+                            mCoordinateAdapter.addData(LocationBean(route, true))
                         } else
                             ToastUtil.show("Route保存失败")
                     }
@@ -554,104 +571,169 @@ class ActivitiesInfoFragment : BaseFragment(),
     }
 
 
+    private fun updateRouteCoordinate(newCoordinate: Coordinate) {
+        val changeLocationBean = mCoordinateAdapter.getItem(changeCoordinatePosition)
+                ?: return
+        val route = changeLocationBean.route
+        if (changeLocationBean.isStart) {
+            route.startCoordinateId = newCoordinate.baseObjId
+        } else {
+            route.endCoordinateId = newCoordinate.baseObjId
+        }
+        route.saveAsync().listen { isRouteSaveSuccess ->
+            if (isRouteSaveSuccess) {
+                LogHelper.i("wk", "修改路程中的坐标---(路线保存成功)")
+            } else {
+                LogHelper.i("wk", "修改路程中的坐标---(路线保存失败)")
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Timber.i("requestCode :  $requestCode  resultCode:  $resultCode ")
-        if (resultCode == ResultCode.ScheduleItemAddDialog)
-            when (requestCode) {
-                RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
-                    val coordinateDesc = data?.getStringExtra(SchedulesBundleKey.COORDINATE_DESC)
-                            ?: return
-                    val locationBeanSize = mCoordinateAdapter.itemCount
-                    LogHelper.TimberI("size: $locationBeanSize")
-                    //已经有路线数据
-                    if (locationBeanSize > 0) {
-                        val lastLocationBean = mCoordinateAdapter.getItem(locationBeanSize - 1)
-                        val desc = lastLocationBean?.mCoordinateId?.coordinateDesc
-                        //说明在一个地点停留了一段时间，这时候就应该新建一个route
-                        if (desc == coordinateDesc) {
-                            LogHelper.TimberI("新的起点")
-                            saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
-                        } else {
-                            //取出额外的数据，这里是坐标
-                            LogHelper.TimberI("增加终点")
-                            val lastRoute = transmitScheduleItem?.routes?.last() ?: return
-                            saveOrUpdataRoute(lastRoute, ADD_END, coordinateDesc)
-                        }
-                        //一个坐标都没有
-                    } else {
-                        LogHelper.TimberI("开始")
-                        saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
-                    }
-                }
+        when (resultCode) {
+            ResultCode.ScheduleItemAddDialog -> {
+                when (requestCode) {
+                    RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE -> {
+                        //先确定是否有这个坐标
+                        val coordinateDesc = data?.getStringExtra(SchedulesBundleKey.COORDINATE_DESC)
+                                ?: return
+                        LitePal.where("coordinateDesc=?", coordinateDesc)
+                                .findAsync(Coordinate::class.java)
+                                .listen {
+                                    //说明是新建的坐标
+                                    if (it.isEmpty()) {
+                                        val newCoordinate = Coordinate(null, null, coordinateDesc)
+                                        newCoordinate.saveAsync().listen { isSaveSuccess ->
+                                            if (isSaveSuccess) {
+                                                LogHelper.i("wk", "修改路程中的坐标成功---(新增坐标)")
+                                                updateRouteCoordinate(newCoordinate)
+                                            } else {
+                                                LogHelper.i("wk", "修改路程中的坐标失败---(新增坐标)")
+                                            }
+                                        }
+                                    } else {
+                                        //说明是用曾经记录的的坐标
+                                        LogHelper.i("wk", "找到des为$coordinateDesc 的坐标有${it.size} 个")
+                                        updateRouteCoordinate(it[0])
+                                    }
+                                }
 
-                RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName -> {
-                    val scheduleItemName = data?.getStringExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
-                            ?: ""
-                    tvScheduleName.text = scheduleItemName
-                }
-                RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
-                    val categoryName = data?.getStringExtra(SchedulesBundleKey.CATEGORY_NAME)
-                            ?: throw Exception("ActivitiesInfoFragment category name is null ")
-                    if (categoryName.isBlank()) {
-                        return
                     }
-                    Timber.i("增加的类别名称： $categoryName")
-                    //上一层
-                    val parentBean = currentBean?.parentBean
-                    val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean?.wkActivity?.baseObjId
-                            ?: WkActivity.NO_PARENT, false)
-                    newWkActivity.saveAsync().listen {
-                        if (!it) {
-                            ToastUtil.show("新建类别失败")
-                            return@listen
-                        }
-                        parentBean?.run {
-                            val parentPosition = mCategoryListAdapter.getParentPosition(currentBean!!)
-                            Timber.i("parent name: ${wkActivity?.itemName} ")
-                            val subSize = subItems.size
-                            addSubItem(subSize - 1,
-                                    ActivitiesBean(
-                                            newWkActivity,
-                                            parentBean.wkLevel + 1,
-                                            parentBean))
-                            i++
-                            if (isExpanded) {
-                                mCategoryListAdapter.collapse(parentPosition)
-                                mCategoryListAdapter.expand(parentPosition)
+                    RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
+                        val coordinateDesc = data?.getStringExtra(SchedulesBundleKey.COORDINATE_DESC)
+                                ?: return
+                        val locationBeanSize = mCoordinateAdapter.itemCount
+                        LogHelper.TimberI("size: $locationBeanSize")
+                        //已经有路线数据
+                        if (locationBeanSize > 0) {
+                            val lastLocationBean = mCoordinateAdapter.getItem(locationBeanSize - 1)
+                            val isStart = lastLocationBean?.isStart ?: return
+                            var desc: String? = null
+
+                            LitePal.findAllAsync(Coordinate::class.java,
+                                    if (isStart) {
+                                        lastLocationBean.route.startCoordinateId
+                                    } else {
+                                        lastLocationBean.route.endCoordinateId
+                                    })
+                                    .listen {
+                                        if (it.isNotEmpty()) {
+                                            desc = it[0].coordinateDesc
+                                        }
+                                    }
+                            if (desc == null) {
+                                LogHelper.i("wk", "desc is null")
+                                return
                             }
+                            //说明在一个地点停留了一段时间，这时候就应该新建一个route
+                            if (desc == coordinateDesc) {
+                                LogHelper.TimberI("新的起点")
+                                saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
+                            } else {
+                                //取出额外的数据，这里是坐标
+                                LogHelper.TimberI("增加终点")
+                                val lastRoute = transmitScheduleItem?.routes?.last() ?: return
+                                saveOrUpdataRoute(lastRoute, ADD_END, coordinateDesc)
+                            }
+                            //一个坐标都没有
+                        } else {
+                            LogHelper.TimberI("开始")
+                            saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
                         }
-
                     }
 
+                    RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName -> {
+                        val scheduleItemName = data?.getStringExtra(SchedulesBundleKey.SCHEDULE_ITEM_NAME)
+                                ?: ""
+                        tvScheduleName.text = scheduleItemName
+                    }
+                    RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
+                        val categoryName = data?.getStringExtra(SchedulesBundleKey.CATEGORY_NAME)
+                                ?: throw Exception("ActivitiesInfoFragment category name is null ")
+                        if (categoryName.isBlank()) {
+                            return
+                        }
+                        Timber.i("增加的类别名称： $categoryName")
+                        //上一层
+                        val parentBean = currentBean?.parentBean
+                        val newWkActivity = WkActivity(categoryName, System.currentTimeMillis(), parentBean?.wkActivity?.baseObjId
+                                ?: WkActivity.NO_PARENT, false)
+                        newWkActivity.saveAsync().listen {
+                            if (!it) {
+                                ToastUtil.show("新建类别失败")
+                                return@listen
+                            }
+                            parentBean?.run {
+                                val parentPosition = mCategoryListAdapter.getParentPosition(currentBean!!)
+                                Timber.i("parent name: ${wkActivity?.itemName} ")
+                                val subSize = subItems.size
+                                addSubItem(subSize - 1,
+                                        ActivitiesBean(
+                                                newWkActivity,
+                                                parentBean.wkLevel + 1,
+                                                parentBean))
+                                i++
+                                if (isExpanded) {
+                                    mCategoryListAdapter.collapse(parentPosition)
+                                    mCategoryListAdapter.expand(parentPosition)
+                                }
+                            }
 
+                        }
+
+
+                    }
                 }
             }
-
-        if (requestCode == RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID
-                && resultCode == ResultCode.CategoryDialog) {
-            val moveId = data?.getLongExtra(SchedulesBundleKey.ACTIVITY_PARENT_ID, -1) ?: -1
-            val newParentPosition = data?.getIntExtra(BundleKey.LIST_POSITION, -1) ?: -1
-            Timber.i("moveId: $moveId  newParentPosition:  $newParentPosition")
-            if (moveId >= 0 && newParentPosition >= 0) {
-                mCategoryListAdapter.collapse(newParentPosition)
-                val newParent = mCategoryListAdapter.getItem(newParentPosition)
-                val mContentValues = ContentValues()
-                mContentValues.put(WkActivity.ACTIVITY_PARENT_ID,
-                        moveId)
-                targetItem?.run {
-                    LitePal.updateAsync(WkActivity::class.java, mContentValues, wkActivity?.baseObjId
-                            ?: -1).listen {
-                        Timber.i("it $it")
-                        if (it > 0) {
-                            Timber.i("移动成功")
-                            newParent?.subItems?.clear()
-                            parentBean?.subItems?.clear()
+            RequestCode.ActivitiesInfoFragment_CHANGE_PARENTID -> {
+                if (resultCode == ResultCode.CategoryDialog) {
+                    val moveId = data?.getLongExtra(SchedulesBundleKey.ACTIVITY_PARENT_ID, -1) ?: -1
+                    val newParentPosition = data?.getIntExtra(BundleKey.LIST_POSITION, -1) ?: -1
+                    Timber.i("moveId: $moveId  newParentPosition:  $newParentPosition")
+                    if (moveId >= 0 && newParentPosition >= 0) {
+                        mCategoryListAdapter.collapse(newParentPosition)
+                        val newParent = mCategoryListAdapter.getItem(newParentPosition)
+                        val mContentValues = ContentValues()
+                        mContentValues.put(WkActivity.ACTIVITY_PARENT_ID,
+                                moveId)
+                        targetItem?.run {
+                            LitePal.updateAsync(WkActivity::class.java, mContentValues, wkActivity?.baseObjId
+                                    ?: -1).listen {
+                                Timber.i("it $it")
+                                if (it > 0) {
+                                    Timber.i("移动成功")
+                                    newParent?.subItems?.clear()
+                                    parentBean?.subItems?.clear()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
 }

@@ -11,16 +11,17 @@ import com.wk.projects.activities.communication.ActivitiesMsg
 import com.wk.projects.activities.communication.constant.RequestCode
 import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName
 import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination
+import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE
 import com.wk.projects.activities.communication.constant.RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_update_itemName
 import com.wk.projects.activities.communication.constant.ResultCode
 import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
-import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.dialog.BaseSimpleDialog
 import com.wk.projects.common.ui.notification.ToastUtil
 import kotlinx.android.synthetic.main.schedules_main_dialog_simple_add_item.*
 import org.litepal.LitePal
@@ -57,8 +58,9 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     protected open fun getTitleResId():Int{
         return  when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE,
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> R.string.schedules_add_coordinate
-            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName-> R.string.schedules_add_coordinate
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName-> R.string.schedules_add_category
             RequestCode.ActivitiesMainFragment_ADD_ACTIVITIES->R.string.schedules_add_item
             else -> R.string.schedules_update_name
         }
@@ -171,6 +173,7 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
                 saveItem(name)
                 return null
             }
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE,
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination->{
                 transIntent.putExtra(SchedulesBundleKey.COORDINATE_DESC, name)
             }
@@ -179,9 +182,8 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
     private fun transferName(name: String?) {
-        targetFragment?.onActivityResult(
-                targetRequestCode,
-                ResultCode.ScheduleItemAddDialog, putExtra(name)?:return)
+        targetFragment?.onActivityResult(targetRequestCode,
+                ResultCode.ScheduleItemAddDialog , putExtra(name) ?: return)
     }
 
     //保存数据库中

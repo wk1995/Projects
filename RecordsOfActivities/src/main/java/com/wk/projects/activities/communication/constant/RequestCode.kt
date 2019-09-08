@@ -21,6 +21,8 @@ object RequestCode {
 
     /**新增坐标desc*/
     const val RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination=6
+    const val RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE=7
+
 
     //改变WkActivity的parentId
     const val ActivitiesInfoFragment_CHANGE_PARENTID=5
