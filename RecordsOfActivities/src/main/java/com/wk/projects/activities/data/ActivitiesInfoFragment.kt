@@ -507,7 +507,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     /**
      *
      * */
-    private fun saveOrUpdataRoute(route: com.wk.projects.activities.data.Route, type: Int, coordinateDesc: String) {
+    private fun saveOrUpdateRoute(route: com.wk.projects.activities.data.Route, type: Int, coordinateDesc: String) {
         when (type) {
             ADD_END -> {
                 val mCoordinate = Coordinate()
@@ -516,7 +516,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     if (!it) {
                         ToastUtil.show("Coordinate   saveOrUpdateAsync  failed  ")
                     }
-
+                    //起点
                     if (route.endCoordinateId == -1L) {
                         route.endCoordinateId = mCoordinate.baseObjId
                         route.endTime = System.currentTimeMillis()
@@ -528,7 +528,9 @@ class ActivitiesInfoFragment : BaseFragment(),
                             } else
                                 ToastUtil.show("Route更新失败")
                         }
+
                     } else {
+                        //列表最后一个点是route的end，现在它要变成新的route的start
                         val newRoute = Route()
                         newRoute.startCoordinateId = route.endCoordinateId
                         newRoute.startTime = route.endTime
@@ -538,7 +540,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         newRoute.saveAsync().listen { isSuccessful ->
                             if (isSuccessful) {
                                 ToastUtil.show("Route保存成功")
-                                mCoordinateAdapter.addData(LocationBean(newRoute, true))
+                                mCoordinateAdapter.addData(LocationBean(newRoute, false))
                             } else
                                 ToastUtil.show("Route保存失败")
                         }
@@ -625,42 +627,41 @@ class ActivitiesInfoFragment : BaseFragment(),
                         val coordinateDesc = data?.getStringExtra(SchedulesBundleKey.COORDINATE_DESC)
                                 ?: return
                         val locationBeanSize = mCoordinateAdapter.itemCount
-                        LogHelper.TimberI("size: $locationBeanSize")
-                        //已经有路线数据
+                        LogHelper.TimberI("size628: $locationBeanSize")
+                        //已经有路线数据，先确定新的坐标是否是记录的最后一个坐标，即是否是在同一地点等待
                         if (locationBeanSize > 0) {
                             val lastLocationBean = mCoordinateAdapter.getItem(locationBeanSize - 1)
                             val isStart = lastLocationBean?.isStart ?: return
                             var desc: String? = null
 
-                            LitePal.findAllAsync(Coordinate::class.java,
+                            LitePal.findAsync(Coordinate::class.java,
                                     if (isStart) {
                                         lastLocationBean.route.startCoordinateId
                                     } else {
                                         lastLocationBean.route.endCoordinateId
                                     })
                                     .listen {
-                                        if (it.isNotEmpty()) {
-                                            desc = it[0].coordinateDesc
+                                            desc = it?.coordinateDesc
+                                        if (desc == null) {
+                                            LogHelper.TimberI("645  desc is null")
+                                            return@listen
+                                        }
+                                        //说明在一个地点停留了一段时间，这时候就应该新建一个route
+                                        if (desc == coordinateDesc) {
+                                            LogHelper.TimberI("新的起点")
+                                            saveOrUpdateRoute(Route(), ADD_START, coordinateDesc)
+                                        } else {
+                                            //取出额外的数据，这里是坐标
+                                            LogHelper.TimberI("增加终点")
+                                            val lastRoute = transmitScheduleItem?.routes?.last() ?: return@listen
+                                            saveOrUpdateRoute(lastRoute, ADD_END, coordinateDesc)
                                         }
                                     }
-                            if (desc == null) {
-                                LogHelper.i("wk", "desc is null")
-                                return
-                            }
-                            //说明在一个地点停留了一段时间，这时候就应该新建一个route
-                            if (desc == coordinateDesc) {
-                                LogHelper.TimberI("新的起点")
-                                saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
-                            } else {
-                                //取出额外的数据，这里是坐标
-                                LogHelper.TimberI("增加终点")
-                                val lastRoute = transmitScheduleItem?.routes?.last() ?: return
-                                saveOrUpdataRoute(lastRoute, ADD_END, coordinateDesc)
-                            }
+
                             //一个坐标都没有
                         } else {
                             LogHelper.TimberI("开始")
-                            saveOrUpdataRoute(Route(), ADD_START, coordinateDesc)
+                            saveOrUpdateRoute(Route(), ADD_START, coordinateDesc)
                         }
                     }
 
