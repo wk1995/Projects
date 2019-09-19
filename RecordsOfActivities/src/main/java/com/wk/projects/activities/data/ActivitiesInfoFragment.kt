@@ -115,20 +115,19 @@ class ActivitiesInfoFragment : BaseFragment(),
                 }
                 is CoordinateAdapter -> {
                     ToastUtil.show("position: $position")
-                    when (view) {
+                    changeCoordinatePosition = position
+                    when (view?.id) {
                         /*改变坐标，不能是改变坐标的desc
                         * 可以新增，更换坐标*/
-                        tvDescCoordinate -> {
+                        R.id.tvDescCoordinate -> {
                             val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                             mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE)
                             mScheduleItemAddDialog.show(fragmentManager)
-
                         }
                         /*
                         改变路线坐标的时间
                         */
-                        tvTimeCoordinate -> {
-                            changeCoordinatePosition = position
+                        R.id.tvTimeCoordinate -> {
                             TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment)
                         }
                     }
