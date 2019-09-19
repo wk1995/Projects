@@ -128,7 +128,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         改变路线坐标的时间
                         */
                         R.id.tvTimeCoordinate -> {
-                            TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment)
+                            TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment,tvTimeCoordinate)
                         }
                     }
                 }
@@ -456,7 +456,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     override fun onTimeSelect(date: Date?, v: View?) {
         Timber.d("76 $v")
         //路线recycle中的item
-        if (v == tvTimeCoordinate) {
+        if (v?.id ==R.id.tvTimeCoordinate) {
             /*先找到相应的route，然后改掉其坐标的id
             * 注意的是：如果是连续的话，需要改掉起点和终点为这个对应的坐标的小路线
             * */
@@ -469,7 +469,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 route.endTime = date?.time ?: 0L
             }
             route.saveAsync().listen {
-                mCoordinateAdapter.notifyDataSetChanged()
+                mCoordinateAdapter.notifyItemChanged(changeCoordinatePosition)
             }
         } else {
             (v as? TextView)?.text = DateTime.getDateString(date?.time)
@@ -588,6 +588,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 LogHelper.i("wk", "修改路程中的坐标---(路线保存失败)")
             }
         }
+        mCoordinateAdapter.notifyItemChanged(changeCoordinatePosition)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -631,7 +632,6 @@ class ActivitiesInfoFragment : BaseFragment(),
                         if (locationBeanSize > 0) {
                             val lastLocationBean = mCoordinateAdapter.getItem(locationBeanSize - 1)
                             val isStart = lastLocationBean?.isStart ?: return
-                            var desc: String? = null
 
                             LitePal.findAsync(Coordinate::class.java,
                                     if (isStart) {
@@ -640,7 +640,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                                         lastLocationBean.route.endCoordinateId
                                     })
                                     .listen {
-                                            desc = it?.coordinateDesc
+                                        val desc = it?.coordinateDesc
                                         if (desc == null) {
                                             LogHelper.TimberI("645  desc is null")
                                             return@listen
@@ -652,7 +652,8 @@ class ActivitiesInfoFragment : BaseFragment(),
                                         } else {
                                             //取出额外的数据，这里是坐标
                                             LogHelper.TimberI("增加终点")
-                                            val lastRoute = transmitScheduleItem?.routes?.last() ?: return@listen
+                                            val lastRoute = transmitScheduleItem?.routes?.last()
+                                                    ?: return@listen
                                             saveOrUpdateRoute(lastRoute, ADD_END, coordinateDesc)
                                         }
                                     }

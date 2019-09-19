@@ -18,6 +18,7 @@ import com.wk.projects.activities.communication.constant.SchedulesBundleKey
 import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
+import com.wk.projects.common.helper.LogHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.common.resource.WkContextCompat
@@ -107,6 +108,7 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_CategoryName -> {
                 "wkactivity"
             }
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE,
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
                 "coordinate"
             }
@@ -118,6 +120,7 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     protected open fun getColumn(): String {
         return when (targetRequestCode) {
+            RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE,
             RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination -> {
                 "coordinatedesc"
             }
@@ -135,7 +138,7 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     val items = ArrayList<String>()
-                    Timber.d("60 ${it.position}")
+                    LogHelper.TimberI("60 ${it.position} and ${it.count}")
                     while (it.moveToNext()) {
                         items.add(it.getString(0))
                     }

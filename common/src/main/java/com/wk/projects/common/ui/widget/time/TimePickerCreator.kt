@@ -2,6 +2,7 @@ package com.wk.projects.common.ui.widget.time
 
 import android.app.Activity
 import android.graphics.Color
+import android.view.View
 import com.bigkoo.pickerview.builder.TimePickerBuilder
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.projects.common.R
@@ -21,7 +22,7 @@ import java.util.*
  */
 object TimePickerCreator {
 
-    fun create(activity: Activity, listener: OnTimeSelectListener) {
+    fun create(activity: Activity, listener: OnTimeSelectListener,onClickView: View?=null) {
         //时间选择器
         val pvTime = TimePickerBuilder(activity, listener)
                 .setType(booleanArrayOf(true, true, true, true, true, true))
@@ -41,7 +42,12 @@ object TimePickerCreator {
                 .build()
         val calender = Calendar.getInstance()
         pvTime.setDate(calender)//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
-        pvTime.show()
+        if(onClickView==null){
+            pvTime.show()
+        }else{
+            pvTime.show(onClickView)
+        }
+
     }
 
 }
