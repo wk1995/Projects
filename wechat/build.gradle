@@ -1,12 +1,9 @@
-
 if (isModule.toBoolean()) {
     apply plugin: 'com.android.application'
 } else {
-
     apply plugin: 'com.android.library'
 }
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
@@ -15,19 +12,16 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.consumptionVersionCode
-        versionName rootProject.ext.consumptionVersionName
+        versionCode rootProject.ext.activitiesVersionCode
+        versionName rootProject.ext.activitiesVersionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
 
-    }
-    packagingOptions {
-        exclude 'META-INF/proguard/androidx-annotations.pro'
-    }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     kapt {
@@ -43,7 +37,7 @@ android {
             } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
                 java {
-                    exclude 'com.wk.projects.records.consumption.debug/ConsumptionApp'
+                    exclude 'com.wk.projects.we.chat.debug/WeChatApp'
                 }
             }
         }
@@ -51,18 +45,15 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':common')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':common')
-    //时间选择
-    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.4.3'
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
     //路由
     kapt "com.alibaba:arouter-compiler:1.1.4"
-}
-repositories {
-    mavenCentral()
 }
