@@ -533,7 +533,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         val newRoute = Route()
                         newRoute.startCoordinateId = route.endCoordinateId
                         newRoute.startTime = route.endTime
-                        newRoute.belongScheduleItem = route.belongScheduleItem
+                        newRoute.belongScheduleItem = transmitScheduleItem
                         newRoute.endCoordinateId = mCoordinate.baseObjId
                         newRoute.endTime = System.currentTimeMillis()
                         newRoute.saveAsync().listen { isSuccessful ->
