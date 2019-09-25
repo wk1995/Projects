@@ -35,6 +35,7 @@ import com.wk.projects.common.ui.widget.time.TimePickerCreator
 import kotlinx.android.synthetic.main.activities_fragment_main.*
 import me.yokeyword.fragmentation.ISupportFragment
 import org.litepal.LitePal
+import org.litepal.extension.deleteAll
 import timber.log.Timber
 import java.util.*
 
@@ -105,6 +106,7 @@ class ActivitiesMainFragment : BaseFragment(), View.OnClickListener, OnTimeSelec
                         if (item.baseObjId == id)
                             itemList.remove(item)
                         scheduleMainAdapter.notifyDataSetChanged()
+                        LitePal.deleteAll<com.wk.projects.activities.data.Route>("scheduleid=?",id.toString())
                         ToastUtil.show(WkContextCompat.getString(R.string.common_str_delete_successful), ToastUtil.LENGTH_SHORT)
                     }
                 }

@@ -128,7 +128,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         改变路线坐标的时间
                         */
                         R.id.tvTimeCoordinate -> {
-                            TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment,tvTimeCoordinate)
+                            TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment, tvTimeCoordinate)
                         }
                     }
                 }
@@ -202,7 +202,40 @@ class ActivitiesInfoFragment : BaseFragment(),
                     popupMenu.show()
                 }
                 is CoordinateAdapter -> {
-                    ToastUtil.show("长按")
+                    val route: com.wk.projects.activities.data.Route = adapter.getItem(position)?.route
+                            ?: return
+
+                    val popupMenu = PopupMenu(_mActivity, view ?: return)
+                    //加载菜单文件
+                    popupMenu.menuInflater.inflate(R.menu.activities_category_delete_and_move, popupMenu.menu)
+                    popupMenu.setOnMenuItemClickListener {
+                        when (position) {
+                            //删除的是第一个
+                            0 -> {
+                                route.deleteAsync().listen {
+                                    LogHelper.TimberI("route: $route 删除： $it")
+                                    if(it>0) {
+                                        mCoordinateAdapter.getItem(1)?.isStart = true
+                                        mCoordinateAdapter.remove(0)
+                                    }
+                                }
+                            }
+                            //删除的是最后一个
+                            adapter.itemCount - 1 -> {
+                                route.endTime=0
+                                route.endCoordinateId=-1L
+                                route.saveAsync().listen {
+                                    LogHelper.TimberI("route: $route 删除最后一个 $it")
+                                    if(it) {
+                                        mCoordinateAdapter.remove(position)
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                        true
+                    }
+                    adapter.notifyDataSetChanged()
                 }
             }
 
@@ -456,7 +489,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     override fun onTimeSelect(date: Date?, v: View?) {
         Timber.d("76 $v")
         //路线recycle中的item
-        if (v?.id ==R.id.tvTimeCoordinate) {
+        if (v?.id == R.id.tvTimeCoordinate) {
             /*先找到相应的route，然后改掉其坐标的id
             * 注意的是：如果是连续的话，需要改掉起点和终点为这个对应的坐标的小路线
             * */
