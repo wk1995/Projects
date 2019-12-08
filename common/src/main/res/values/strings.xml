@@ -12,6 +12,7 @@
     <string name="common_str_save_successful">保存成功</string>
     <string name="common_str_save_failed">保存失败</string>
     <string name="common_str_delete_successful">删除成功</string>
+    <string name="common_str_delete_fail">删除失败</string>
     <string name="common_str_update_successful">更新成功</string>
     <string name="common_str_no_data">暂无数据</string>
     <string name="common_str_detail">明细</string>

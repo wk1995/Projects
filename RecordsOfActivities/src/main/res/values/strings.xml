@@ -14,4 +14,5 @@
     <string name="schedules_add_category_hint">添加类别</string>
     <string name="title_activity_idea">IdeaActivity</string>
     <string name="schedules_item_need_name">项目需要名字</string>
+    <string name="schedules_route_logic_error">逻辑错误，一条路线有三个连续的相同坐标</string>
 </resources>

@@ -24,4 +24,8 @@ object ToastUtil {
                     Toast.LENGTH_SHORT
         ).show()
     }
+
+    fun show(stringId:Int,duration: Int= LENGTH_SHORT){
+        show(WkProjects.getContext().resources.getString(stringId),duration)
+    }
 }

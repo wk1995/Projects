@@ -202,7 +202,13 @@ class ActivitiesInfoFragment : BaseFragment(),
                     popupMenu.show()
                 }
                 is CoordinateAdapter -> {
+                    val dataCount = mCoordinateAdapter.itemCount
+                    if (dataCount <= 0) {
+                        return
+                    }
                     val route: com.wk.projects.activities.data.Route = adapter.getItem(position)?.route
+                            ?: return
+                    val currentIsStart = adapter.getItem(position)?.isStart
                             ?: return
 
                     val popupMenu = PopupMenu(_mActivity, view ?: return)
@@ -212,30 +218,169 @@ class ActivitiesInfoFragment : BaseFragment(),
                         when (position) {
                             //删除的是第一个
                             0 -> {
-                                route.deleteAsync().listen {
-                                    LogHelper.TimberI("route: $route 删除： $it")
-                                    if(it>0) {
-                                        mCoordinateAdapter.getItem(1)?.isStart = true
-                                        mCoordinateAdapter.remove(0)
+                                //说明只有一个route,也就最多两个坐标
+                                when (dataCount) {
+                                    //只有起点，那么全清空
+                                    1 -> {
+                                        route.deleteAsync().listen {
+                                            if (it > 0) {
+                                                mCoordinateAdapter.remove(0)
+                                            }
+                                        }
+                                    }
+                                    //有一段路线，删了第一个，则第二个坐标当作起点
+                                    2 -> {
+                                        route.startCoordinateId = route.endCoordinateId
+                                        route.startTime = route.endTime
+                                        route.endCoordinateId = -1
+                                        route.endTime = 0
+                                        route.saveAsync().listen {
+                                            if (it) {
+                                                mCoordinateAdapter.remove(1)
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        //说明第一个route就没用
+                                        route.deleteAsync().listen {
+                                            LogHelper.TimberI("route: $route 删除： $it")
+                                            if (it > 0) {
+                                                mCoordinateAdapter.remove(0)
+                                                mCoordinateAdapter.remove(0)
+                                                mCoordinateAdapter.getItem(0)?.isStart = true
+                                                mCoordinateAdapter.notifyItemChanged(0)
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            //删除的是最后一个
-                            adapter.itemCount - 1 -> {
-                                route.endTime=0
-                                route.endCoordinateId=-1L
-                                route.saveAsync().listen {
-                                    LogHelper.TimberI("route: $route 删除最后一个 $it")
-                                    if(it) {
-                                        mCoordinateAdapter.remove(position)
+                            //删除的是最后一个,这种情况下分几种情况
+                            dataCount - 1 -> {
+                                when (dataCount) {
+                                    1 -> {
+                                        //这就是删除第一个了，不需要考虑，上面已经写了
+                                    }
+                                    else -> {
+                                        route.endTime = 0
+                                        route.endCoordinateId = -1L
+                                        route.saveAsync().listen {
+                                            LogHelper.TimberI("route: $route 删除最后一个 $it")
+                                            if (it) {
+                                                mCoordinateAdapter.remove(position)
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            else -> {}
+                            //删除的是中间的
+                            else -> {
+                                //如果是连续相同的
+                                val currentCoordinateId =
+                                        if (currentIsStart) {
+                                            route.startCoordinateId
+                                        } else {
+                                            route.endCoordinateId
+                                        }
+                                val preLocationBean = adapter.getItem(position - 1)
+                                        ?: return@setOnMenuItemClickListener false
+                                val nextLocationBean = adapter.getItem(position + 1)
+                                        ?: return@setOnMenuItemClickListener false
+                                val preRoute: com.wk.projects.activities.data.Route = adapter.getItem(position - 1)
+                                        ?.route ?: return@setOnMenuItemClickListener false
+                                val nextRoute: com.wk.projects.activities.data.Route = adapter.getItem(position + 1)
+                                        ?.route ?: return@setOnMenuItemClickListener false
+                                val preCoordinateId =
+                                        if (preLocationBean.isStart) {
+                                            preLocationBean.route.startCoordinateId
+                                        } else {
+                                            preLocationBean.route.endCoordinateId
+                                        }
+                                val nextCoordinateId =
+                                        if (nextLocationBean.isStart) {
+                                            nextLocationBean.route.startCoordinateId
+                                        } else {
+                                            nextLocationBean.route.endCoordinateId
+                                        }
+                                val preTime=
+                                        if (preLocationBean.isStart) {
+                                            preLocationBean.route.startTime
+                                        } else {
+                                            preLocationBean.route.endTime
+                                        }
+                                val nextTime=
+                                        if (nextLocationBean.isStart) {
+                                            nextLocationBean.route.startTime
+                                        } else {
+                                            nextLocationBean.route.endTime
+                                        }
+                                if (currentCoordinateId == preCoordinateId && nextCoordinateId == preCoordinateId) {
+                                    ToastUtil.show(R.string.schedules_route_logic_error)
+                                    return@setOnMenuItemClickListener false
+                                }
+                                //删的是后一个，当前的route的start为前一个route的end坐标
+                                if (currentCoordinateId == preCoordinateId) {
+                                    route.startTime = preTime
+                                    route.saveAsync().listen { isSuccess ->
+                                        if (isSuccess) {
+                                            ToastUtil.show(R.string.common_str_delete_successful)
+                                            mCoordinateAdapter.remove(position)
+                                        } else {
+                                            ToastUtil.show(R.string.common_str_delete_fail)
+                                        }
+                                    }
+                                    //删的是前一个，当前的route的end为后一个route的start
+                                } else if (currentCoordinateId == nextCoordinateId) {
+                                    route.endTime = nextTime
+                                    route.saveAsync().listen { isSuccess ->
+                                        if (isSuccess) {
+                                            ToastUtil.show(R.string.common_str_delete_successful)
+                                            mCoordinateAdapter.remove(position)
+                                        } else {
+                                            ToastUtil.show(R.string.common_str_delete_fail)
+                                        }
+                                    }
+                                } else
+                                //不是相同的，
+                                //前一个和后一个相同的情况，那么两个删除
+                                if (nextCoordinateId == preCoordinateId) {
+                                    route.deleteAsync().listen {
+                                        LogHelper.i(TAG,"it:  $it")
+                                        if (it > 0) {
+                                            LogHelper.i(TAG, "当前route删除成功，接下来删除下一个")
+                                            nextRoute.deleteAsync().listen {
+                                                LogHelper.i(TAG,
+                                                        if (it > 0) {
+                                                            "第二个route删除成功"
+                                                        } else {
+                                                            "第二个route删除失败"
+                                                        })
+                                            }
+                                        }else{
+                                            LogHelper.i(TAG, "当前route删除失败")
+                                        }
+                                    }
+                                }else{
+                                    //涉及到两个route，这两个start和end组成一个新的route
+                                    nextRoute.deleteAsync().listen {
+                                        if(it>0){
+                                            preRoute.endCoordinateId=nextCoordinateId
+                                            preRoute.saveAsync().listen { isSuccessful->
+                                                if(isSuccessful){
+                                                    adapter.remove(position)
+                                                }else{
+                                                    LogHelper.i(TAG,"362 保存失败")
+                                                }
+                                             }
+                                        }else{
+                                            LogHelper.i(TAG,"366 删除失败")
+                                        }
+                                    }
+                                }
+                            }
                         }
                         true
                     }
-                    adapter.notifyDataSetChanged()
+                    popupMenu.show()
                 }
             }
 
@@ -736,8 +881,6 @@ class ActivitiesInfoFragment : BaseFragment(),
                             }
 
                         }
-
-
                     }
                 }
             }

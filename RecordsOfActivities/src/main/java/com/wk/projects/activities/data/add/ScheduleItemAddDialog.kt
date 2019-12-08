@@ -1,10 +1,13 @@
 package com.wk.projects.activities.data.add
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.activities.R
 import com.wk.projects.activities.communication.ActivitiesMsg
@@ -19,6 +22,7 @@ import com.wk.projects.activities.data.ScheduleItem
 import com.wk.projects.common.communication.eventBus.EventMsg
 import com.wk.projects.common.helper.EditTextHelper
 import com.wk.projects.common.helper.LogHelper
+import com.wk.projects.common.helper.PhysicsHelper
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.common.resource.WkContextCompat
@@ -51,7 +55,6 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
             mScheduleItemDialogFragment.arguments = bundle
             return mScheduleItemDialogFragment
         }
-
     }
 
     override fun initViewSubLayout() = R.layout.schedules_main_dialog_simple_add_item
@@ -70,6 +73,14 @@ open class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
         super.bindView(savedInstanceState, rootView)
+        rootView?.viewTreeObserver?.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                val rect= Rect()
+                window.decorView.getWindowVisibleDisplayFrame(rect)
+                Log.i("wk","rect.top: ${rect.top} rect.boot : ${rect.bottom} ")
+                Log.i("wk","屏幕宽： ${PhysicsHelper.getInstance().getScreenWidth()} g高： ${PhysicsHelper.getInstance().getScreenHeight()}")
+            }
+        })
         tvComSimpleDialogTheme.setText(getTitleResId())
     }
 
