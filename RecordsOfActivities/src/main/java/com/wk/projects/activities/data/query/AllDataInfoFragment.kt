@@ -20,6 +20,7 @@ import timber.log.Timber
 @Route(path = ARoutePath.AllDataInfoFragment)
 class AllDataInfoFragment : BaseFragment() {
 
+    private lateinit var mOriginalData :List<ScheduleItem>
     private val mAllDataAdapter by lazy { AllDataAdapter() }
     override fun initResLay() = R.layout.schedules_activity_query_data
     override fun initView() {
@@ -44,6 +45,7 @@ class AllDataInfoFragment : BaseFragment() {
             }
         })
         LitePal.findAllAsync(ScheduleItem::class.java).listen {
+            mOriginalData=it
             rvCommonRs.adapter = mAllDataAdapter
             mAllDataAdapter.setNewData(it)
         }
@@ -52,7 +54,17 @@ class AllDataInfoFragment : BaseFragment() {
     private fun initClickListener() {
         etQueryName.addTextChangedListener(object : BaseTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                LitePal.where()
+                val keyword=s.toString()
+                val newData=mOriginalData.filter {
+                    it.itemName?.contains(keyword)==true
+                }
+                mAllDataAdapter.setNewData(newData)
+                tvTotalTime.setText(R.string.activities_all_data_time)
+                val totalTime =
+                        newData.fold(0L) { i, j ->
+                            j.endTime - j.startTime+i
+                        }.toString()
+                tvTotalTime.append(totalTime)
             }
         })
     }

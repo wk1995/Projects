@@ -16,4 +16,6 @@
     <string name="title_activity_idea">IdeaActivity</string>
     <string name="schedules_item_need_name">项目需要名字</string>
     <string name="schedules_route_logic_error">逻辑错误，一条路线有三个连续的相同坐标</string>
+    <string name="activities_query_all_data_tips">请填入查询的项目名称</string>
+    <string name="activities_all_data_time">总花费时间：</string>
 </resources>
