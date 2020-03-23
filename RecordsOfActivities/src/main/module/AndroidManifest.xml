@@ -23,8 +23,8 @@
         android:name=".debug.ScheduleApp"
         android:allowBackup="true"
         android:fullBackupContent="true"
-        android:icon="@mipmap/activities"
-        android:label="@string/modules_name"
+        android:icon="${icon}"
+        android:label="${name}"
         android:theme="@style/ScheduleAppTheme"
         tools:replace="android:label">
         <activity android:name=".SchedulesMainActivity">

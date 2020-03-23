@@ -31,10 +31,8 @@ import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.notification.ToastUtil
 import com.wk.projects.common.ui.widget.time.TimePickerCreator
-import kotlinx.android.synthetic.main.activities_coordinate_list_item.*
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
-import org.litepal.extension.find
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -55,8 +53,7 @@ import kotlin.collections.ArrayList
  * </pre>
  */
 @Route(path = ARoutePath.ActivitiesInfoFragment)
-class ActivitiesInfoFragment : BaseFragment(),
-        View.OnClickListener, OnTimeSelectListener {
+class ActivitiesInfoFragment : BaseFragment(),View.OnClickListener, OnTimeSelectListener {
 
     companion object {
         const val OPERATION_MODIFY = "OPERATION_MODIFY"
@@ -113,25 +110,25 @@ class ActivitiesInfoFragment : BaseFragment(),
                             adapter.expand(position)
                     }
                 }
-                is CoordinateAdapter -> {
+               /* is CoordinateAdapter -> {
                     ToastUtil.show("position: $position")
                     changeCoordinatePosition = position
                     when (view?.id) {
-                        /*改变坐标，不能是改变坐标的desc
-                        * 可以新增，更换坐标*/
+                        *//*改变坐标，不能是改变坐标的desc
+                        * 可以新增，更换坐标*//*
                         R.id.tvDescCoordinate -> {
                             val mScheduleItemAddDialog = ScheduleItemAddDialog.create()
                             mScheduleItemAddDialog.setTargetFragment(this@ActivitiesInfoFragment, RequestCode.RequestCode_ActivitiesInfoFragment_ScheduleItemAddDialog_coordination_UPDATE)
                             mScheduleItemAddDialog.show(fragmentManager)
                         }
-                        /*
+                        *//*
                         改变路线坐标的时间
-                        */
+                        *//*
                         R.id.tvTimeCoordinate -> {
                             TimePickerCreator.create(_mActivity, this@ActivitiesInfoFragment, tvTimeCoordinate)
                         }
                     }
-                }
+                }*/
             }
 
         }
@@ -201,7 +198,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                     }
                     popupMenu.show()
                 }
-                is CoordinateAdapter -> {
+                /*is CoordinateAdapter -> {
                     val dataCount = mCoordinateAdapter.itemCount
                     if (dataCount <= 0) {
                         return
@@ -381,7 +378,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                         true
                     }
                     popupMenu.show()
-                }
+                }*/
             }
 
 
@@ -447,7 +444,7 @@ class ActivitiesInfoFragment : BaseFragment(),
                 取出相应的值,放入相应的控件里
                 */
                 transmitScheduleItem = mScheduleItem
-                initCoordinateRecycler(transmitScheduleItem)
+//                initCoordinateRecycler(transmitScheduleItem)
                 mScheduleItem?.run {
                     currentBelongActivity = belongActivity
                     tvScheduleName.text = itemName
@@ -484,7 +481,7 @@ class ActivitiesInfoFragment : BaseFragment(),
     /**
      * 初始化关于坐标的RecyclerView
      * */
-    private fun initCoordinateRecycler(transmitScheduleItem: ScheduleItem?) {
+   /* private fun initCoordinateRecycler(transmitScheduleItem: ScheduleItem?) {
         rvLocations.layoutManager = LinearLayoutManager(_mActivity)
         rvLocations.adapter = mCoordinateAdapter
         rvLocations.addOnItemTouchListener(mInfoRecycleClickListener)
@@ -518,7 +515,7 @@ class ActivitiesInfoFragment : BaseFragment(),
             }
             Message.obtain(infoHandler, 0, locationBeans).sendToTarget()
         }.start()
-    }
+    }*/
 
     /**专门为了这个CoordinateRecycler创建的bean*/
     class LocationBean(var route: com.wk.projects.activities.data.Route, var isStart: Boolean)
@@ -544,11 +541,6 @@ class ActivitiesInfoFragment : BaseFragment(),
         LitePal.delete(WkActivity::class.java, activityId)
 
     }
-
-    private fun addCordination() {
-
-    }
-
     override fun onClick(v: View?) {
         when (v) {
             tvLocationName -> {
