@@ -1,4 +1,4 @@
-package com.wk.projects.common.constant
+package com.wk.projects.common.helper.file.path
 
 import android.os.Environment
 import java.io.File
