@@ -164,7 +164,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                     if (item.baseObjId == id)
                         itemList.remove(item)
                     scheduleMainAdapter.notifyDataSetChanged()
-                    Toast.makeText(WkProjects.getContext(), "删除成功", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(WkProjects.getApplication(), "删除成功", Toast.LENGTH_SHORT).show()
                 }
             }
         }

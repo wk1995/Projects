@@ -60,7 +60,7 @@ class ScheduleItemInfoDialog : BaseSimpleDialog(), OnTimeSelectListener {
                         DateTime.getDateLong(tvScheduleEndTime.text.toString()))
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
-                    Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(WkProjects.getApplication(), "更新成功", Toast.LENGTH_SHORT).show()
                 }
                 super.onClick(v)
             }

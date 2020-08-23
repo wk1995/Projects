@@ -107,7 +107,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
-                    Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(WkProjects.getApplication(), "更新成功", Toast.LENGTH_SHORT).show()
                     intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
                     intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
                     setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity, intent)
