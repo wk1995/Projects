@@ -10,6 +10,7 @@
         android:label="@string/modules_name"
         android:theme="@style/TestAppTheme"
         tools:replace="android:label">
+        <activity android:name=".touch.TestMotionEventActivity"></activity>
         <activity android:name=".TestMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
