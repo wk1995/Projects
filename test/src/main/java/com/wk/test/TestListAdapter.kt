@@ -1,7 +1,6 @@
 package com.wk.test
 
 import android.support.v7.widget.RecyclerView
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import android.widget.TextView
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * */
-class TestListAdapter(private val item:List<String>):RecyclerView.Adapter<TestListAdapter.TestListVH>() {
+class TestListAdapter(private val item:List<String>): RecyclerView.Adapter<TestListAdapter.TestListVH>() {
 
     interface ITestItemClickListener{
         fun onTestItemClick(position:Int)
