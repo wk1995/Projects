@@ -10,7 +10,8 @@
         android:label="@string/modules_name"
         android:theme="@style/TestAppTheme"
         tools:replace="android:label">
-        <activity android:name=".aidl.AIDLActivity"></activity>
+        <activity android:name=".handler.TestHandlerActivity"></activity>
+        <activity android:name=".aidl.AIDLActivity" />
         <activity android:name=".touch.TestMotionEventActivity" />
         <activity android:name=".TestMainActivity">
             <intent-filter>

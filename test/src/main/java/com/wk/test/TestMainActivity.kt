@@ -3,6 +3,7 @@ package com.wk.test
 import android.content.Intent
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import com.wk.test.aidl.AIDLActivity
 import com.wk.test.touch.TestMotionEventActivity
 import kotlinx.android.synthetic.main.test_main_activity.*
 
@@ -10,16 +11,18 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
     companion object {
         const val TOUCH_EVENT = "事件分发"
         const val AIDL = "AIDL"
+        const val HANDLER = "HANDLER"
     }
 
     private val list by lazy {
-        listOf(TOUCH_EVENT, AIDL)
+        listOf(TOUCH_EVENT, AIDL,HANDLER)
     }
 
     private val map by lazy {
         mapOf(
                 Pair(TOUCH_EVENT, TestMotionEventActivity::class.java),
-                Pair(AIDL, TestMotionEventActivity::class.java)
+                Pair(AIDL, AIDLActivity::class.java),
+                Pair(HANDLER, TestMotionEventActivity::class.java)
         )
     }
 

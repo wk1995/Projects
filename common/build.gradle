@@ -70,9 +70,15 @@ dependencies {
     api 'com.android.support:multidex:1.0.3'
     //数据库
     api 'org.litepal.android:kotlin:3.0.0'
+
     //请求权限
     api "com.github.hotchemi:permissionsdispatcher:${rootProject.permissionsDispatcher}"
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
+
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+//    releaseComplie 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    testComplie 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
 }
 repositories {
