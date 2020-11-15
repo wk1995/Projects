@@ -55,7 +55,7 @@ android {
         }
     }
     kapt {
-        generateStubs = true
+//        generateStubs = true
         arguments {
             arg("moduleName", project.getName())
         }
