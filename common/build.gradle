@@ -13,9 +13,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+    }
+    dexOptions {
+        incremental true
     }
 
     buildTypes {
@@ -79,6 +82,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 //    releaseComplie 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 //    testComplie 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
+
 
 }
 repositories {

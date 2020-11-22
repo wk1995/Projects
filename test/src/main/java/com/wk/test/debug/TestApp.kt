@@ -18,7 +18,7 @@ class TestApp: BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         WkProjects.init(this)
-                .withModuleName(getString(R.string.modules_name))
+                .withModuleName(getString(R.string.test_modules_name))
                 .configure()
     }
 }

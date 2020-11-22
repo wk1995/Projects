@@ -1,8 +1,8 @@
 <resources>
-    <declare-styleable name="MyTouchViewGroup1">
-        <attr name="exampleString" format="string" />
-        <attr name="exampleDimension" format="dimension" />
-        <attr name="exampleColor" format="color" />
-        <attr name="exampleDrawable" format="color|reference" />
+    <declare-styleable name="test_MyTouchViewGroup1">
+        <attr name="test_exampleString" format="string" />
+        <attr name="test_exampleDimension" format="dimension" />
+        <attr name="test_exampleColor" format="color" />
+        <attr name="test_exampleDrawable" format="color|reference" />
     </declare-styleable>
 </resources>
