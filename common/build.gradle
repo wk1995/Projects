@@ -5,7 +5,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.jakewharton.butterknife'
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -43,7 +43,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "com.android.support:appcompat-v7:${rootProject.supportAppcompatV7}"
     api "com.android.support:support-v4:${rootProject.supportAppcompatV7}"
-    api 'com.android.support.constraint:constraint-layout:1.1.3'
+    api 'com.android.support.constraint:constraint-layout:2.0.4'
     api "com.android.support:design:${rootProject.supportAppcompatV7}"
     api "com.android.support:support-vector-drawable:${rootProject.supportAppcompatV7}"
     testImplementation 'junit:junit:4.12'
@@ -59,9 +59,6 @@ dependencies {
     api('com.github.niorgai:StatusBarCompat:2.1.4', {
         exclude group: 'com.android.support'
     })
-    //butter knife
-    api "com.jakewharton:butterknife:${rootProject.butterKnife}"
-    kapt "com.jakewharton:butterknife-compiler:${rootProject.butterKnife}"
     //路由
     api 'com.alibaba:arouter-api:1.3.0'
     //日志

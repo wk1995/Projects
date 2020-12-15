@@ -2,8 +2,6 @@ package com.wk.projects.common
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.wk.projects.common.communication.IFragmentToActivity
 
 /**
@@ -18,17 +16,14 @@ import com.wk.projects.common.communication.IFragmentToActivity
  */
 abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity {
 
-    private lateinit var activityUnBinder: Unbinder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initContentView()
         setContentView(initResLayId())
-        activityUnBinder=ButterKnife.bind(this)
         bindView(savedInstanceState,this)
     }
 
     override fun onDestroy() {
-        activityUnBinder.unbind()
         super.onDestroy()
     }
 

@@ -10,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.wk.projects.common.communication.IFragmentToActivity
 
 /**
@@ -25,7 +23,6 @@ import com.wk.projects.common.communication.IFragmentToActivity
  * </pre>
  */
 abstract class BaseDialogFragment : DialogFragment() {
-    private lateinit var activityUnBinder: Unbinder
     protected lateinit var mActivity: BaseProjectsActivity
     protected lateinit var iFa:IFragmentToActivity
 
@@ -41,15 +38,10 @@ abstract class BaseDialogFragment : DialogFragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //        hideBottomUIMenu()
         val rootView = inflater.inflate(initResLayId(), container, false)
-        activityUnBinder = ButterKnife.bind(this, rootView)
         bindView(savedInstanceState, rootView)
         return rootView
     }
 
-    override fun onDestroyView() {
-        activityUnBinder.unbind()
-        super.onDestroyView()
-    }
 
     /**
      * 隐藏虚拟键

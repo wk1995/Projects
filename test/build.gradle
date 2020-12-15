@@ -6,7 +6,6 @@ if (isModule.toBoolean()) {
 }
 
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
@@ -56,10 +55,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support.constraint:constraint-layout:2.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    kapt "com.jakewharton:butterknife-compiler:${rootProject.butterKnife}"
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':common')
     //请求权限
@@ -69,6 +66,8 @@ dependencies {
 
 //    implementation 'com.github.bumptech.glide:glide:4.11.0'
 //    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
 }
 
 repositories {

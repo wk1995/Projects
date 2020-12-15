@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.FragmentManager
 import android.view.View
-import android.view.ViewStub
-import android.widget.Button
-import android.widget.TextView
-import butterknife.BindView
+import kotlinx.android.synthetic.main.common_dialog_fragment_base_simple.*
 
 /**
  * <pre>
@@ -21,15 +18,6 @@ import butterknife.BindView
 
 
 abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
-
-    @BindView(R2.id.vsComSimpleDialogContent)
-    protected lateinit var vsComSimpleDialogContent: ViewStub
-    @BindView(R2.id.btnComSimpleDialogOk)
-    protected lateinit var btnComSimpleDialogOk: Button
-    @BindView(R2.id.tvComSimpleDialogTheme)
-    protected lateinit var tvComSimpleDialogTheme: TextView
-    @BindView(R2.id.btnComSimpleDialogCancel)
-    protected lateinit var btnComSimpleDialogCancel: Button
 
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
 
