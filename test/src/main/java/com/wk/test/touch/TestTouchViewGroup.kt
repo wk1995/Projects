@@ -101,11 +101,11 @@ class TestTouchViewGroup : FrameLayout {
         val screenY = ev?.rawY ?: -1f
 
         WkLogUtil.d("touchEvent", "$tag ：dispatchTouchEvent  ${MotionEventUtil.toString(ev)}")
-        val widthUnit = width / columnCount
-        if (screenX in 0 until widthUnit) {
+        val widthUnit = width / columnCount*1.0
+        if (screenX in 0f .. widthUnit.toFloat()) {
             return true
         }
-        if (screenX in widthUnit until widthUnit * 2) {
+        if (screenX in widthUnit .. widthUnit * 2) {
             return false
         }
         return super.dispatchTouchEvent(ev)
@@ -117,8 +117,8 @@ class TestTouchViewGroup : FrameLayout {
         val screenX = event?.rawX ?: -1f
         //屏幕的y坐标
         val screenY = event?.rawY ?: -1f
-        if (screenX in (right-MOVE_RANG).toInt()..right &&
-                screenY in bottom-MOVE_RANG.toInt()*2+barHeight ..bottom-MOVE_RANG.toInt()+barHeight &&
+        if (screenX in (right-MOVE_RANG)..right.toFloat() &&
+                screenY in bottom-MOVE_RANG*2+barHeight ..bottom-MOVE_RANG+barHeight &&
                 event?.action == MotionEvent.ACTION_DOWN) {
             canMoveView = true
             downPositionX = screenX

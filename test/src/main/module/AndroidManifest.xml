@@ -6,13 +6,14 @@
     <application
         android:name=".debug.TestApp"
         android:allowBackup="true"
-        android:icon="@drawable/test_icon"
-        android:fullBackupContent="true"
-        android:label="@string/test_modules_name"
         android:appComponentFactory=""
+        android:fullBackupContent="true"
+        android:icon="@drawable/test_icon"
+        android:label="@string/test_modules_name"
         android:theme="@style/TestAppTheme"
         tools:replace="android:appComponentFactory,android:label">
-        <activity android:name=".handler.TestHandlerActivity"/>
+        <activity android:name=".net.TestNetActivity"/>
+        <activity android:name=".handler.TestHandlerActivity" />
         <activity android:name=".aidl.AIDLActivity" />
         <activity android:name=".touch.TestMotionEventActivity" />
         <activity android:name=".bitmap.TestBitmapActivity" />
