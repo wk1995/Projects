@@ -15,7 +15,6 @@ import com.wk.projects.common.constant.WkSuppressConstants
 @Suppress(WkSuppressConstants.UNUSED)
 object WkLogUtil {
     fun d(tag: String, msg: String) {
-        @Suppress("LogNoTimber")
-        Log.d(tag, msg)
+       WkLog.i(msg,tag)
     }
 }

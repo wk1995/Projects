@@ -12,4 +12,5 @@ public final class WkStringConstants {
     private WkStringConstants(){}
 
     public static final String COMMON_PUNCTUATION_SEMICOLON=";";
+    public static final String STR_NULL_LOW="null";
 }
