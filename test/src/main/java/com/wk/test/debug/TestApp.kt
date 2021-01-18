@@ -20,5 +20,6 @@ class TestApp: BaseApplication() {
         WkProjects.init(this)
                 .withModuleName(getString(R.string.test_modules_name))
                 .configure()
+//        KOOM.init(this)
     }
 }

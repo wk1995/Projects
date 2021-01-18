@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +38,14 @@ abstract class BaseDialogFragment : DialogFragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //        hideBottomUIMenu()
         val rootView = inflater.inflate(initResLayId(), container, false)
-        bindView(savedInstanceState, rootView)
         return rootView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        bindView(savedInstanceState)
+
+        super.onActivityCreated(savedInstanceState)
+    }
 
     /**
      * 隐藏虚拟键
@@ -64,5 +68,5 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     abstract fun initResLayId(): Int
-    abstract fun bindView(savedInstanceState: Bundle?, rootView: View?)
+    abstract fun bindView(savedInstanceState: Bundle?)
 }

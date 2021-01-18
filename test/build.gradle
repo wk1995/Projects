@@ -19,10 +19,12 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
-
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -56,8 +58,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation project(':common')
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
@@ -68,6 +70,8 @@ dependencies {
 //    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+
+//    implementation 'com.kwai.koom:java-oom:1.0.7'
 }
 
 repositories {

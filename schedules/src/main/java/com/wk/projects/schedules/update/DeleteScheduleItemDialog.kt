@@ -30,8 +30,8 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
 
     private lateinit var tvCommon: TextView
     override fun onClick(v: View?) {
-        when (v) {
-            btnComSimpleDialogOk ->
+        when (v?.id) {
+            R.id.btnComSimpleDialogOk ->
                 iFa.communication(IFAFlag.DELETE_ITEM_DIALOG, arguments)
 
         }
@@ -42,7 +42,7 @@ class DeleteScheduleItemDialog : BaseSimpleDialog() {
         tvCommon = vsView.findViewById(R.id.tvCommon)
         tvCommon.setText(com.wk.projects.schedules.R.string.schedules_delete_item)
         tvCommon.gravity= Gravity.CENTER
-        tvComSimpleDialogTheme.text = (arguments?.getString(LIST_ITEM_NAME))
+        view?.findViewById<TextView>(R.id.tvComSimpleDialogTheme)?.text = (arguments?.getString(LIST_ITEM_NAME))
     }
 
     override fun initViewSubLayout() = R.layout.common_only_text

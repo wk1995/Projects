@@ -2,7 +2,7 @@ package com.wk.projects.common.collapse
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.Window
 import com.wk.projects.common.BaseProjectsActivity
@@ -49,7 +49,7 @@ abstract class BaseCollapseActivity : BaseProjectsActivity(), View.OnClickListen
             startActivity(watchIntent)
 
         }
-        rvCollapseFile.layoutManager = LinearLayoutManager(this)
+        rvCollapseFile.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvCollapseFile.adapter = collapseAdapter
     }
 

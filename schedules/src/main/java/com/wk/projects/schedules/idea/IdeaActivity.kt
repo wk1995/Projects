@@ -1,7 +1,7 @@
 package com.wk.projects.schedules.idea
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -19,7 +19,7 @@ class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusList
     private val adapter=IdeaAdapter()
     override fun initResLayId() = R.layout.schedules_activity_idea
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
-        rcIdeaItemList.layoutManager=LinearLayoutManager(this)
+        rcIdeaItemList.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(this)
         LitePal.findAllAsync(ScheduleIdeaBean::class.java).listen {
             rcIdeaItemList.adapter=adapter
             adapter.setScheduleIdeaBeans(it)

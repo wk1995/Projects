@@ -1,9 +1,9 @@
 package com.wk.projects.common
 
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.common_dialog_fragment_base_simple.*
 
 /**
@@ -21,7 +21,7 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
 
     final override fun initResLayId() = R.layout.common_dialog_fragment_base_simple
 
-    override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
+    override fun bindView(savedInstanceState: Bundle?) {
         initView()
         initListener()
     }

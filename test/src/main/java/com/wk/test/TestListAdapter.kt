@@ -1,6 +1,6 @@
 package com.wk.test
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +15,13 @@ import android.widget.TextView
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * */
-class TestListAdapter(private val item:List<String>): RecyclerView.Adapter<TestListAdapter.TestListVH>() {
+class TestListAdapter(private val item:List<String>): androidx.recyclerview.widget.RecyclerView.Adapter<TestListAdapter.TestListVH>() {
 
     interface ITestItemClickListener{
         fun onTestItemClick(position:Int)
     }
     var testItemClickListener:ITestItemClickListener?=null
-    class TestListVH(rootView: View,val showContent:TextView ) :RecyclerView.ViewHolder(rootView)
+    class TestListVH(rootView: View,val showContent:TextView ) : androidx.recyclerview.widget.RecyclerView.ViewHolder(rootView)
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): TestListVH {
         val rootView=LayoutInflater.from(p0.context).inflate(android.R.layout.simple_list_item_1,p0,false)

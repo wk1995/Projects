@@ -1,8 +1,8 @@
 package com.wk.test
 
 import android.content.Intent
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.wk.test.aidl.AIDLActivity
 import com.wk.test.bitmap.TestBitmapActivity
 import com.wk.test.net.TestNetActivity
@@ -39,8 +39,8 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
     override fun initLayout()=R.layout.test_main_activity
 
     override fun initView() {
-        rvTestList.layoutManager = LinearLayoutManager(this)
-        rvTestList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        rvTestList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        rvTestList.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         val testListAdapter = TestListAdapter(list)
         testListAdapter.testItemClickListener = this
         rvTestList.adapter = testListAdapter

@@ -2,7 +2,7 @@ package com.wk.projects.schedules.data
 
 import android.content.ContentValues
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -69,7 +69,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         }
         findAllCategory()
         initClick()
-        rvItemClass.layoutManager = LinearLayoutManager(this)
+        rvItemClass.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvItemClass.adapter = mCategoryAdapter
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

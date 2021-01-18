@@ -1,7 +1,7 @@
 package com.wk.projects.schedules.data.all
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.ARoutePath
@@ -21,7 +21,7 @@ class AllDataInfoActivity : BaseProjectsActivity() {
     }
 
     private fun initRecycler() {
-        rvCommonRs.layoutManager = LinearLayoutManager(this)
+        rvCommonRs.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         LitePal.findAllAsync(ScheduleItem::class.java).listen {
             val mAllDataAdapter = AllDataAdapter(this)
             rvCommonRs.adapter = mAllDataAdapter

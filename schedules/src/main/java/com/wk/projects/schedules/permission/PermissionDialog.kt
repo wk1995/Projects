@@ -24,9 +24,9 @@ class PermissionDialog : BaseSimpleDialog() {
     private lateinit var tvCommon: TextView
 
     override fun onClick(v: View?) {
-        when (v) {
-            btnComSimpleDialogOk -> request?.proceed()
-            btnComSimpleDialogCancel -> {
+        when (v?.id) {
+            R.id.btnComSimpleDialogOk -> request?.proceed()
+            R.id.btnComSimpleDialogCancel -> {
                 request?.cancel()
                 android.os.Process.killProcess(android.os.Process.myPid())
                 System.exit(0)

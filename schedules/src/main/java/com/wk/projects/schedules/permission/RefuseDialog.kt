@@ -20,9 +20,9 @@ import com.wk.projects.common.R
 
 
     lateinit var tvCommon: TextView
-    override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
-        super.bindView(savedInstanceState, rootView)
-        btnComSimpleDialogCancel.visibility=View.GONE
+    override fun bindView(savedInstanceState: Bundle?) {
+        super.bindView(savedInstanceState)
+        view?.findViewById<TextView>(R.id.btnComSimpleDialogCancel)?.visibility=View.GONE
     }
 
     override fun onClick(v: View?) {
