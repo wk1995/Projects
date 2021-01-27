@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Projects.iml" filepath="$PROJECT_DIR$/Projects.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/buildSrc/buildSrc.iml" filepath="$PROJECT_DIR$/buildSrc/buildSrc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/schedules/schedules.iml" filepath="$PROJECT_DIR$/schedules/schedules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Projects.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Projects.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/Projects.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/Projects.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/Projects.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/Projects.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/main/Projects.main.iml" filepath="$PROJECT_DIR$/.idea/modules/main/Projects.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/schedules/Projects.schedules.iml" filepath="$PROJECT_DIR$/.idea/modules/schedules/Projects.schedules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tuya/Projects.tuya.iml" filepath="$PROJECT_DIR$/.idea/modules/tuya/Projects.tuya.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wk_projects.Projects.iml" filepath="$PROJECT_DIR$/.idea/modules/wk_projects.Projects.iml" />
     </modules>
   </component>
 </project>

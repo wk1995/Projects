@@ -1,0 +1,4 @@
+<resources>
+    <string name="module_name_release">tuya</string>
+    <string name="module_name_debug">tuya_debug</string>
+</resources>
