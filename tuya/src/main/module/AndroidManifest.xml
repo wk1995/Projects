@@ -5,11 +5,13 @@
 
     <application
         android:name=".module.TuyaApp"
-        android:allowBackup="true"
         android:fullBackupContent="true"
         android:label="@string/module_name"
-        android:theme="@style/AppTheme"
-        tools:replace="android:label">
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+        android:allowBackup="true"
+        android:supportsRtl="false"
+        android:appComponentFactory="sd"
+        tools:replace="android:label,allowBackup,supportsRtl,appComponentFactory">
         <activity android:name=".module.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,7 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <meta-data
+            android:name="TUYA_SMART_APPKEY"
+            android:value="kes938xke57ams83qpvq" />
+        <meta-data
+            android:name="TUYA_SMART_SECRET"
+            android:value="fusc4qgf7sekf9dva3yqcf7yq5d3hvg8" />
     </application>
 
 </manifest>

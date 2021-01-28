@@ -1,7 +1,7 @@
 package com.wk.iot.ty.module
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.wk.iot.ty.R
 
 class MainActivity : AppCompatActivity() {

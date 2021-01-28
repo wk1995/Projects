@@ -1,4 +1,3 @@
-include ':tuya'
 println "setting gradle start"
-include ':app', ':common', ':schedules', ':main', ':buildSrc'
+include ':app', ':common', ':schedules', ':main', ':buildSrc',':tuya'
 println "setting gradle end"

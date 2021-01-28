@@ -1,6 +1,10 @@
 package com.wk.iot.ty.module
 
-import com.wk.projects.common.BaseApplication
+import android.app.Application
+import android.support.multidex.MultiDex
+//import android.support.multidex.MultiDex
+import com.tuya.smart.home.sdk.TuyaHomeSdk
+//import com.wk.projects.common.BaseApplication
 
 /**
  * @author      :wangkang_shenlong
@@ -10,4 +14,13 @@ import com.wk.projects.common.BaseApplication
  */
 
 
-class TuyaApp:BaseApplication ()
+class TuyaApp:Application (){
+    override fun onCreate() {
+        super.onCreate()
+        TuyaHomeSdk.init(this)
+        TuyaHomeSdk.setDebugMode(true)
+        MultiDex.install(this);
+    }
+
+
+}
