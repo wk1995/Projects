@@ -21,20 +21,21 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
- /*   signingConfigs {
+    signingConfigs {
         release {
-            keyAlias '....自己的....'
-            keyPassword '...密码...'
-            storeFile file('D:/keyStore/自己的.jks')
-            storePassword '...密码...'
+            keyAlias 'key-schedules'
+            keyPassword 'wk1995'
+            storeFile file('/doc/apk_key/wkSchedules.jks')
+            storePassword 'wk1995'
         }
-    }*/
+    }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             resValue "string", "schedule_name", "@string/schedule_name_release"
-            resValue "string", "schedule_icon", "@mipmap/schedule_icon_release"
+            resValue "mipmap", "schedule_icon", "@mipmap/schedule_icon_release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
