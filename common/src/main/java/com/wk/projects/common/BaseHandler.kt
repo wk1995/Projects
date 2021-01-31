@@ -18,7 +18,7 @@ abstract class BaseHandler<T>(t:T):Handler() {
     private  val instance :WeakReference<T> by lazy {
         WeakReference(t)
     }
-    final override fun handleMessage(msg: Message?) {
+    final override fun handleMessage(msg: Message) {
         val target=instance.get()?:return
         handleMessage(target,msg)
     }

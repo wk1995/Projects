@@ -10,31 +10,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-class SchedulesPlugin implements Plugin<Project> {
-    @java.lang.Override
-    void apply(Project target) {
-        target.task('SchedulesPlugin') {
-            doLast {
-                println("task in SchedulesPlugin")
-            }
-        }
-    }
-}
-
-
-apply plugin: SchedulesPlugin
-// 如果CustomPluginInBuildSrc没有包名，则直接写CustomPluginInBuildSrc
-//apply plugin: com.wk.projects.CustomPluginInBuildSrc
-//跟上面的那行可以相等
-apply plugin: 'coustom.plugin'
-
-customPluginExtension {
-    msg 'wk3'
-}
-/*customPluginExtension1{
-    msg 'kotlin'
-}*/
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -46,13 +21,31 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
+ /*   signingConfigs {
+        release {
+            keyAlias '....自己的....'
+            keyPassword '...密码...'
+            storeFile file('D:/keyStore/自己的.jks')
+            storePassword '...密码...'
+        }
+    }*/
 
     buildTypes {
         release {
             minifyEnabled false
+            resValue "string", "schedule_name", "@string/schedule_name_release"
+            resValue "string", "schedule_icon", "@mipmap/schedule_icon_release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            //增加包名后缀--关键
+            applicationIdSuffix '.debug'
+            resValue "string", "schedule_name", "@string/schedule_name_debug"
+            resValue "mipmap", "schedule_icon", "@mipmap/schedule_icon_debug"
+        }
     }
+
+
     kapt {
 //        generateStubs = true
         arguments {
@@ -66,7 +59,7 @@ android {
             } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
                 java {
-                    exclude 'com.wk.projects.schedules.debug/ScheduleApp'
+                    exclude 'com.wk.projects.schedules.module/ScheduleApp'
                 }
             }
         }
@@ -77,48 +70,6 @@ project.afterEvaluate {
     println " schedules evaluate start "
     println " schedules evaluate end "
 }
-//myTask 是DefaultTask实例
-task myTask {
-    println "myTask is ${myTask.class} "
-}
-myTask.doFirst {
-    println "myTask doFirst"
-}
-myTask.doLast {
-    println "myTask doLast"
-}
-
-
-class WkTask extends DefaultTask {
-    String msg = "this is wk"
-
-    @TaskAction
-    def hello() {
-        println "hello world $msg"
-    }
-
-}
-
-//wkTask是WkTask的实例
-task wkTask(type: WkTask)
-//hello1是WkTask的实例
-task hello1(type: WkTask) {
-    msg = "I am an android developer"
-}
-
-task myTask1 doFirst {
-    println "do last myTask1"
-}
-task myTask2 doFirst {
-    println "do last myTask2"
-}
-
-project.task("wkTask2", group: "wkGroup", description: "wk`s Task", dependsOn: ["myTask1", "myTask2"]).doLast {
-    println "do last wkTask2"
-}
-
-
-
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -127,7 +78,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(':common')
     //时间选择
-    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
     //路由

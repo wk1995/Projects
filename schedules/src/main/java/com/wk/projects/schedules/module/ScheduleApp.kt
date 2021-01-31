@@ -1,4 +1,4 @@
-package com.wk.projects.schedules.debug
+package com.wk.projects.schedules.module
 
 import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.WkProjects
@@ -19,7 +19,7 @@ class ScheduleApp : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         WkProjects.init(this)
-                .withModuleName(getString(R.string.modules_name))
+                .withModuleName(getString(R.string.schedule_name))
                 .configure()
     }
 }

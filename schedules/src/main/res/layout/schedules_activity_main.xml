@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         tools:text="当前日期"
         android:gravity="center"
+        android:textColor="@color/colorAccent"
         android:layout_height="@dimen/d50dp" />
     <androidx.recyclerview.widget.RecyclerView
         app:layout_constraintTop_toBottomOf="@id/tvDaySelected"

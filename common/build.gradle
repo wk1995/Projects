@@ -67,9 +67,9 @@ dependencies {
     api 'io.reactivex:rxjava:1.2.0'
     api 'io.reactivex:rxandroid:1.2.1'
     //方法数超过65535，低版本适配
-    api 'androidx.multidex:multidex:2.0.0'
+    api 'androidx.multidex:multidex:2.0.1'
     //数据库
-    api 'org.litepal.android:kotlin:3.0.0'
+    api 'org.litepal.guolindev:core:3.2.3'
 
     //请求权限
     api "com.github.hotchemi:permissionsdispatcher:${rootProject.permissionsDispatcher}"

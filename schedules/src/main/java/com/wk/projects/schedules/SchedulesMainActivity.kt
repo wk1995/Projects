@@ -57,7 +57,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
     }
 
     private fun initRecyclerView() {
-        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
@@ -88,8 +88,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
             }
         })
-        rvSchedules.addItemDecoration(
-                androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        rvSchedules.addItemDecoration(DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         initData()
     }
 
@@ -150,7 +149,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
                 val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
                 val item = ScheduleItem(itemName)
-                item.assignBaseObjId(id.toInt())
+                item.assignBaseObjId(id)
                 scheduleMainAdapter.addItem(item)
             }
             IFAFlag.DELETE_ITEM_DIALOG -> {

@@ -52,7 +52,7 @@ abstract class BaseDialogFragment : DialogFragment() {
      */
     private fun hideBottomUIMenu() {
         //隐藏虚拟按键，并且全屏
-        val v = dialog.window.decorView
+        val v = dialog.window?.decorView?:return
         if (Build.VERSION.SDK_INT in 11..18) { // lower api
 
             v.systemUiVisibility = View.GONE
