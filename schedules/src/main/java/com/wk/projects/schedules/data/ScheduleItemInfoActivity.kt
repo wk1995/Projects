@@ -2,7 +2,7 @@ package com.wk.projects.schedules.data
 
 import android.content.ContentValues
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -69,7 +69,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         }
         findAllCategory()
         initClick()
-        rvItemClass.layoutManager = LinearLayoutManager(this)
+        rvItemClass.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvItemClass.adapter = mCategoryAdapter
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -107,7 +107,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 LitePal.updateAsync(ScheduleItem::class.java,
                         mContentValues, itemId).listen {
                     Timber.i("保存的个数 $it")
-                    Toast.makeText(WkProjects.getContext(), "更新成功", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(WkProjects.getApplication(), "更新成功", Toast.LENGTH_SHORT).show()
                     intent.putExtra(ScheduleItem.COLUMN_START_TIME, getDateLong(startTime))
                     intent.putExtra(ScheduleItem.COLUMN_END_TIME, getDateLong(endTime))
                     setResult(ActivityResultCode.ResultCode_ScheduleItemInfoActivity, intent)

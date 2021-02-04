@@ -7,10 +7,10 @@ import android.os.Build
 import android.os.Environment
 import android.os.Looper
 import android.os.Process
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import com.wk.projects.common.communication.constant.BundleKey.PATH
-import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
-import com.wk.projects.common.constant.CommonFilePath.ES_PATH
+import com.wk.projects.common.helper.file.path.CommonFilePath.COMMON_ROOT_PATH
+import com.wk.projects.common.helper.file.path.CommonFilePath.ES_PATH
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.*

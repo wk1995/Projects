@@ -5,13 +5,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.wk.projects.common.communication.IFragmentToActivity
 
 /**
@@ -25,7 +23,6 @@ import com.wk.projects.common.communication.IFragmentToActivity
  * </pre>
  */
 abstract class BaseDialogFragment : DialogFragment() {
-    private lateinit var activityUnBinder: Unbinder
     protected lateinit var mActivity: BaseProjectsActivity
     protected lateinit var iFa:IFragmentToActivity
 
@@ -41,14 +38,13 @@ abstract class BaseDialogFragment : DialogFragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //        hideBottomUIMenu()
         val rootView = inflater.inflate(initResLayId(), container, false)
-        activityUnBinder = ButterKnife.bind(this, rootView)
-        bindView(savedInstanceState, rootView)
         return rootView
     }
 
-    override fun onDestroyView() {
-        activityUnBinder.unbind()
-        super.onDestroyView()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        bindView(savedInstanceState)
+
+        super.onActivityCreated(savedInstanceState)
     }
 
     /**
@@ -56,7 +52,7 @@ abstract class BaseDialogFragment : DialogFragment() {
      */
     private fun hideBottomUIMenu() {
         //隐藏虚拟按键，并且全屏
-        val v = dialog.window.decorView
+        val v = dialog.window?.decorView?:return
         if (Build.VERSION.SDK_INT in 11..18) { // lower api
 
             v.systemUiVisibility = View.GONE
@@ -72,5 +68,5 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     abstract fun initResLayId(): Int
-    abstract fun bindView(savedInstanceState: Bundle?, rootView: View?)
+    abstract fun bindView(savedInstanceState: Bundle?)
 }

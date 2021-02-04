@@ -1,12 +1,9 @@
 package com.wk.projects.schedules.data.add
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.common.BaseSimpleDialog
@@ -36,8 +33,8 @@ import timber.log.Timber
 class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
     lateinit var etAddItem: EditText
-    lateinit var rvExistItem: RecyclerView
-    lateinit var rvItemClass: RecyclerView
+    lateinit var rvExistItem: androidx.recyclerview.widget.RecyclerView
+    lateinit var rvItemClass: androidx.recyclerview.widget.RecyclerView
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemAddDialog {
@@ -49,14 +46,14 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
 
     override fun initViewSubLayout() = R.layout.schedules_main_dialog_simple_add_item
 
-    override fun bindView(savedInstanceState: Bundle?, rootView: View?) {
-        super.bindView(savedInstanceState, rootView)
-        tvComSimpleDialogTheme.setText(R.string.schedules_add_item)
+    override fun bindView(savedInstanceState: Bundle?) {
+        super.bindView(savedInstanceState)
+        view?.findViewById<TextView>(R.id.tvComSimpleDialogTheme)?.setText(R.string.schedules_add_item)
     }
 
     override fun onClick(v: View?) {
-        when (v) {
-            btnComSimpleDialogOk -> {
+        when (v?.id) {
+            R.id.btnComSimpleDialogOk -> {
                 val itemName = etAddItem.text.toString()
                 saveItem(itemName)
             }
@@ -69,7 +66,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
         rvItemClass = vsView.findViewById(R.id.rvItemClass)
 //        rvItemClass.layoutManager = GridLayoutManager(mActivity,3)
-        rvExistItem.layoutManager = LinearLayoutManager(mActivity)
+        rvExistItem.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(mActivity)
 
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
@@ -86,7 +83,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                 }
             }
         })
-        rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
+        rvExistItem.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(mActivity, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         Observable.just("select distinct itemname from scheduleitem")
                 .map {
                     Timber.d("54 $it")

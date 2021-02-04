@@ -1,5 +1,6 @@
 package com.wk.projects.common.configuration
 
+import android.app.Application
 import android.content.Context
 import com.wk.projects.common.configuration.ConfigureKey.CONTEXT
 import com.wk.projects.common.configuration.WkProjects.UNUSED
@@ -26,7 +27,7 @@ object WkProjects {
     @JvmStatic
     private fun getInfo() = WkConfiguration.getInstance().info
 
-    fun getContext():Context=getInfo()[CONTEXT] as Context
+    fun getApplication():Context=getInfo()[CONTEXT] as Application
 
     @JvmStatic
     fun <T> getConfiguration(key: Int) =

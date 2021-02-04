@@ -1,6 +1,6 @@
 package com.wk.projects.schedules.constant
 
-import com.wk.projects.common.constant.CommonFilePath.COMMON_ROOT_PATH
+import com.wk.projects.common.helper.file.path.CommonFilePath.COMMON_ROOT_PATH
 
 /**
  * <pre>

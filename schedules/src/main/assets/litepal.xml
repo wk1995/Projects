@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="schedule"/>
-    <version value="2" />
+    <version value="3" />
     <list>
         <mapping class="com.wk.projects.schedules.data.ScheduleItem" />
         <mapping class="com.wk.projects.schedules.data.WkActivity" />
+        <mapping class="com.wk.projects.schedules.idea.ScheduleIdeaBean" />
     </list>
     <storage value="wk/projects/database/schedules" />
 </litepal>

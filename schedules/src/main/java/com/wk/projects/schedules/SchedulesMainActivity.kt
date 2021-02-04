@@ -3,9 +3,9 @@ package com.wk.projects.schedules
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.Toolbar
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -88,8 +88,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
             }
         })
-        rvSchedules.addItemDecoration(
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        rvSchedules.addItemDecoration(DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         initData()
     }
 
@@ -136,7 +135,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         when(p0?.itemId){
-            R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
+//            R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
             R.id.menuItemSearch->{}
             R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.IdeaActivity).navigation()}
         }
@@ -150,7 +149,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME) ?: return
                 val id = bundle.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID)
                 val item = ScheduleItem(itemName)
-                item.assignBaseObjId(id.toInt())
+                item.assignBaseObjId(id)
                 scheduleMainAdapter.addItem(item)
             }
             IFAFlag.DELETE_ITEM_DIALOG -> {
@@ -164,7 +163,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                     if (item.baseObjId == id)
                         itemList.remove(item)
                     scheduleMainAdapter.notifyDataSetChanged()
-                    Toast.makeText(WkProjects.getContext(), "删除成功", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(WkProjects.getApplication(), "删除成功", Toast.LENGTH_SHORT).show()
                 }
             }
         }

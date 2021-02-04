@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wk.test" >
+    <application android:theme="@style/Theme.AppCompat">
+        <activity android:name=".handler.TestHandlerActivity"/>
+        <activity android:name=".aidl.AIDLActivity" />
+        <activity android:name=".touch.TestMotionEventActivity" />
+        <activity android:name=".bitmap.TestBitmapActivity" />
+        <activity android:name=".TestMainActivity"/>
+    </application>
+</manifest>
