@@ -1,3 +1,4 @@
+include ':iot'
 println "setting gradle start"
-include ':app', ':common', ':schedules', ':main', ':wkBuildSrc', ':test', ':lint'
+include ':app', ':common', ':schedules', ':main',':tuya'
 println "setting gradle end"

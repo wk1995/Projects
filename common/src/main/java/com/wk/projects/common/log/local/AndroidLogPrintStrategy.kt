@@ -57,4 +57,7 @@ class AndroidLogPrintStrategy : ILocalPrintStrategy {
         }
         return result
     }
+
+
+
 }

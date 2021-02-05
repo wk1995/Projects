@@ -1,8 +1,10 @@
 package com.wk.projects.common
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.wk.projects.common.communication.IFragmentToActivity
+import com.wk.projects.common.log.WkLog
 
 /**
  * <pre>
@@ -14,25 +16,63 @@ import com.wk.projects.common.communication.IFragmentToActivity
  *      desc   :
  * </pre>
  */
-abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity {
+abstract class BaseProjectsActivity : AppCompatActivity(), IFragmentToActivity,View.OnClickListener {
+    companion object {
+        private const val TAG = "BaseProjectsActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initContentView()
-        setContentView(initResLayId())
-        bindView(savedInstanceState,this)
+        val resLayout=initResLayId()
+        if(resLayout is Int ){
+            setContentView(resLayout)
+        }
+        if(resLayout is View){
+            setContentView(resLayout)
+        }
+        bindView(savedInstanceState, this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        WkLog.d("${this::class.java.simpleName} onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        WkLog.d("${this::class.java.simpleName} onResume")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        WkLog.d("${this::class.java.simpleName} onRestart")
+    }
+
+
+
+    override fun onPause() {
+        super.onPause()
+        WkLog.d("${this::class.java.simpleName} onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        WkLog.d("${this::class.java.simpleName} onStop")
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        WkLog.d("${this::class.java.simpleName} onDestroy")
     }
 
 
-    override fun communication(flag:Int,bundle: Bundle?, any: Any?){}
+    override fun communication(flag: Int, bundle: Bundle?, any: Any?) {}
 
-    open fun initContentView(){}
+    open fun initContentView() {}
+    override fun onClick(v: View?) {
+    }
 
-
-    abstract fun initResLayId():Int
-    abstract fun bindView(savedInstanceState: Bundle?,mBaseProjectsActivity:BaseProjectsActivity)
+    abstract fun initResLayId(): Any
+    abstract fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity)
 }

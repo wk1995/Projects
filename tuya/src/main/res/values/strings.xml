@@ -1,4 +1,7 @@
 <resources>
     <string name="module_name_release">tuya</string>
     <string name="module_name_debug">tuya_debug</string>
+
+
+    <string name="tuya_login_account">请输入账号</string>
 </resources>

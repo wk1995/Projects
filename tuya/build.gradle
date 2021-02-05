@@ -6,7 +6,6 @@ if (isModule.toBoolean()) {
     apply plugin: 'com.android.library'
 }
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -17,10 +16,13 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
+    }
+    buildFeatures{
+        viewBinding true
     }
     dexOptions {
         incremental true
@@ -83,13 +85,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation 'androidx.appcompat:appcompat:1.1.0 '
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
     androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0"
-//    implementation project(':common')
+    implementation project(':common')
 
     //---tuya 要求的-------------
     implementation 'com.alibaba:fastjson:1.1.67.android'
@@ -97,9 +98,7 @@ dependencies {
 
     // Tuya Home 最新稳定版：
     implementation 'com.tuya.smart:tuyasmart:3.22.0'
-    //---tuya 要求的-------------
-    //方法数超过65535，低版本适配
-    api 'com.android.support:multidex:1.0.3'
+
 }
 repositories {
     mavenCentral()

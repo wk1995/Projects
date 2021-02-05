@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".account.login.LoginActivity">
+
+    <TextView
+        android:id="@+id/tvLoginPageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/d40dp"
+        android:layout_marginTop="@dimen/d40dp"
+        android:text="@string/common_str_login"
+        android:textColor="@android:color/background_dark"
+        android:textSize="@dimen/s24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etTuyaLoginAccount"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d40dp"
+        android:layout_marginTop="@dimen/d40dp"
+        android:layout_marginEnd="@dimen/d40dp"
+        android:hint="@string/tuya_login_account"
+        android:text="15858172327"
+        app:layout_constraintLeft_toLeftOf="@id/tvLoginPageName"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLoginPageName" />
+
+    <EditText
+        android:id="@+id/etTuyaLoginPassword"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d40dp"
+        android:hint="@string/common_english_password"
+        android:text="wk199533"
+        app:layout_constraintLeft_toLeftOf="@id/tvLoginPageName"
+        app:layout_constraintRight_toRightOf="@id/etTuyaLoginAccount"
+        app:layout_constraintTop_toBottomOf="@id/etTuyaLoginAccount" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d40dp"
+        android:layout_marginTop="@dimen/d40dp"
+        android:text="@string/common_str_login"
+        app:layout_constraintLeft_toLeftOf="@id/tvLoginPageName"
+        app:layout_constraintRight_toRightOf="@id/etTuyaLoginAccount"
+        app:layout_constraintTop_toBottomOf="@id/etTuyaLoginPassword" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d20dp"
+        android:text="@string/common_english_forget_password"
+        app:layout_constraintRight_toRightOf="@id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,13 +1,21 @@
 package com.wk.projects.common.log;
 
+import android.os.Build;
+
 import com.wk.projects.common.constant.WkSuppressConstants;
 import com.wk.projects.common.log.disk.IDiskPrintStrategy;
+import com.wk.projects.common.log.local.AndroidLogPrintStrategy;
 import com.wk.projects.common.log.local.ILocalPrintStrategy;
 import com.wk.projects.common.log.local.SystemPrintStrategy;
 import com.wk.projects.common.log.service.IServicePrintStrategy;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -22,7 +30,10 @@ import java.util.List;
  */
 @SuppressWarnings(WkSuppressConstants.UNUSED)
 public class WkLog {
-
+    private static final Pattern ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$");
+    private static final int MAX_LOG_LENGTH = 4000;
+    private static final int MAX_TAG_LENGTH = 23;
+    private static final int CALL_STACK_INDEX = 3;
 
     /**
      * Priority constant for the println method; use Log.v.
@@ -56,7 +67,7 @@ public class WkLog {
 
     private static final List<IWkLogPrintStrategy> priceStrategies = new ArrayList<>();
 
-    public static ILocalPrintStrategy localPrintStrategy=new SystemPrintStrategy();
+    public static ILocalPrintStrategy localPrintStrategy=new AndroidLogPrintStrategy();
     public static IDiskPrintStrategy diskPrintStrategy;
     public static IServicePrintStrategy servicePrintStrategy;
 
@@ -69,6 +80,7 @@ public class WkLog {
      */
     public static int i(Object logContent, String... tag) {
         int result=0;
+        tag=checkTag(tag);
         if(diskPrintStrategy!=null){
             result+=diskPrintStrategy.i(logContent,tag);
         }
@@ -89,6 +101,7 @@ public class WkLog {
      */
     public static int d(Object logContent, String... tag) {
         int result=0;
+        tag=checkTag(tag);
         if(diskPrintStrategy!=null){
             result+=diskPrintStrategy.i(logContent,tag);
         }
@@ -158,4 +171,35 @@ public class WkLog {
         return result;
     }
 
+    private static String[] checkTag(String... tag){
+        if(tag.length==0){
+            return new String[]{getDefaultTag()};
+        }
+        return tag;
+    }
+
+
+    private static String getDefaultTag(){
+        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        if (stackTrace.length <= CALL_STACK_INDEX) {
+            throw new IllegalStateException(
+                    "Synthetic stacktrace didn't have enough elements: are you using proguard?");
+        }
+        return createStackElementTag(stackTrace[CALL_STACK_INDEX]);
+    }
+
+    @Nullable
+    protected static String createStackElementTag(@NotNull StackTraceElement element) {
+        String tag = element.getClassName();
+        Matcher m = ANONYMOUS_CLASS.matcher(tag);
+        if (m.find()) {
+            tag = m.replaceAll("");
+        }
+        tag = tag.substring(tag.lastIndexOf('.') + 1);
+        // Tag length limit was removed in API 24.
+        if (tag.length() <= MAX_TAG_LENGTH || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return tag;
+        }
+        return tag.substring(0, MAX_TAG_LENGTH);
+    }
 }

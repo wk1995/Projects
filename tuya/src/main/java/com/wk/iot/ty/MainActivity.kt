@@ -1,8 +1,7 @@
-package com.wk.iot.ty.module
+package com.wk.iot.ty
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.wk.iot.ty.R
+import android.os.Bundle
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

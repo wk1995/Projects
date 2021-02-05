@@ -7,4 +7,8 @@
     <string name="common_str_save">保存</string>
     <string name="common_str_category">类别</string>
     <string name="common_str_add">添加</string>
+    <string name="common_str_login">登录</string>
+    <string name="common_str_register">注册</string>
+    <string name="common_english_password">密码</string>
+    <string name="common_english_forget_password">忘记密码</string>
 </resources>
