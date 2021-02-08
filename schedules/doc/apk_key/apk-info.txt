@@ -1,4 +1,4 @@
-
+keytool.exe -list -v -keystore G:\AndroidProjects\Projects\schedules\doc\apk_key\wkSchedules.jks
 密钥库类型: JKS
 密钥库提供方: SUN
 
@@ -34,6 +34,10 @@ KeyIdentifier [
 
 *******************************************
 *******************************************
+
+
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.wk.projects.common.log;
 
 import com.wk.projects.common.constant.WkSuppressConstants;
 import com.wk.projects.common.log.disk.IDiskPrintStrategy;
+import com.wk.projects.common.log.local.AndroidLogPrintStrategy;
 import com.wk.projects.common.log.local.ILocalPrintStrategy;
 import com.wk.projects.common.log.local.SystemPrintStrategy;
 import com.wk.projects.common.log.service.IServicePrintStrategy;
@@ -56,7 +57,7 @@ public class WkLog {
 
     private static final List<IWkLogPrintStrategy> priceStrategies = new ArrayList<>();
 
-    public static ILocalPrintStrategy localPrintStrategy=new SystemPrintStrategy();
+    public static ILocalPrintStrategy localPrintStrategy=new AndroidLogPrintStrategy();
     public static IDiskPrintStrategy diskPrintStrategy;
     public static IServicePrintStrategy servicePrintStrategy;
 
