@@ -1,37 +1,33 @@
 package com.wk.map.gaode.module
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.amap.api.location.AMapLocation
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
-import com.amap.api.location.AMapLocationListener
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.amap.api.maps.AMap
-import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
-import com.amap.api.maps.model.BitmapDescriptorFactory
-import com.amap.api.maps.model.LatLng
-import com.amap.api.maps.model.Marker
-import com.amap.api.maps.model.MarkerOptions
-import com.wk.map.gaode.R
+import com.wk.map.gaode.GaoDeLocationStrategy2
+import com.wk.map.gaode.IGaoDeLocationStrategy
 import com.wk.map.gaode.databinding.ActivityMainBinding
+import com.wk.projects.common.log.WkLog
 
 
-class MainActivity : AppCompatActivity(), AMapLocationListener,
-        View.OnClickListener{
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+    companion object {
+        private const val WRITE_COARSE_LOCATION_REQUEST_CODE = 1
+    }
 
     private lateinit var mMapView: MapView
     private lateinit var aMap: AMap
+
     /**定位按钮*/
     private lateinit var btnLocation: Button
 
-
-    private lateinit var mLocationClient: AMapLocationClient
-
-    private  val mLocationOption  by lazy { AMapLocationClientOption()  }
+    private lateinit var gaoDeLocationStrategy: IGaoDeLocationStrategy
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,71 +38,63 @@ class MainActivity : AppCompatActivity(), AMapLocationListener,
         btnLocation.setOnClickListener(this)
         mMapView.onCreate(savedInstanceState)
         aMap = mMapView.map
+        gaoDeLocationStrategy = GaoDeLocationStrategy2(aMap)
+        startLocation()
         //初始化定位
-        mLocationClient = AMapLocationClient(applicationContext)
-        //设置定位回调监听
-        mLocationClient.setLocationListener(this)
-        mLocationOption.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        //获取一次定位结果：
-//该方法默认为false。
-        mLocationOption.setOnceLocation(true);
-
-//获取最近3s内精度最高的一次定位结果：
-//设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
-        mLocationOption.setOnceLocationLatest(true);
-        mLocationOption.setNeedAddress(true);
-        mLocationOption.setHttpTimeOut(20000);
-        mLocationClient.setLocationOption(mLocationOption);
-        mLocationClient.startLocation();
+        checkLocationPermission()
     }
 
     override fun onClick(v: View?) {
-        when(v){
+        when (v) {
             btnLocation -> {
-                mLocationClient.stopLocation();
-                mLocationClient.startLocation();
+                startLocation()
             }
         }
     }
-    private var locationMarker:Marker?=null
-    override fun onLocationChanged(amapLocation: AMapLocation?) {
-        Log.i("AmapError", "onLocationChanged")
-        if (amapLocation != null) {
-            if (amapLocation.getErrorCode() == 0) {
-                //定位成功回调信息，设置相关消息
 
-                //取出经纬度
+    /**定位*/
+    private fun startLocation() {
+        gaoDeLocationStrategy.startLocation()
+    }
 
-                //定位成功回调信息，设置相关消息
+    private fun checkLocationPermission() {
 
-                //取出经纬度
-                val latLng = LatLng(amapLocation.latitude, amapLocation.longitude)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
-                //添加Marker显示定位位置
-
-                //添加Marker显示定位位置
-                if (locationMarker == null) {
-                    //如果是空的添加一个新的,icon方法就是设置定位图标，可以自定义
-                    locationMarker = aMap.addMarker(MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus)))
-                } else {
-                    //已经添加过了，修改位置即可
-                    locationMarker?.setPosition(latLng)
-                }
-
-                //然后可以移动到定位点,使用animateCamera就有动画效果
-
-                //然后可以移动到定位点,使用animateCamera就有动画效果
-                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
-
-            }else {
-                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError", "location Error, ErrCode:"
-                        + amapLocation.getErrorCode() + ", errInfo:"
-                        + amapLocation.getErrorInfo());
+            // 检查权限状态
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                /*
+                 * 用户彻底拒绝授予权限，一般会提示用户进入设置权限界面
+                 * 第一次授权失败之后，退出App再次进入时，再此处重新调出允许权限提示框
+                 */
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), WRITE_COARSE_LOCATION_REQUEST_CODE)
+                WkLog.d("-----get--Permissions--success--1-", "info:")
+            } else {
+                /*
+                 * 用户未彻底拒绝授予权限
+                 * 第一次安装时，调出的允许权限提示框，之后再也不提示
+                 */
+                WkLog.d("-----get--Permissions--success--2-", "info:")
+                //申请WRITE_EXTERNAL_STORAGE权限
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                        WRITE_COARSE_LOCATION_REQUEST_CODE)//自定义的code
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            WRITE_COARSE_LOCATION_REQUEST_CODE -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocation()
+                } else {
+                    // 申请失败
+//                    WkToast.showToast( "请在设置中更改定位权限")
+                }
+            }
+
         }
     }
 }

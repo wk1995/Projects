@@ -1,6 +1,9 @@
 package com.wk.map.gaode.module
 
 import android.app.Application
+import com.wk.map.gaode.R
+import com.wk.projects.common.BaseApplication
+import com.wk.projects.common.configuration.WkProjects
 
 /**
  *
@@ -11,5 +14,11 @@ import android.app.Application
  *      GitHub : https://github.com/wk1995
  *      CSDN   : http://blog.csdn.net/qq_33882671
  * */
-class WkGaoDeApp:Application() {
+class WkGaoDeApp:BaseApplication() {
+    override fun onCreate() {
+        super.onCreate()
+        WkProjects.init(this)
+                .withModuleName(getString(R.string.module_name))
+                .configure()
+    }
 }
