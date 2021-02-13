@@ -9,14 +9,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.amap.api.maps.AMap
+import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
+import com.amap.api.maps.model.LatLng
+import com.amap.api.services.core.LatLonPoint
+import com.amap.api.services.geocoder.GeocodeResult
+import com.amap.api.services.geocoder.GeocodeSearch
+import com.amap.api.services.geocoder.RegeocodeQuery
+import com.amap.api.services.geocoder.RegeocodeResult
 import com.wk.map.gaode.GaoDeLocationStrategy2
 import com.wk.map.gaode.IGaoDeLocationStrategy
 import com.wk.map.gaode.databinding.ActivityMainBinding
 import com.wk.projects.common.log.WkLog
+import com.wk.projects.common.ui.WkToast
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, AMap.OnMapClickListener, AMap.OnMapLongClickListener,
+        GeocodeSearch.OnGeocodeSearchListener {
     companion object {
         private const val WRITE_COARSE_LOCATION_REQUEST_CODE = 1
     }
@@ -29,6 +38,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var gaoDeLocationStrategy: IGaoDeLocationStrategy
 
+    private val geocoderSearch by lazy {
+        GeocodeSearch(this)
+    };
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -38,10 +51,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnLocation.setOnClickListener(this)
         mMapView.onCreate(savedInstanceState)
         aMap = mMapView.map
+        aMap.setOnMapClickListener(this)
+        aMap.setOnMapLongClickListener(this)
         gaoDeLocationStrategy = GaoDeLocationStrategy2(aMap)
         startLocation()
         //初始化定位
         checkLocationPermission()
+
+
+        geocoderSearch.setOnGeocodeSearchListener(this);
     }
 
     override fun onClick(v: View?) {
@@ -96,5 +114,40 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         }
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        WkLog.i("onMapClick  la: ${p0?.latitude}  lng:  ${p0?.longitude}", "wk")
+    }
+
+    override fun onMapLongClick(p0: LatLng?) {
+        WkLog.i("onMapLongClick  la: ${p0?.latitude}  lng:  ${p0?.longitude}", "wk")
+        val latLonPoint = LatLonPoint(p0?.latitude ?: 0.0, p0?.longitude ?: 0.0)
+        // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        val query = RegeocodeQuery(latLonPoint, 200f, GeocodeSearch.AMAP)
+        geocoderSearch.getFromLocationAsyn(query)
+    }
+
+    override fun onRegeocodeSearched(result: RegeocodeResult?, rCode: Int) {
+        WkLog.i("onRegeocodeSearched ")
+
+        if (rCode == 1000) {
+            if (result?.regeocodeAddress != null
+                    && result.regeocodeAddress.formatAddress != null) {
+
+                val addressName = result.regeocodeAddress.formatAddress + "附近"
+
+                WkToast.showToast(addressName)
+            } else {
+                WkToast.showToast("shiasa")
+            }
+        } else {
+            WkToast.showToast(rCode);
+        }
+    }
+
+
+    override fun onGeocodeSearched(p0: GeocodeResult?, p1: Int) {
+        WkLog.i("onGeocodeSearched ")
     }
 }
