@@ -1,4 +1,4 @@
-package com.wk.map.gaode.module
+package com.wk.map.gaode
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.amap.api.maps.AMap
-import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
 import com.amap.api.maps.model.LatLng
 import com.amap.api.services.core.LatLonPoint
@@ -17,14 +16,20 @@ import com.amap.api.services.geocoder.GeocodeResult
 import com.amap.api.services.geocoder.GeocodeSearch
 import com.amap.api.services.geocoder.RegeocodeQuery
 import com.amap.api.services.geocoder.RegeocodeResult
-import com.wk.map.gaode.GaoDeLocationStrategy2
-import com.wk.map.gaode.IGaoDeLocationStrategy
-import com.wk.map.gaode.databinding.ActivityMainBinding
+import com.wk.mao.gaode.databinding.MapGaodeMapActivityBinding
+import com.wk.map.gaode.location.GaoDeLocationStrategy2
+import com.wk.map.gaode.location.IGaoDeLocationStrategy
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.ui.WkToast
 
+/**
+ * @author      :wangkang_shenlong
+ * email        :shenlong.wang@tuya.com
+ * create date  : 2021/02/10
+ * desc         :高德地图页面
+ */
 
-class MainActivity : AppCompatActivity(), View.OnClickListener, AMap.OnMapClickListener, AMap.OnMapLongClickListener,
+class GaoDeMapActivity : AppCompatActivity(), View.OnClickListener, AMap.OnMapClickListener, AMap.OnMapLongClickListener,
         GeocodeSearch.OnGeocodeSearchListener {
     companion object {
         private const val WRITE_COARSE_LOCATION_REQUEST_CODE = 1
@@ -44,7 +49,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AMap.OnMapClickL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = MapGaodeMapActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mMapView = binding.map
         btnLocation = binding.btnLocation

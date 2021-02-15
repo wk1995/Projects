@@ -38,8 +38,8 @@ class WkConfiguration private constructor() {
     fun configure() {
         val moduleName = info[MODULE_NAME] as? String
         val context = info[CONTEXT] as? Context
-        if (moduleName != null && context != null)
-            CrashHandler.init(context, moduleName)
+        if (moduleName != null && context != null){}
+//            CrashHandler.init(context, moduleName)
     }
 
 

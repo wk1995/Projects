@@ -19,7 +19,9 @@ android {
         versionName rootProject.ext.versionName
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
+        buildFeatures {
+            viewBinding true
+        }
     }
     signingConfigs {
         release {
@@ -74,6 +76,7 @@ project.afterEvaluate {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(path: ':map-gaode')
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

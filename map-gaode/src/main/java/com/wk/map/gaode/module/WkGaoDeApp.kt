@@ -1,7 +1,6 @@
 package com.wk.map.gaode.module
 
-import android.app.Application
-import com.wk.map.gaode.R
+import com.wk.mao.gaode.R
 import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.WkProjects
 

@@ -17,16 +17,19 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:label="@string/schedule_name"
-        android:theme="@style/ScheduleAppTheme"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:label"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/schedule_icon">
-        <activity android:name=".SchedulesMainActivity">
+        <activity android:name=".SchedulesMainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="com.wk.map.gaode.GaoDeMapActivity">
         </activity>
         <activity
             android:name=".data.ScheduleItemInfoActivity"

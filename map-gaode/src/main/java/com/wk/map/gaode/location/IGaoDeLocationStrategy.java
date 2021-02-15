@@ -1,4 +1,4 @@
-package com.wk.map.gaode;
+package com.wk.map.gaode.location;
 
 /**
  * @author :wangkang_shenlong

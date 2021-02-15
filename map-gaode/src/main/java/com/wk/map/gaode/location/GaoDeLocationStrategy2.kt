@@ -1,6 +1,5 @@
-package com.wk.map.gaode
+package com.wk.map.gaode.location
 
-import android.content.Context
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
@@ -11,7 +10,7 @@ import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.MarkerOptions
-import com.wk.projects.common.configuration.WkConfiguration
+import com.wk.mao.gaode.R
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.log.WkLog
 

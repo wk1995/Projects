@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.wk.map.gaode.GaoDeMapActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
@@ -45,6 +46,12 @@ import java.util.*
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Toolbar.OnMenuItemClickListener {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTheme(R.style.ScheduleAppTheme)
     }
 
     override fun initResLayId() = R.layout.schedules_activity_main
@@ -128,8 +135,12 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                         initData()
                     }
                 })
-        //增加数据库中没有的项目
-            fabAddScheduleItem -> ScheduleItemAddDialog.create().show(supportFragmentManager)
+            //增加数据库中没有的项目
+            fabAddScheduleItem -> {
+//                ScheduleItemAddDialog.create().show(supportFragmentManager)
+                val intent=Intent(this,GaoDeMapActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
