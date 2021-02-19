@@ -1,8 +1,8 @@
 package com.wk.projects.common.collapse
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import android.widget.FrameLayout
 import android.widget.ScrollView
 import com.wk.projects.common.communication.constant.BundleKey.FILE

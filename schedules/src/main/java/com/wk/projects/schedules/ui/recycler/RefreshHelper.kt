@@ -1,8 +1,8 @@
 package com.wk.projects.schedules.ui.recycler
 
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.data.all.AllDataAdapter
 import org.litepal.LitePal
@@ -19,9 +19,9 @@ import java.lang.Exception
  * </pre>
  */
 class RefreshHelper(private val context: Context,
-                    private val rv: RecyclerView,
-                    private val sr: SwipeRefreshLayout)
-    : SwipeRefreshLayout.OnRefreshListener {
+                    private val rv: androidx.recyclerview.widget.RecyclerView,
+                    private val sr: androidx.swiperefreshlayout.widget.SwipeRefreshLayout)
+    : androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         sr.isRefreshing = true

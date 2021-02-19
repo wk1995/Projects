@@ -1,6 +1,8 @@
 package com.wk.projects.common
 
 import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDex
 import com.alibaba.android.arouter.launcher.ARouter
 import org.litepal.LitePal
 import timber.log.Timber
@@ -43,5 +45,10 @@ abstract class BaseApplication:Application(){
     override fun onTerminate() {
         super.onTerminate()
         ARouter.getInstance().destroy()
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this);
     }
 }

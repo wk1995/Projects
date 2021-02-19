@@ -1,7 +1,7 @@
 package com.wk.projects.schedules.ui.recycler
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +22,8 @@ import com.wk.projects.schedules.data.ScheduleItem
  * </pre>
  */
 class SchedulesAddItemAdapter(private val itemList: ArrayList<String>,
-                              private val rvClickListener:IRvClickListener?=null) : RecyclerView.Adapter<SchedulesAddItemAdapter.SAdapter>() {
-    class SAdapter(val v: View, val tvName: TextView) : RecyclerView.ViewHolder(v)
+                              private val rvClickListener:IRvClickListener?=null) : androidx.recyclerview.widget.RecyclerView.Adapter<SchedulesAddItemAdapter.SAdapter>() {
+    class SAdapter(val v: View, val tvName: TextView) : androidx.recyclerview.widget.RecyclerView.ViewHolder(v)
 
 
 

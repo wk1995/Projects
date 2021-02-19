@@ -1,4 +1,4 @@
 include ':cashbook'
 println "setting gradle start"
-include ':app', ':common', ':schedules', ':main'
+include ':app', ':common', ':schedules', ':main', ':wkBuildSrc', ':test', ':lint'
 println "setting gradle end"
