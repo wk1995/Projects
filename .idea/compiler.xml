@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
       <module name="Projects.buildSrc" target="1.7" />
+      <module name="wk_projects.Projects.buildSrc" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
