@@ -21,6 +21,7 @@ import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.ui.WkToast
 import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.constant.ActivityRequestCode
@@ -43,7 +44,8 @@ import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
-class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Toolbar.OnMenuItemClickListener {
+class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
+        Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener , BaseQuickAdapter.OnItemChildLongClickListener {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
@@ -69,34 +71,39 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
         rvSchedules.adapter = scheduleMainAdapter
-        rvSchedules.addOnItemTouchListener(object : BaseRvSimpleClickListener() {
-
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
-                when (view?.id) {
-                    R.id.clScheduleItem -> ARouter.getInstance()
-                            .build(ARoutePath.ScheduleItemInfoActivity)
-                            .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                            .withInt(LIST_POSITION, position)
-                            .navigation(this@SchedulesMainActivity, ActivityRequestCode.RequestCode_SchedulesMainActivity)
-                }
-            }
-
-            //长按
-            override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                val item = adapter?.getItem(position) as? ScheduleItem ?: return
-                val baseObjId = item.baseObjId
-                val itemName = item.itemName
-                //修改项目开始时间或者删除项目
-                val bundle = Bundle()
-                bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                bundle.putInt(BundleKey.LIST_POSITION, position)
-                bundle.putString(BundleKey.LIST_ITEM_NAME, itemName)
-                DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
-            }
-        })
+        scheduleMainAdapter.setOnItemChildClickListener(this)
+        scheduleMainAdapter.setOnItemChildLongClickListener(this)
         rvSchedules.addItemDecoration(DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         initData()
+    }
+
+    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+        when (view?.id) {
+            R.id.tvCompleteStatus->{
+                WkToast.showToast("完成")
+            }
+             R.id.clScheduleItem -> {
+                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
+                 ARouter.getInstance()
+                         .build(ARoutePath.ScheduleItemInfoActivity)
+                         .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                         .withInt(LIST_POSITION, position)
+                         .navigation(this@SchedulesMainActivity, ActivityRequestCode.RequestCode_SchedulesMainActivity)
+             }
+        }
+    }
+
+    override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int): Boolean {
+        val item = adapter?.getItem(position) as? ScheduleItem ?: return false
+        val baseObjId = item.baseObjId
+        val itemName = item.itemName
+        //修改项目开始时间或者删除项目
+        val bundle = Bundle()
+        bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+        bundle.putInt(BundleKey.LIST_POSITION, position)
+        bundle.putString(BundleKey.LIST_ITEM_NAME, itemName)
+        DeleteScheduleItemDialog.create(bundle).show(supportFragmentManager)
+        return true
     }
 
     private fun initData() {
@@ -137,9 +144,9 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
                 })
             //增加数据库中没有的项目
             fabAddScheduleItem -> {
-//                ScheduleItemAddDialog.create().show(supportFragmentManager)
-                val intent=Intent(this,GaoDeMapActivity::class.java)
-                startActivity(intent)
+                ScheduleItemAddDialog.create().show(supportFragmentManager)
+//                val intent=Intent(this,GaoDeMapActivity::class.java)
+//                startActivity(intent)
             }
         }
     }
@@ -221,5 +228,8 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener, Tool
         PermissionDialog().withRequest(request).show(this)
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        return super.onLongClick(v)
+    }
 }
 

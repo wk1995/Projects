@@ -7,4 +7,6 @@
     <string name="common_str_save">保存</string>
     <string name="common_str_category">类别</string>
     <string name="common_str_add">添加</string>
+    <string name="common_str_complete">完成</string>
+    <string name="common_str_has_complete">已完成</string>
 </resources>

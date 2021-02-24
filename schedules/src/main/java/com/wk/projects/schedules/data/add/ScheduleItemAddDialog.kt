@@ -5,6 +5,9 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.communication.constant.BundleKey
@@ -32,9 +35,9 @@ import timber.log.Timber
  */
 class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
-    lateinit var etAddItem: EditText
-    lateinit var rvExistItem: androidx.recyclerview.widget.RecyclerView
-    lateinit var rvItemClass: androidx.recyclerview.widget.RecyclerView
+    private lateinit var etAddItem: EditText
+    private lateinit var rvExistItem: RecyclerView
+    private lateinit var rvItemClass: RecyclerView
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemAddDialog {
@@ -65,8 +68,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         etAddItem = vsView.findViewById(R.id.etAddItem)
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
         rvItemClass = vsView.findViewById(R.id.rvItemClass)
-//        rvItemClass.layoutManager = GridLayoutManager(mActivity,3)
-        rvExistItem.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(mActivity)
+        rvExistItem.layoutManager = LinearLayoutManager(mActivity)
 
         rvExistItem.adapter = mItemAdapter
         rvExistItem.addOnItemTouchListener(object : BaseSimpleClickListener() {
@@ -83,7 +85,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                 }
             }
         })
-        rvExistItem.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(mActivity, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
         Observable.just("select distinct itemname from scheduleitem")
                 .map {
                     Timber.d("54 $it")

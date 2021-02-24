@@ -5,39 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SchedulesMainActivity">
-    <androidx.appcompat.widget.Toolbar
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/tbSchedules"
-        android:layout_width="match_parent"
-        android:background="@color/colorPrimaryDark"
-        android:layout_height="?android:attr/actionBarSize"/>
+
     <TextView
         android:id="@+id/tvDaySelected"
-        app:layout_constraintTop_toBottomOf="@id/tbSchedules"
         android:layout_width="match_parent"
-        tools:text="当前日期"
+        android:layout_height="@dimen/d50dp"
         android:gravity="center"
         android:textColor="@color/colorAccent"
-        android:layout_height="@dimen/d50dp" />
-    <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tbSchedules"
+        tools:text="当前日期" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tbSchedules"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSchedules"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:context=".SchedulesMainActivity" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
+        android:layout_marginEnd="@dimen/d15dp"
+        android:layout_marginStart="@dimen/d15dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDaySelected"
+        tools:context=".SchedulesMainActivity" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddScheduleItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/d40dp"
         android:layout_marginBottom="@dimen/d40dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/fabAddScheduleItem"
         android:src="@drawable/common_pic_add_black"
-        app:elevation="8dp"/>
+        app:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
