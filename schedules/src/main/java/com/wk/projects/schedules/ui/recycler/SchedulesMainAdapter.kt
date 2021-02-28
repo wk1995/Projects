@@ -1,11 +1,18 @@
 package com.wk.projects.schedules.ui.recycler
 
 import android.graphics.Color
+import android.view.View
 import android.widget.Button
-import com.chad.library.adapter.base.BaseQuickAdapter
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.data.ScheduleItem
+import com.wk.projects.schedules.date.DateTime.getDateString
+import com.wk.projects.schedules.date.DateTime.getTime
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -19,38 +26,67 @@ import java.util.*
  *      desc   :
  */
 class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
-    : BaseQuickAdapter<ScheduleItem, BaseViewHolder>(R.layout.schedules_item_list, itemList) {
+    : BaseMultiItemQuickAdapter<ScheduleItem, BaseViewHolder>(itemList) {
+    private val defaultSimpleDateFormat by lazy {
+        SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
+    }
+
+    companion object {
+        const val ITEM_TYPE_SCHEDULE = 0
+        const val ITEM_TYPE_TIME = 1
+    }
+
+    init {
+        addItemType(ITEM_TYPE_SCHEDULE, R.layout.schedules_item_list)
+        addItemType(ITEM_TYPE_TIME, R.layout.schedules_item_list_time)
+    }
+
 
     override fun convert(helper: BaseViewHolder?, item: ScheduleItem?) {
         item?.run {
-            //表示现在正在进行,还未结束
-            val finish = endTime ?: 0 > startTime ?: 0
-            helper?.setText(R.id.tvScheduleItemName, itemName)
-                    ?.setTextColor(R.id.tvScheduleItemName,
-                            if (finish) {
-                                Color.BLACK
-                            } else {
-                                Color.RED
-                            }
-                    )
-                    ?.setText(R.id.tvCompleteStatus,
-                            if (finish) {
-//                                getTime((item.endTime ?: 0) - (item.startTime ?: 0))
-                                R.string.common_str_has_complete
-                            } else {
-                                R.string.common_str_complete
-                            }
-                    )?.addOnClickListener(R.id.clScheduleItem)
-                    ?.addOnClickListener(R.id.tvCompleteStatus)
-                    ?.addOnLongClickListener(R.id.clScheduleItem)
             val tvCompleteStatus = helper?.getView<Button>(R.id.tvCompleteStatus)
-            tvCompleteStatus?.setBackgroundResource(if (finish) {
-                -1
+            //表示只是时刻，不是具体的项目
+            if (itemName.isEmpty()) {
+                helper?.setText(R.id.tvScheduleItemName, getDateString(startTime ?: 0,defaultSimpleDateFormat))
             } else {
-                R.drawable.common_bg_xml_shape_r25_solid_white
-            })
-
+                //表示现在正在进行,还未结束
+                val finish = endTime ?: 0 > startTime ?: 0
+                helper?.setText(R.id.tvScheduleItemName, itemName)
+                        ?.setTextColor(R.id.tvScheduleItemName,
+                                if (finish) {
+                                    Color.BLACK
+                                } else {
+                                    Color.RED
+                                }
+                        )
+                        ?.setVisible(R.id.tvCompleteStatus, true)
+                        ?.setVisible(R.id.tvScheduleItemTime, true)
+                        ?.setText(R.id.tvCompleteStatus,
+                                if (finish) {
+                                    R.string.common_str_has_complete
+                                } else {
+                                    R.string.common_str_complete
+                                }
+                        )
+                        ?.setText(R.id.tvScheduleItemTime,
+                                if (finish) {
+                                    getTime((item.endTime ?: 0) - (item.startTime ?: 0))
+                                } else {
+                                    getTime(System.currentTimeMillis() - (item.startTime ?: 0))
+                                }
+                        )
+                        ?.addOnClickListener(R.id.clScheduleItem)
+                        ?.addOnClickListener(R.id.tvCompleteStatus)
+                        ?.addOnLongClickListener(R.id.clScheduleItem)
+                tvCompleteStatus?.setBackgroundResource(if (finish) {
+                    -1
+                } else {
+                    R.drawable.common_bg_xml_shape_r25_solid_white
+                })
+            }
         }
+
+
     }
 
     fun addItem(mScheduleItem: ScheduleItem) {

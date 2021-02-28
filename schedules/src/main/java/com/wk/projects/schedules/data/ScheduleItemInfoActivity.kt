@@ -37,12 +37,12 @@ import java.util.*
  */
 @Route(path = ARoutePath.ScheduleItemInfoActivity)
 class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, OnTimeSelectListener {
-    private val itemId: Long by lazy {
-        val itemId = intent?.extras?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1L)
-                ?: throw Exception("itemId 有问题")
-        if (itemId < 0) throw Exception("itemId 有问题")
-        itemId
+
+    companion object{
+        private const val INVALID_ITEM_ID=-1L
     }
+    private  var  itemId=INVALID_ITEM_ID
+
     //改变后的parentId
     private var newCategoryId: Long? = -1L
     private var currentId: Long? = -1L
@@ -52,7 +52,14 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     override fun initResLayId() = R.layout.schedules_activity_schedule_item_info
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
-        LitePal.findAsync(ScheduleItem::class.java, itemId).listen {
+        itemId = intent?.extras?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, INVALID_ITEM_ID)?:INVALID_ITEM_ID
+        if(itemId==INVALID_ITEM_ID){
+            return
+        }
+        LitePal.findAsync(ScheduleItem::class.java, itemId).listen {it:ScheduleItem?->
+            if(it==null){
+                return@listen
+            }
             Timber.d("42 $it")
             currentId = it.parentId
             newCategoryId = currentId
@@ -69,7 +76,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         }
         findAllCategory()
         initClick()
-        rvItemClass.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        rvItemClass.layoutManager =LinearLayoutManager(this)
         rvItemClass.adapter = mCategoryAdapter
         rvItemClass.addOnItemTouchListener(object : BaseSimpleClickListener() {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

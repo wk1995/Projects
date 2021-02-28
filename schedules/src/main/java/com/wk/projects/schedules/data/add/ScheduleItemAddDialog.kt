@@ -14,6 +14,7 @@ import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
+import com.wk.projects.common.ui.WkToast
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
@@ -111,26 +112,31 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     //保存数据库中
     private fun saveItem(itemName: String?) {
         if (itemName == null || itemName.isBlank()) {
-            Toast.makeText(mActivity, "项目需名字", Toast.LENGTH_LONG).show()
+            WkToast.showToast("项目需名字")
             return
         }
         val scheduleItem = ScheduleItem(itemName, System.currentTimeMillis())
+        showInScheduleList(scheduleItem)
+    }
+
+    private fun saveItemInDB(scheduleItem : ScheduleItem){
         scheduleItem.saveAsync().listen {
-            val msg: String
-            when (it) {
+            val msg: String = when (it) {
                 true -> {
-                    //传到主页面
-                    val bundle = Bundle()
-                    msg = "保存成功"
-                    Timber.d("80 id is ${scheduleItem.baseObjId}")
-                    bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, itemName)
-                    bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
-                    iFa.communication(IFAFlag.SCHEDULE_ITEM_DIALOG, bundle)
+                    showInScheduleList(scheduleItem)
+                    "保存成功"
                 }
                 else ->
-                    msg = "未知原因,保存失败"
+                    "未知原因,保存失败"
             }
-            Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show()
+            WkToast.showToast(msg)
         }
+    }
+    /**传到主页面*/
+    private fun showInScheduleList(scheduleItem : ScheduleItem){
+        val bundle = Bundle()
+        bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, scheduleItem.itemName)
+        bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
+        iFa.communication(IFAFlag.SCHEDULE_ITEM_DIALOG, bundle)
     }
 }

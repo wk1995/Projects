@@ -58,17 +58,19 @@ object DateTime {
                 }
             }
         }
-        if (h == 0L)
-            return String.format("%02d:%02d", min, second)
+        return if (h == 0L)
+            String.format("%02d:%02d", min, second)
         else
-            return String.format("%02d:%02d:%02d", h, min, second)
+            String.format("%02d:%02d:%02d", h, min, second)
 
 
     }
 
 
+    /**
+     * 获取某一天的0点0分0秒0毫秒 月和日都从0开始算
+     * */
     @JvmStatic
-    //获取某一天的0点0分0秒0毫秒 月和日都从0开始算
     fun getDayStart(day: Int? = null, month: Int? = null, year: Int? = null): Long {
         val todayStart = Calendar.getInstance()
         if (year != null)
@@ -96,9 +98,10 @@ object DateTime {
         return todayStart.timeInMillis
     }
 
-
+    /**
+     * 获取某一天的23点59分59秒999毫秒
+     * */
     @JvmStatic
-    //获取某一天的23点59分59秒999毫秒
     fun getDayEnd(day: Int? = null, month: Int? = null, year: Int? = null): Long {
         val todayEnd = Calendar.getInstance()
         if (year != null)

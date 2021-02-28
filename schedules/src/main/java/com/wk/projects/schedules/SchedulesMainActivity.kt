@@ -3,31 +3,28 @@ package com.wk.projects.schedules
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.wk.map.gaode.GaoDeMapActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
 import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
+import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.ui.WkToast
-import com.wk.projects.common.ui.recycler.BaseRvSimpleClickListener
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.constant.ActivityRequestCode
 import com.wk.projects.schedules.constant.ActivityResultCode
 import com.wk.projects.schedules.data.ScheduleItem
-import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.date.DateTime.getDayEnd
 import com.wk.projects.schedules.date.DateTime.getDayStart
@@ -45,11 +42,10 @@ import java.util.*
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
-        Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener , BaseQuickAdapter.OnItemChildLongClickListener {
+        Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemChildLongClickListener {
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,25 +67,26 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         linearLayoutManager.stackFromEnd = true
         rvSchedules.layoutManager = linearLayoutManager
         rvSchedules.adapter = scheduleMainAdapter
-        scheduleMainAdapter.setOnItemChildClickListener(this)
-        scheduleMainAdapter.setOnItemChildLongClickListener(this)
+        scheduleMainAdapter.onItemChildClickListener = this
+        scheduleMainAdapter.onItemChildLongClickListener = this
         rvSchedules.addItemDecoration(DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         initData()
     }
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
         when (view?.id) {
-            R.id.tvCompleteStatus->{
+            R.id.tvCompleteStatus -> {
                 WkToast.showToast("完成")
             }
-             R.id.clScheduleItem -> {
-                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
-                 ARouter.getInstance()
-                         .build(ARoutePath.ScheduleItemInfoActivity)
-                         .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                         .withInt(LIST_POSITION, position)
-                         .navigation(this@SchedulesMainActivity, ActivityRequestCode.RequestCode_SchedulesMainActivity)
-             }
+            R.id.clScheduleItem -> {
+                val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
+                ARouter.getInstance()
+                        .build(ARoutePath.ScheduleItemInfoActivity)
+                        .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                        .withInt(LIST_POSITION, position)
+                        .navigation(this@SchedulesMainActivity,
+                                ActivityRequestCode.RequestCode_SchedulesMainActivity)
+            }
         }
     }
 
@@ -125,37 +122,39 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
     private fun initClickListener() {
         tvDaySelected.setOnClickListener(this)
         fabAddScheduleItem.setOnClickListener(this)
+        fabAddScheduleItem.setOnLongClickListener(this)
         tbSchedules.setOnMenuItemClickListener(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.schedules_tb_menu,menu)
+        menuInflater.inflate(R.menu.schedules_tb_menu, menu)
         return true
     }
 
     override fun onClick(v: View?) {
         when (v) {
             tvDaySelected ->
-                TimePickerCreator.create(this, object : OnTimeSelectListener {
-                    override fun onTimeSelect(date: Date?, view: View?) {
-                        tvDaySelected.text = DateTime.getDateString(date?.time)
-                        initData()
-                    }
-                })
+                TimePickerCreator.create(this) { date, view ->
+                    tvDaySelected.text = DateTime.getDateString(date?.time)
+                    initData()
+                }
             //增加数据库中没有的项目
             fabAddScheduleItem -> {
-                ScheduleItemAddDialog.create().show(supportFragmentManager)
-//                val intent=Intent(this,GaoDeMapActivity::class.java)
-//                startActivity(intent)
+                val currentTime = System.currentTimeMillis()
+                val scheduleItem = ScheduleItem(WkStringConstants.STR_EMPTY, currentTime)
+                scheduleMainAdapter.addItem(scheduleItem)
             }
         }
     }
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
-        when(p0?.itemId){
+        when (p0?.itemId) {
 //            R.id.menuItemAllData->ARouter.getInstance().build(ARoutePath.AllDataInfoActivity).navigation()
-            R.id.menuItemSearch->{}
-            R.id.menuItemIdea->{ARouter.getInstance().build(ARoutePath.IdeaActivity).navigation()}
+            R.id.menuItemSearch -> {
+            }
+            R.id.menuItemIdea -> {
+                ARouter.getInstance().build(ARoutePath.IdeaActivity).navigation()
+            }
         }
         return true
     }
@@ -229,7 +228,15 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
     }
 
     override fun onLongClick(v: View?): Boolean {
-        return super.onLongClick(v)
+        when (v?.id) {
+            R.id.fabAddScheduleItem -> {
+                ARouter.getInstance()
+                        .build(ARoutePath.ScheduleItemInfoActivity)
+                        .navigation(this@SchedulesMainActivity,
+                                ActivityRequestCode.RequestCode_SchedulesMainActivity)
+            }
+        }
+        return true
     }
 }
 
