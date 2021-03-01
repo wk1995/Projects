@@ -7,4 +7,8 @@
     <string name="common_str_save">保存</string>
     <string name="common_str_category">类别</string>
     <string name="common_str_add">添加</string>
+    <string name="common_str_zh_detailed">明细</string>
+    <string name="common_str_zh_category">分类</string>
+    <string name="common_str_zh_account">账户</string>
+    <string name="common_str_zh_month">月</string>
 </resources>

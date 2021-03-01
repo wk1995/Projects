@@ -29,7 +29,7 @@ class AndroidLogPrintStrategy : ILocalPrintStrategy {
     override fun i(msg: Any?, vararg tag: String): Int {
         var result = 0
         tag.forEach {
-            result += Log.v(it, msg?.toString() ?: STR_NULL_LOW)
+            result += Log.i(it, msg?.toString() ?: STR_NULL_LOW)
         }
         return result
     }
@@ -37,7 +37,7 @@ class AndroidLogPrintStrategy : ILocalPrintStrategy {
     override fun d(msg: Any?, vararg tag: String): Int {
         var result = 0
         tag.forEach {
-            result += Log.v(it, msg?.toString() ?: STR_NULL_LOW)
+            result += Log.d(it, msg?.toString() ?: STR_NULL_LOW)
         }
         return result
     }
@@ -45,7 +45,7 @@ class AndroidLogPrintStrategy : ILocalPrintStrategy {
     override fun e(msg: Any?, vararg tag: String): Int {
         var result = 0
         tag.forEach {
-            result += Log.v(it, msg?.toString() ?: STR_NULL_LOW)
+            result += Log.e(it, msg?.toString() ?: STR_NULL_LOW)
         }
         return result
     }
@@ -53,7 +53,7 @@ class AndroidLogPrintStrategy : ILocalPrintStrategy {
     override fun w(msg: Any?, vararg tag: String): Int {
         var result = 0
         tag.forEach {
-            result += Log.v(it, msg?.toString() ?: STR_NULL_LOW)
+            result += Log.w(it, msg?.toString() ?: STR_NULL_LOW)
         }
         return result
     }
