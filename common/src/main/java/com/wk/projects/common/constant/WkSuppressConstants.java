@@ -1,7 +1,5 @@
 package com.wk.projects.common.constant;
 
-import static com.wk.projects.common.constant.WkSuppressConstants.UNUSED;
-
 /**
  * @author : wk <br/>
  * e-mail : 1226426603@qq.com<br/>
@@ -10,7 +8,6 @@ import static com.wk.projects.common.constant.WkSuppressConstants.UNUSED;
  * GitHub : https://github.com/wk1995 <br/>
  * CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  */
-@SuppressWarnings(UNUSED)
 public class WkSuppressConstants {
     public static final String LOG_NO_TIMBER = "LogNoTimber";
     /**定义了的但没使用的类，方法*/

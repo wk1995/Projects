@@ -32,7 +32,7 @@
         <activity android:name="com.wk.map.gaode.GaoDeMapActivity">
         </activity>
         <activity
-            android:name=".data.ScheduleItemInfoActivity"
+            android:name=".info.ScheduleItemInfoActivity"
 
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
         <activity android:name=".collapse.SchedulesWatchActivity" />

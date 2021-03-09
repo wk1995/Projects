@@ -25,6 +25,13 @@ object DateTime {
                 mSimpleDateFormat.format(time)
 
     @JvmStatic
+    fun getDateString(time: Long?,dateFormatString:String):String{
+        val dateFormat=SimpleDateFormat(dateFormatString, Locale.getDefault())
+        return dateFormat.format(time)
+    }
+
+
+    @JvmStatic
     fun getDateLong(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
             : Long = mSimpleDateFormat.parse(timeString).time
 

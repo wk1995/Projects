@@ -1,4 +1,4 @@
-package com.wk.projects.schedules.data.`class`
+package com.wk.projects.schedules.info
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -15,13 +15,13 @@ import com.wk.projects.schedules.data.WkActivity
  *      desc   :
  * </pre>
  */
-class CategoryAdapter : BaseQuickAdapter<WkActivity, BaseViewHolder>(R.layout.common_only_text) {
+class ScheduleInfoAdapter :
+        BaseQuickAdapter<Pair<String,String>, BaseViewHolder>(R.layout.common_ll_tv_vertical_tv) {
 
-    override fun convert(helper: BaseViewHolder?, item: WkActivity?) {
+    override fun convert(helper: BaseViewHolder?, item: Pair<String,String>?) {
         item?.run {
-            helper?.setText(R.id.tvCommon, itemName)
-                    ?.addOnClickListener(R.id.tvCommon)
-
+            helper?.setText(R.id.tvTopCommonLlIvVTv, first)
+                    ?.setText(R.id.tvBottomCommonLlTvVTv, second)
         }
     }
 }

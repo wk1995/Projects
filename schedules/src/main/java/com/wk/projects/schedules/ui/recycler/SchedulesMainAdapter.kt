@@ -48,6 +48,7 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
             //表示只是时刻，不是具体的项目
             if (itemName.isEmpty()) {
                 helper?.setText(R.id.tvScheduleItemName, getDateString(startTime ?: 0,defaultSimpleDateFormat))
+
             } else {
                 //表示现在正在进行,还未结束
                 val finish = endTime ?: 0 > startTime ?: 0
@@ -75,15 +76,16 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
                                     getTime(System.currentTimeMillis() - (item.startTime ?: 0))
                                 }
                         )
-                        ?.addOnClickListener(R.id.clScheduleItem)
-                        ?.addOnClickListener(R.id.tvCompleteStatus)
-                        ?.addOnLongClickListener(R.id.clScheduleItem)
+
                 tvCompleteStatus?.setBackgroundResource(if (finish) {
                     -1
                 } else {
                     R.drawable.common_bg_xml_shape_r25_solid_white
                 })
             }
+            helper ?.addOnClickListener(R.id.clScheduleItem)
+                    ?.addOnClickListener(R.id.tvCompleteStatus)
+                    ?.addOnLongClickListener(R.id.clScheduleItem)
         }
 
 

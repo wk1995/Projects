@@ -1,145 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/s20sp"
-        android:text="@string/common_str_title"
-        android:id="@+id/tvScheduleName"/>
-    <TextView
-        android:id="@+id/tvScheduleStartTime"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        android:gravity="center"
-        android:paddingEnd="@dimen/d20dp"
-        android:paddingStart="@dimen/d20dp"
-        tools:text="@string/common_str_title"
-        app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleName"
-        app:layout_constraintRight_toRightOf="parent"
-        />
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        app:layout_constraintRight_toLeftOf="@id/tvScheduleStartTime"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleName"
-        android:text="@string/schedules_start_time"/>
-    <TextView
-        android:id="@+id/tvScheduleEndTime"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        android:gravity="center"
-        android:paddingEnd="@dimen/d20dp"
-        android:paddingStart="@dimen/d20dp"
-        tools:text="@string/common_str_title"
-        app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleStartTime"
-        app:layout_constraintRight_toRightOf="parent"
-        />
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        app:layout_constraintRight_toLeftOf="@id/tvScheduleStartTime"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleStartTime"
-        android:text="@string/schedules_end_time"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btOk"
-        android:layout_width="0dp"
+        android:id="@+id/btScheduleSave"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/d50dp"
-        android:gravity="center"
-        android:text="@android:string/ok"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleEndTime"
-        app:layout_constraintLeft_toRightOf="@id/btEndTime"
-        app:layout_constraintRight_toRightOf="parent"/>
-    <Button
-        android:id="@+id/btEndTime"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        android:gravity="center"
-        android:text="@string/schedules_item_end_time"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="@id/btOk"
-        app:layout_constraintLeft_toRightOf="@id/btCancel"
-        app:layout_constraintRight_toLeftOf="@id/btOk"
-        />
-    <Button
-        android:id="@+id/btCancel"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/d50dp"
-        app:layout_constraintRight_toLeftOf="@id/btEndTime"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/btEndTime"
-        android:text="@android:string/cancel"/>
+        android:background="@null"
+        android:text="@string/common_str_save"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <TextView
-        android:id="@+id/tvScheduleNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btCancel"
-        android:text="@string/common_str_note"/>
     <EditText
-        android:inputType="text"
-        android:hint="@string/schedules_et_note_hint"
         android:id="@+id/etScheduleNote"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/d100dp"
+        android:autofillHints="fgd"
+        android:gravity="start"
+        android:hint="@string/schedules_et_note_hint"
+        android:inputType="text"
+        android:maxLength="3"
+        app:layout_constraintBottom_toTopOf="@id/btScheduleSave" />
+
+    <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tvItemClass"
+        app:layout_constraintTop_toBottomOf="@id/rvScheduleInfo"
+        tools:background="@color/cardview_dark_background" />
+    <!--活动类别-->
+    <TextView
+        android:id="@+id/tvScheduleName"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/d60dp"
+        android:gravity="center"
+        android:padding="@dimen/d10dp"
+        android:text="@string/common_str_title"
+        android:hint="@string/schedules_add_item_title"
+        android:textSize="@dimen/s20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clTitle" />
+
+    <TextView
+        android:id="@+id/tvScheduleDate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleNote"/>
+        app:layout_constraintBottom_toBottomOf="@id/tvScheduleName"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="2021年3月6日" />
+
     <TextView
         android:id="@+id/tvItemClass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop ="@dimen/d40dp"
-        app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
-        android:text="@string/common_str_category"/>
-    <TextView
-        android:id="@+id/tvItemClassName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop ="@dimen/d40dp"
-        android:gravity="center"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tvItemClass"
-        app:layout_constraintTop_toBottomOf="@id/etScheduleNote"
-        tools:text="书"/>
-    <Button
-        android:id="@+id/btAddCategory"
-        app:layout_constraintTop_toBottomOf="@id/tvItemClass"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="wrap_content"
-        android:text="@string/common_str_add"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:inputType="text"
-        android:hint="@string/schedules_add_category_hint"
-        android:id="@+id/etAddCategory"
+        android:layout_marginTop="@dimen/d40dp"
+        android:text="@string/common_str_category"
+        app:layout_constraintBottom_toTopOf="@id/rvItemCategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTitle"
         android:layout_width="0dp"
-        app:layout_constraintTop_toTopOf="@id/btAddCategory"
-        app:layout_constraintBottom_toBottomOf="@id/btAddCategory"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toRightOf="@id/btAddCategory"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:layout_height="@dimen/d40dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btTitleSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="@string/common_str_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivTitleBack"
+            android:layout_width="@dimen/d40dp"
+            android:layout_height="@dimen/d40dp"
+            android:src="@drawable/common_back_right_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toStartOf="@id/btTitleSave"
+            app:layout_constraintStart_toEndOf="@id/ivTitleBack"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--活动时间项-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvScheduleInfo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d100dp"
+        android:background="@color/cardview_dark_background"
+        app:layout_constraintTop_toBottomOf="@id/tvScheduleName" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/colorPrimary"
-        android:id="@+id/rvItemClass"
-        app:layout_constraintTop_toBottomOf="@id/btAddCategory"
+        android:id="@+id/rvItemCategory"
         android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_height="0dp"/>
+        android:layout_height="@dimen/d100dp"
+        app:layout_constraintBottom_toTopOf="@id/etScheduleNote" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

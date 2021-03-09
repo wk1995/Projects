@@ -142,7 +142,12 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
             fabAddScheduleItem -> {
                 val currentTime = System.currentTimeMillis()
                 val scheduleItem = ScheduleItem(WkStringConstants.STR_EMPTY, currentTime)
-                scheduleMainAdapter.addItem(scheduleItem)
+                scheduleItem.saveAsync().listen {
+                    if(it){
+                        scheduleMainAdapter.addItem(scheduleItem)
+                    }
+                }
+
             }
         }
     }

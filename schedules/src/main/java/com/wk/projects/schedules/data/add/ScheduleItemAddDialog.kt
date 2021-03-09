@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -68,7 +67,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun initVSView(vsView: View) {
         etAddItem = vsView.findViewById(R.id.etAddItem)
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
-        rvItemClass = vsView.findViewById(R.id.rvItemClass)
+        rvItemClass = vsView.findViewById(R.id.rvItemCategory)
         rvExistItem.layoutManager = LinearLayoutManager(mActivity)
 
         rvExistItem.adapter = mItemAdapter
@@ -117,6 +116,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         }
         val scheduleItem = ScheduleItem(itemName, System.currentTimeMillis())
         showInScheduleList(scheduleItem)
+
     }
 
     private fun saveItemInDB(scheduleItem : ScheduleItem){
@@ -136,7 +136,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     private fun showInScheduleList(scheduleItem : ScheduleItem){
         val bundle = Bundle()
         bundle.putString(BundleKey.SCHEDULE_ITEM_NAME, scheduleItem.itemName)
-        bundle.putLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, scheduleItem.baseObjId)
         iFa.communication(IFAFlag.SCHEDULE_ITEM_DIALOG, bundle)
     }
 }

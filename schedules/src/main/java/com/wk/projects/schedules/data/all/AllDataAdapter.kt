@@ -8,7 +8,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
-import com.wk.projects.schedules.data.ScheduleItemInfoActivity
+import com.wk.projects.schedules.info.ScheduleItemInfoActivity
 
 /**
  * <pre>
