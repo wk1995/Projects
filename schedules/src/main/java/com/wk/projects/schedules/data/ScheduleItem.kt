@@ -9,18 +9,25 @@ import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
 
 /**
- *      author : wk
- *      e-mail : 122642603@qq.com
- *      time   : 2018/11/24
- *      GitHub : https://github.com/wk1995
- *      CSDN   : http://blog.csdn.net/qq_33882671
- *      desc   :
- *      @param categoryId 类别id
+ * author : wk
+ * e-mail : 122642603@qq.com
+ * time   : 2018/11/24
+ * GitHub : https://github.com/wk1995
+ * CSDN   : http://blog.csdn.net/qq_33882671
+ * desc   :
+ * @param categoryId 类别id
+ * @param itemName  项目的名称
+ * @param note 备注
+ * @param endTime 项目的结束时间
+ * @param categoryId  类别
+ * @param startTime 项目的起始时间
+ * @param flags [ScheduleFlag] 标签
  */
-data class ScheduleItem(@Column(nullable = false) var itemName: String=WkStringConstants.STR_EMPTY,
+data class ScheduleItem(@Column(nullable = false) var itemName: String = WkStringConstants.STR_EMPTY,
                         @Column(nullable = true) var startTime: Long = number_long_zero,
                         @Column(nullable = true) var endTime: Long = number_long_zero,
                         @Column(nullable = true) var note: String = WkStringConstants.STR_EMPTY,
+                        var flags: ArrayList<Long> = ArrayList(),
                         @Column(nullable = true) var categoryId: Long = number_long_one_Negative)
     : LitePalSupport(), MultiItemEntity {
     companion object {

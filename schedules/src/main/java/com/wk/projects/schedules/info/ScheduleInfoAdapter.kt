@@ -3,7 +3,6 @@ package com.wk.projects.schedules.info
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.wk.projects.schedules.R
-import com.wk.projects.schedules.data.WkActivity
 
 /**
  * <pre>

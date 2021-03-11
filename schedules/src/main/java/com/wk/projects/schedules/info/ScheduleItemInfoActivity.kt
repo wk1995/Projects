@@ -17,7 +17,7 @@ import com.wk.projects.common.log.WkLog
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
-import com.wk.projects.schedules.data.WkActivity
+import com.wk.projects.schedules.data.ScheduleCategory
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.ui.time.TimePickerCreator
@@ -124,7 +124,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             data.add(Pair(endTime,"结速时间"))
             etScheduleNote.setText(it.note)
             mScheduleInfoAdapter.addData(data)
-            LitePal.findAsync(WkActivity::class.java, currentCategoryId).listen {
+            LitePal.findAsync(ScheduleCategory::class.java, currentCategoryId).listen {
 //                 it?.itemName ?: WkStringConstants.STR_EMPTY
             }
 
@@ -217,7 +217,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     }
 
     private fun findAllCategory() {
-        LitePal.findAllAsync(WkActivity::class.java).listen {
+        LitePal.findAllAsync(ScheduleCategory::class.java).listen {
             mCategoryAdapter.setNewData(it)
         }
     }

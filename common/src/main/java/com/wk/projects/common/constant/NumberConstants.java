@@ -30,4 +30,9 @@ public final class NumberConstants {
     public static final float number_float_tow = 2f;
 
     //======================double===============================
+    //======================float===============================
+    public static final double number_double_zero = 0f;
+    public static final double number_double_one = 1f;
+    public static final double number_double_one_Negative = -1f;
+    public static final double number_double_tow = 2f;
 }
