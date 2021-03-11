@@ -125,7 +125,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                     val tvCommon = rootView.findViewById<TextView>(R.id.tv)
                     tvCommon?.apply {
                         setText(tabTitles[position])
-                        setTextSize(100f)
+                        textSize = 100f
                         setTextColor(resources.getColor(R.color.colorAccent))
                     }
                 }
