@@ -7,13 +7,15 @@
         android:name=".module.WkCashbookApp"
         android:allowBackup="true"
         android:fullBackupContent="true"
+        android:icon="@mipmap/module_icon"
         android:label="@string/module_name"
         android:theme="@style/Theme.AppCompat"
-        tools:replace="android:label"
-        android:icon="@mipmap/module_icon">
-        <activity android:name=".trade.CashBookBillListActivity">
+        tools:replace="android:label">
+        <activity android:name=".trade.info.TradeRecordInfoActivity"></activity>
+        <activity android:name=".trade.record.CashBookBillListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,4 +1,4 @@
-package com.wk.cashbook.trade
+package com.wk.cashbook.trade.record
 
 /**
  * @author      :wangkang_shenlong

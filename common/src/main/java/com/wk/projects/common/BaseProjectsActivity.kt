@@ -20,7 +20,7 @@ abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity,Vie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initContentView()
+        beforeSetContentView()
         val resLayout=initResLayId()
         if(resLayout is Int ){
             setContentView(resLayout)
@@ -66,7 +66,7 @@ abstract class BaseProjectsActivity: AppCompatActivity(),IFragmentToActivity,Vie
 
     override fun communication(flag: Int, bundle: Bundle?, any: Any?) {}
 
-    open fun initContentView() {}
+    open fun beforeSetContentView() {}
     override fun onClick(v: View?) {
     }
 

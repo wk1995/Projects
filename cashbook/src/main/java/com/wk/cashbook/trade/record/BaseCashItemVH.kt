@@ -1,4 +1,4 @@
-package com.wk.cashbook.trade
+package com.wk.cashbook.trade.record
 
 import android.view.View
 import android.widget.ImageView

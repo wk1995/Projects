@@ -1,4 +1,4 @@
-package com.wk.cashbook.trade
+package com.wk.cashbook.trade.record
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +18,7 @@ import com.wk.cashbook.databinding.CashbookBillListActivityBinding
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
-import com.wk.projects.common.time.date.DayUtil
+import com.wk.projects.common.resource.WkContextCompat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -67,8 +67,8 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
 
     private lateinit var mCashBookBillPresent: CashBookBillPresent
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun beforeSetContentView() {
+        super.beforeSetContentView()
         supportActionBar?.hide()
         mCashBookBillPresent = CashBookBillPresent(this)
     }
@@ -89,18 +89,13 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
         tvDateMonth = mBind.tvDateMonth
         tvAllPay = mBind.tvAllPay
         tvAllPay.text = STR_INT_ZERO
-
         tvIncome = mBind.tvIncome
         tvIncome.text = STR_INT_ZERO
-
         tlCashBook = mBind.tlCashBook
         btnAddBill = mBind.btnAddBill
         ivTitleBack = mBind.ivTitleBack
-
         vpCashbook = mBind.vpCashbook
         vpCashbook.adapter = object : RecyclerView.Adapter<CardViewHolder>() {
-
-
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
                 val rootView = LayoutInflater.from(parent.context).inflate(
                         getLayoutId(viewType)
@@ -109,7 +104,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                 rvCommon?.apply {
                     layoutManager=LinearLayoutManager(parent.context)
                     adapter=cashListAdapter
-                    setBackgroundColor(resources.getColor(android.R.color.white))
+                    setBackgroundColor(WkContextCompat.getColor(this@CashBookBillListActivity,android.R.color.white))
                 }
                 return CardViewHolder(rootView)
             }
@@ -126,7 +121,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                     tvCommon?.apply {
                         setText(tabTitles[position])
                         textSize = 100f
-                        setTextColor(resources.getColor(R.color.colorAccent))
+                        setTextColor(WkContextCompat.getColor(this@CashBookBillListActivity,R.color.colorAccent))
                     }
                 }
             }
@@ -203,7 +198,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
             for(j in 0 ..num) {
                 val dateTime = calendar.timeInMillis
                 val amount= random.nextInt(10).toDouble()
-                tradeRecordBeans.add(TradeRecordBean(dateTime, i.toString(),amount))
+                tradeRecordBeans.add(TradeRecordBean(dateTime, i.toString(), amount))
             }
         }
         WkLog.d("tradeRecordBeans size : ${tradeRecordBeans.size}")

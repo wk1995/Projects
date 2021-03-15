@@ -2,7 +2,6 @@ package com.wk.projects.common.collapse
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.Window
 import com.wk.projects.common.BaseProjectsActivity
@@ -27,8 +26,8 @@ abstract class BaseCollapseActivity : BaseProjectsActivity(), View.OnClickListen
     override fun initResLayId() = R.layout.common_activity_collapse
     private lateinit var collapseAdapter: CollapseRvAdapter
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun beforeSetContentView() {
+        super.beforeSetContentView()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         if(supportActionBar!=null)
             supportActionBar?.hide()

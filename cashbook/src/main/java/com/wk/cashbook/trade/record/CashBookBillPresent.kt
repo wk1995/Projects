@@ -1,6 +1,6 @@
-package com.wk.cashbook.trade
+package com.wk.cashbook.trade.record
 
-import com.wk.cashbook.trade.CashBookBillListActivity
+import com.wk.cashbook.trade.record.CashBookBillListActivity
 import com.wk.projects.common.log.WkLog
 import java.util.*
 
@@ -14,6 +14,9 @@ import java.util.*
 
 class CashBookBillPresent(val mCashBookBillListActivity: CashBookBillListActivity?) {
 
+    /**
+     * 获取当前日期的年，月份
+     * */
     fun getYearAndMonth():Pair<Int,Int>{
         val currentTime=System.currentTimeMillis()
         val can=Calendar.getInstance()

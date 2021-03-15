@@ -1,4 +1,4 @@
-package com.wk.cashbook.trade
+package com.wk.cashbook.trade.record
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import java.util.*
  * @author      :wangkang_shenlong
  * email        :shenlong.wang@tuya.com
  * create date  : 2021/02/24
- * desc         :
+ * desc         : 首页交易记录list 适配器
  */
 
 
