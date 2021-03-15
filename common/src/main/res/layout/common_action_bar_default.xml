@@ -5,21 +5,31 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
-        android:id="@+id/ivActionBarLeft"
+        android:id="@+id/viewActionBarLeft"
         android:layout_width="@dimen/d40dp"
-        android:layout_height="@dimen/d40dp"
+        android:layout_height="0dp"
         android:src="@drawable/common_back_right_arrow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="ContentDescription,MissingConstraints" />
+        tools:ignore="ContentDescription,MissingConstraints"
+        tools:text="left"/>
     <TextView
-        android:id="@+id/tvActionBarMiddle"
+        android:id="@+id/viewActionBarRight"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_height="@dimen/d40dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:text="@string/app_name"/>
+        tools:text="right"/>
+    <TextView
+        android:id="@+id/viewActionBarMiddle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/viewActionBarLeft"
+        app:layout_constraintEnd_toStartOf="@id/viewActionBarRight"
+        tools:text="middle"/>
 </merge>
