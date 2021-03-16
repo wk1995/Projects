@@ -161,8 +161,9 @@ A[方形] -->B(圆角)
 | createTime | Long | 创建时间| 0 |
 | amount | Double | 余额 | 0 |
 | note | String | 备注|  |
-| unit | String | 单位| rmb |
+| unit | String | 单位| CNY |
 | parentId | Long | 父账号| -1 |
+| belong | String | 属于谁的账号| wk |
 
 微信：
 
@@ -196,12 +197,12 @@ QQ-->余额
 | :---: | :---: |  ---- | ---- |
 | tradeName | String | 交易记录名|  |
 | tradeTime | Long | 交易时间| 0 |
-| accountId | Long | 账户| -1 |
+| accountId | Long | 付款账户 | -1 |
 | categoryId | Long | 类别| -1 |
 | flagIds | ArrayList<Long> | 标签| ArrayList() |
 | amount | Double | 金额| rmb |
 | tradeNote | String | 备注| 0 |
-| receiveAccountId | Long | 交易对象| -1 |
+| receiveAccountId | Long | 收款账户 | -1 |
 | relationTradeId | Long | 关联交易 | -1 |
 
 

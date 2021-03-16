@@ -16,7 +16,7 @@ import org.litepal.crud.LitePalSupport
  * @param flagIds 标签 [TradeFlag]
  * @param amount 金额
  * @param tradeNote 备注
- * @param receiveAccountId 交易对象 [TradeAccount.accountName]
+ * @param receiveAccountId 收款账户 [TradeAccount]
  * @param relationTradeId 关联交易 比如还款
  */
 

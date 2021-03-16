@@ -15,12 +15,14 @@ import org.litepal.crud.LitePalSupport
  * @param note 备注
  * @param unit 单位，人民币="CNY"
  * @param parentId 父账号
+ * @param belong 账号属于谁
  */
 
 
 data class TradeAccount(var accountName: String, val createTime: Long = NumberConstants.number_long_zero,
                         var amount: Double = NumberConstants.number_double_zero, var note: String = WkStringConstants.STR_EMPTY,
-                        var unit: String = "CNY", var parentId: Long = NumberConstants.number_long_one_Negative)
+                        var unit: String = "CNY", var parentId: Long = NumberConstants.number_long_one_Negative,
+                        var belong:String="wk")
     : LitePalSupport() {
 
 

@@ -9,12 +9,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.wk.projects.common.R
 
 /**
- * author : wk <br></br>
- * e-mail : 1226426603@qq.com<br></br>
- * time   : 2020/6/7<br></br>
- * desc   : 统一的actionBar  <br></br>
- * GitHub : https://github.com/wk1995 <br></br>
- * CSDN   : http://blog.csdn.net/qq_33882671 <br></br>
+ * author : wk 
+ * e-mail : 1226426603@qq.com
+ * time   : 2020/6/7
+ * desc   : 统一的actionBar  
+ * GitHub : https://github.com/wk1995 
+ * CSDN   : http://blog.csdn.net/qq_33882671 
  */
 class WkCommonActionBar : ConstraintLayout {
 
