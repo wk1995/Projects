@@ -27,12 +27,31 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.btnComSimpleDialogOk->{
+                ok()
+            }
+            R.id.btnComSimpleDialogCancel->{
+                cancel()
+            }
+        }
+    }
+
+    open fun ok(){
         disMiss()
     }
 
+    open fun cancel(){
+        disMiss()
+    }
+
+
+
+
     protected fun disMiss() {
-        if (dialog != null && dialog.isShowing)
+        if (dialog?.isShowing==true) {
             dismiss()
+        }
     }
 
     fun show(manager: FragmentManager?) {

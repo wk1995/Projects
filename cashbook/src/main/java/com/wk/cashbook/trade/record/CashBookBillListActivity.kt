@@ -1,5 +1,6 @@
 package com.wk.cashbook.trade.record
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookBillListActivityBinding
+import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
@@ -182,7 +184,8 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
 
             }
             R.id.btnAddBill -> {
-
+                val intene=Intent(this,TradeRecordInfoActivity::class.java)
+                startActivity(intene)
             }
         }
     }

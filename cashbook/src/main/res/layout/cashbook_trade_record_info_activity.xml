@@ -4,84 +4,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="@dimen/d15dp"
+    android:paddingEnd="@dimen/d15dp"
     tools:context=".trade.info.TradeRecordInfoActivity">
+
     <com.wk.projects.common.ui.WkCommonActionBar
         android:id="@+id/abTradeInfoTitle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-    <TextView
-        android:id="@+id/tvTradeInfoPay"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/d40dp"
-        android:gravity="center"
-        android:text="@string/cashbook_zh_pay"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/abTradeInfoTitle"/>
-    <TextView
-        android:id="@+id/tvTradeInfoIncome"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:text="@string/cashbook_zh_income"
-        app:layout_constraintStart_toEndOf="@id/tvTradeInfoPay"
-        app:layout_constraintTop_toTopOf="@id/tvTradeInfoPay"
-        app:layout_constraintBottom_toBottomOf="@id/tvTradeInfoPay"/>
-    <TextView
-        android:id="@+id/tvTradeInfoInternalTransfer"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:text="@string/cashbook_internal_transfer"
-        app:layout_constraintStart_toEndOf="@id/tvTradeInfoIncome"
-        app:layout_constraintTop_toTopOf="@id/tvTradeInfoPay"
-        app:layout_constraintBottom_toBottomOf="@id/tvTradeInfoPay"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTradeInfoRootCategory"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/d40dp"
+        android:background="@color/colorAccent"
+        app:layout_constraintEnd_toStartOf="@id/tvTradeInfoAccount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/abTradeInfoTitle" />
+    <!--交易账号-->
     <TextView
         android:id="@+id/tvTradeInfoAccount"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="@string/cashbook_no_select_account"
         android:gravity="center"
+        android:text="@string/cashbook_no_select_account"
+        app:layout_constraintBottom_toBottomOf="@id/rvTradeInfoRootCategory"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvTradeInfoPay"
-        app:layout_constraintBottom_toBottomOf="@id/tvTradeInfoPay"/>
+        app:layout_constraintTop_toTopOf="@id/rvTradeInfoRootCategory" />
+    <!-- 交易金 额-->
     <EditText
         android:id="@+id/tvTradeInfoAmount"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d60dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTradeInfoPay"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="0.00"/>
+        app:layout_constraintTop_toBottomOf="@id/rvTradeInfoRootCategory"
+        tools:text="0.00" />
 
+    <!--交易标签-->
     <TextView
         android:id="@+id/tvTradeInfoFlag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="#"
-        app:layout_constraintTop_toTopOf="@id/tvTradeInfoAmount"
         app:layout_constraintBottom_toBottomOf="@id/tvTradeInfoAmount"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTradeInfoAmount" />
+
+    <!--交易时间-->
     <TextView
         android:id="@+id/tvTradeInfoTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTradeInfoAmount"
-        app:layout_constraintStart_toStartOf="parent"/>
+        tools:text="时间： 2021 03 01 15:00:00" />
+
+    <!--具体类别-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTradeInfoCategory"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d200dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/tvTradeInfoTime"/>
+        app:layout_constraintTop_toBottomOf="@id/tvTradeInfoTime" />
+    <!--备注-->
     <EditText
         android:layout_width="match_parent"
         android:layout_height="@dimen/d200dp"
         android:gravity="start|top"
         android:hint="@string/common_str_note"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvTradeInfoCategory"/>
+        app:layout_constraintTop_toBottomOf="@id/rvTradeInfoCategory" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

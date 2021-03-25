@@ -25,6 +25,17 @@ data class TradeAccount(var accountName: String, val createTime: Long = NumberCo
                         var belong:String="wk")
     : LitePalSupport() {
 
+    companion object{
+        const val ACCOUNT_NAME="accountname"
+        const val CREATE_TIME="createtime"
+        const val AMOUNT="amount"
+        const val UNIT="unit"
+        const val NOTE="note"
+        const val PARENT_ID="parentid"
+        const val BELONG="parentId"
+    }
+
+
 
     public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
