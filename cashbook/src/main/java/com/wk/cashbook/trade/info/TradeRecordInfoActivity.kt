@@ -12,18 +12,11 @@ import com.wk.cashbook.databinding.CashbookTradeRecordInfoActivityBinding
 import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.projects.common.BaseProjectsActivity
 
-class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoRootCategoryAdapter.ITradeInfoCategoryListener {
+class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
 
     private val mTradeRecordInfoPresent by lazy {
         TradeRecordInfoPresent(this)
     }
-
-    /**当前的根类别*/
-    private var currentRootCategory: TradeCategory? = null
-        set(value) {
-            field = value
-            mTradeRecordInfoPresent.initCategoryAsync(field)
-        }
 
     private val mBind by lazy {
         CashbookTradeRecordInfoActivityBinding.inflate(layoutInflater)
@@ -48,7 +41,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoRootCategoryAda
                 mTradeInfoCategoryListener=this)
     }
     private val mTradeInfoCategoryAdapter by lazy {
-        TradeInfoRootCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
+        TradeInfoCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
                 mTradeInfoCategoryListener=this)
     }
     private val rootCategoryLayoutManage by lazy {
@@ -82,8 +75,8 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoRootCategoryAda
 
     @MainThread
     fun setRootCategory(rootCategories: List<TradeCategory>) {
-        currentRootCategory = rootCategories[0]
         mTradeInfoRootCategoryAdapter.replaceData(rootCategories)
+        mTradeRecordInfoPresent.currentRootCategory = rootCategories[0]
     }
 
     fun setCategories(categories: List<TradeCategory>) {
@@ -94,8 +87,8 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoRootCategoryAda
         mTradeInfoCategoryAdapter.addCategory(category)
     }
 
-    override fun itemClick(tradeInfoRootCategoryAdapter: TradeInfoRootCategoryAdapter, view: View, position: Int) {
-        if (tradeInfoRootCategoryAdapter == mTradeInfoCategoryAdapter && !tradeInfoRootCategoryAdapter.isItem(position)) {
+    override fun itemClick(tradeInfoCategoryAdapter: TradeInfoCategoryAdapter, view: View, position: Int) {
+        if (tradeInfoCategoryAdapter == mTradeInfoCategoryAdapter && !tradeInfoCategoryAdapter.isItem(position)) {
             mTradeRecordInfoPresent.showAddCategoryDialog()
         }
 

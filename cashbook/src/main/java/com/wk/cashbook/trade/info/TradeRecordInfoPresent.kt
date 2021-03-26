@@ -20,7 +20,16 @@ import rx.schedulers.Schedulers
 class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity)
     : SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
 
-    private var currentCategory:TradeCategory?=null
+    /**当前的根类别*/
+     var currentRootCategory: TradeCategory? = null
+        set(value) {
+            field = value
+            initCategoryAsync(field)
+        }
+
+
+
+
     /**
      * 获取最顶的类别
      * 支出，收入，内部转账
@@ -59,7 +68,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
 
     private fun saveNewCategory(categoryName:String){
         val newCategory=TradeCategory(categoryName,System.currentTimeMillis(),
-                currentCategory?.baseObjId?:NumberConstants.number_long_one_Negative)
+                currentRootCategory?.baseObjId?:NumberConstants.number_long_one_Negative)
         Observable.create(Observable.OnSubscribe<Boolean> { t ->
             t?.onNext(newCategory.save())
         }).subscribeOn(Schedulers.newThread())
