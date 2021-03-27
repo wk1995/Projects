@@ -38,11 +38,11 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
 
     private val mTradeInfoRootCategoryAdapter by lazy {
         TradeInfoRootCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
-                mTradeInfoCategoryListener=this)
+                mTradeInfoCategoryListener = this)
     }
     private val mTradeInfoCategoryAdapter by lazy {
         TradeInfoCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
-                mTradeInfoCategoryListener=this)
+                mTradeInfoCategoryListener = this)
     }
     private val rootCategoryLayoutManage by lazy {
         LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
@@ -83,14 +83,27 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         mTradeInfoCategoryAdapter.replaceData(categories)
     }
 
-    fun addCategory(category:TradeCategory){
+    fun addCategory(category: TradeCategory) {
         mTradeInfoCategoryAdapter.addCategory(category)
     }
 
     override fun itemClick(tradeInfoCategoryAdapter: TradeInfoCategoryAdapter, view: View, position: Int) {
-        if (tradeInfoCategoryAdapter == mTradeInfoCategoryAdapter && !tradeInfoCategoryAdapter.isItem(position)) {
-            mTradeRecordInfoPresent.showAddCategoryDialog()
+        //类别
+        if (tradeInfoCategoryAdapter == mTradeInfoCategoryAdapter) {
+            //添加类别
+            if (!tradeInfoCategoryAdapter.isItem(position)) {
+                mTradeRecordInfoPresent.showAddCategoryDialog()
+            } else {
+                //选中类别
+                mTradeInfoCategoryAdapter.selectPosition(position)
+            }
+            return
         }
 
+        if (tradeInfoCategoryAdapter == mTradeInfoRootCategoryAdapter) {
+            //选中类别
+            mTradeInfoRootCategoryAdapter.selectPosition(position)
+            mTradeRecordInfoPresent.currentRootCategory = mTradeInfoRootCategoryAdapter.getItem(position)
+        }
     }
 }

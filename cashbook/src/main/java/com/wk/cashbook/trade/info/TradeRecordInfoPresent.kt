@@ -27,6 +27,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
             initCategoryAsync(field)
         }
 
+    var currentCategory:TradeCategory?=null
 
 
 
