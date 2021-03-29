@@ -16,21 +16,18 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookBillListActivityBinding
-import com.wk.cashbook.trade.data.ITradeRecord
-import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.*
-import kotlin.collections.ArrayList
 
-class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelectedListener {
+class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelectedListener, IRvClickListener {
 
     companion object {
         private const val LAYOUT_VIEWPAGER_DETAILED = 0
@@ -108,11 +105,11 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                 val rootView = LayoutInflater.from(parent.context).inflate(
                         getLayoutId(viewType)
                         , parent, false)
-                val rvCommon=rootView.findViewById<RecyclerView>(R.id.rvCommon)
+                val rvCommon = rootView.findViewById<RecyclerView>(R.id.rvCommon)
                 rvCommon?.apply {
-                    layoutManager=LinearLayoutManager(parent.context)
-                    adapter=cashListAdapter
-                    setBackgroundColor(WkContextCompat.getColor(this@CashBookBillListActivity,android.R.color.white))
+                    layoutManager = LinearLayoutManager(parent.context)
+                    adapter = cashListAdapter
+                    setBackgroundColor(WkContextCompat.getColor(this@CashBookBillListActivity, android.R.color.white))
                 }
                 return CardViewHolder(rootView)
             }
@@ -129,7 +126,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                     tvCommon?.apply {
                         setText(tabTitles[position])
                         textSize = 100f
-                        setTextColor(WkContextCompat.getColor(this@CashBookBillListActivity,R.color.colorAccent))
+                        setTextColor(WkContextCompat.getColor(this@CashBookBillListActivity, R.color.colorAccent))
                     }
                 }
             }
@@ -190,44 +187,54 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
 
             }
             R.id.btnAddBill -> {
-                val intene=Intent(this,TradeRecordInfoActivity::class.java)
-                startActivityForResult(intene,1)
+                val intene = Intent(this, TradeRecordInfoActivity::class.java)
+                startActivityForResult(intene, 1)
             }
         }
     }
 
-    private fun initData(){
+    private fun initData() {
         Observable.create(Observable.OnSubscribe<List<TradeRecode>> { t ->
             t?.onNext(TradeRecode.getTradeRecodes(null))
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    WkLog.d("交易记录数目： "+it.size)
+                    WkLog.d("交易记录数目： " + it.size)
                     cashListAdapter.replaceList(it)
                 }
 
 
-       /* val calendar=Calendar.getInstance()
-        calendar.time= Date()
-        val random=Random()
-        val tradeRecordBeans=ArrayList<ITradeRecord>()
-        for(i in 1..20){
-            calendar.set(Calendar.DAY_OF_MONTH,i)
-            val num=random.nextInt(5)+1
-            for(j in 0 ..num) {
-                val dateTime = calendar.timeInMillis
-                val amount= random.nextInt(10).toDouble()
-                tradeRecordBeans.add(TradeRecordBean(dateTime, i.toString(), amount))
-            }
-        }
-        WkLog.d("tradeRecordBeans size : ${tradeRecordBeans.size}")
-        cashListAdapter.replaceList(tradeRecordBeans)*/
+        /* val calendar=Calendar.getInstance()
+         calendar.time= Date()
+         val random=Random()
+         val tradeRecordBeans=ArrayList<ITradeRecord>()
+         for(i in 1..20){
+             calendar.set(Calendar.DAY_OF_MONTH,i)
+             val num=random.nextInt(5)+1
+             for(j in 0 ..num) {
+                 val dateTime = calendar.timeInMillis
+                 val amount= random.nextInt(10).toDouble()
+                 tradeRecordBeans.add(TradeRecordBean(dateTime, i.toString(), amount))
+             }
+         }
+         WkLog.d("tradeRecordBeans size : ${tradeRecordBeans.size}")
+         cashListAdapter.replaceList(tradeRecordBeans)*/
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val tradeRecode=data?.getParcelableExtra<TradeRecode>(TradeRecode.TAG)?:return
+        val tradeRecode = data?.getParcelableExtra<TradeRecode>(TradeRecode.TAG) ?: return
         cashListAdapter.addData(tradeRecode)
+    }
+
+    override fun onItemClick(bundle: Bundle?, vararg any: Any?) {
+        val intent = Intent(this, TradeRecordInfoActivity::class.java)
+        intent.putExtras(bundle ?: Bundle())
+        startActivityForResult(intent, 1)
+
+    }
+
+    override fun onItemLongClick(bundle: Bundle?, vararg any: Any?) {
     }
 }

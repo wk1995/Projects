@@ -1,5 +1,6 @@
 package com.wk.cashbook.trade.record
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
 import com.wk.cashbook.trade.data.ITradeRecord
 import com.wk.cashbook.trade.data.TradeRecode
+import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import com.wk.projects.common.time.date.DayUtil
 import com.wk.projects.common.time.date.week.WeekUtil
 import java.util.*
@@ -27,6 +29,8 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
         private const val TYPE_LIST_ITEM = 1
 
     }
+
+    private var rvItemListener: IRvClickListener?=null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseCashItemVH {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -51,7 +55,7 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
     }
 
     override fun onBindViewHolder(holder: BaseCashItemVH, position: Int) {
-        val tradeRecord = mTradeRecords[position]
+        val tradeRecord = mTradeRecords[getRealPosition(position)]
         when (holder) {
             is CashTotalItemVH -> {
                 if (tradeRecord is TradeRecordTotal) {
@@ -74,6 +78,11 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
                     val note=tradeRecord.tradeNote
                     val amount=tradeRecord.amount
                     holder.apply {
+                        itemView.setOnClickListener{
+                            val bundle=Bundle()
+                            bundle.putParcelable(TradeRecode.TAG,tradeRecord)
+                            rvItemListener?.onItemClick(bundle)
+                        }
                         tvTradeAmount.text=amount.toString()
                         tvTradeNote.text=note
                     }
@@ -81,6 +90,8 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
             }
         }
     }
+
+    fun getRealPosition(position: Int)=position
 
     override fun getItemCount() = mTradeRecords.size
 

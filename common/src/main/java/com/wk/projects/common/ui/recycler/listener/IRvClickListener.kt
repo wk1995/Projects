@@ -1,4 +1,4 @@
-package com.wk.projects.common.communication
+package com.wk.projects.common.ui.recycler.listener
 
 import android.os.Bundle
 
@@ -13,7 +13,7 @@ import android.os.Bundle
  * </pre>
  */
 interface IRvClickListener {
-    fun onItemClick(bundle: Bundle?,vararg any: Any?)
+    fun onItemClick(bundle: Bundle?=null,vararg any: Any?)
 
     fun onItemLongClick(bundle: Bundle?,vararg any: Any?)
 }

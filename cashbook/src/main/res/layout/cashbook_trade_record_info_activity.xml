@@ -45,8 +45,8 @@
     <!--交易标签-->
     <TextView
         android:id="@+id/tvTradeInfoFlag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="9dp"
+        android:layout_height="13dp"
         android:text="#"
         app:layout_constraintBottom_toBottomOf="@id/tvTradeInfoAmount"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
     <!--备注-->
     <EditText
+        android:id="@+id/etTradeInfoNote"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d200dp"
         android:gravity="start|top"

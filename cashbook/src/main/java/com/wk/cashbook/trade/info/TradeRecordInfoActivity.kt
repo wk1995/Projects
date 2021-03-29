@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TextClock
+import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,14 +25,21 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     private val mTradeRecordInfoPresent by lazy {
         TradeRecordInfoPresent(this)
     }
-
+    /**保存按钮*/
     private lateinit var btTradeInfoSave:Button
-    private val mBind by lazy {
-        CashbookTradeRecordInfoActivityBinding.inflate(layoutInflater)
-    }
-    private val inflater by lazy {
-        LayoutInflater.from(this)
-    }
+
+    /**金额*/
+    private lateinit var tvTradeInfoAmount:EditText
+    /**备注*/
+    private lateinit var etTradeInfoNote:EditText
+
+    /**时间*/
+    private lateinit var tvTradeInfoTime:TextView
+    /**标签*/
+    private lateinit var tvTradeInfoFlag:TextView
+
+    /**账户*/
+    private lateinit var tvTradeInfoAccount:TextView
 
     /**
      * 支出，收入，内部转账
@@ -41,6 +51,17 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     private val rvTradeInfoCategory by lazy {
         mBind.rvTradeInfoCategory
     }
+
+
+
+    private val mBind by lazy {
+        CashbookTradeRecordInfoActivityBinding.inflate(layoutInflater)
+    }
+    private val inflater by lazy {
+        LayoutInflater.from(this)
+    }
+
+
 
     private val mTradeInfoRootCategoryAdapter by lazy {
         TradeInfoRootCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
@@ -61,11 +82,22 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     override fun initResLayId() = mBind.root
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+        initView()
         initRootCategoryRv()
         initCategoryRv()
         mTradeRecordInfoPresent.initRootCategoryAsync()
         btTradeInfoSave=mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)
+        val tradeRecode=intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG)
+
+    }
+    private fun initView(){
+        btTradeInfoSave=mBind.btTradeInfoSave
+        tvTradeInfoAmount=mBind.tvTradeInfoAmount
+        etTradeInfoNote=mBind.etTradeInfoNote
+        tvTradeInfoTime=mBind.tvTradeInfoTime
+        tvTradeInfoFlag=mBind.tvTradeInfoFlag
+        tvTradeInfoAccount=mBind.tvTradeInfoAccount
     }
 
     private fun initRootCategoryRv() {
