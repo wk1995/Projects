@@ -6,6 +6,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
+import com.wk.cashbook.trade.data.ITradeRecord
+import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.time.date.DayUtil
 import com.wk.projects.common.time.date.week.WeekUtil
 import java.util.*
@@ -18,7 +20,7 @@ import java.util.*
  */
 
 
-class CashListAdapter(private var mTradeRecords: List<ITradeRecord>) : RecyclerView.Adapter<BaseCashItemVH>() {
+class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : RecyclerView.Adapter<BaseCashItemVH>() {
 
     companion object {
         private const val TYPE_TOTAL_ITEM = 0
@@ -39,6 +41,7 @@ class CashListAdapter(private var mTradeRecords: List<ITradeRecord>) : RecyclerV
 
         if (TYPE_LIST_ITEM == viewType) {
             val rootView = layoutInflater.inflate(R.layout.cashbook_bill_list_item, parent, false)
+            rootView.setBackgroundResource(R.color.color_grey_7E797B)
             val ivTradeType = rootView.findViewById<ImageView>(R.id.ivTradeType)
             val tvTradeNote = rootView.findViewById<TextView>(R.id.tvTradeNote)
             val tvTradeAmount = rootView.findViewById<TextView>(R.id.tvTradeAmount)
@@ -67,9 +70,8 @@ class CashListAdapter(private var mTradeRecords: List<ITradeRecord>) : RecyclerV
                 }
             }
             is CashListItemVH -> {
-                if (tradeRecord is TradeRecordBean) {
-                    val type=tradeRecord.type
-                    val note=tradeRecord.note
+                if (tradeRecord is TradeRecode) {
+                    val note=tradeRecord.tradeNote
                     val amount=tradeRecord.amount
                     holder.apply {
                         tvTradeAmount.text=amount.toString()
@@ -84,7 +86,7 @@ class CashListAdapter(private var mTradeRecords: List<ITradeRecord>) : RecyclerV
 
     override fun getItemViewType(position: Int): Int {
         val tradeRecord = mTradeRecords[position]
-        return if (tradeRecord is TradeRecordBean) {
+        return if (tradeRecord is TradeRecode) {
             TYPE_LIST_ITEM
         } else {
             TYPE_TOTAL_ITEM
@@ -92,6 +94,13 @@ class CashListAdapter(private var mTradeRecords: List<ITradeRecord>) : RecyclerV
     }
 
     fun replaceList(tradeRecords:List<ITradeRecord>){
-        mTradeRecords=tradeRecords
+        mTradeRecords.clear()
+        mTradeRecords.addAll(tradeRecords)
+        notifyDataSetChanged()
+    }
+
+    fun addData(tradeRecode: TradeRecode){
+        mTradeRecords.add(tradeRecode)
+        notifyItemChanged(itemCount)
     }
 }

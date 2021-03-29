@@ -68,6 +68,16 @@
         android:layout_height="@dimen/d200dp"
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/tvTradeInfoTime" />
+
+    <!--保存-->
+    <Button
+        android:id="@+id/btTradeInfoSave"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d40dp"
+        android:text="@string/common_str_save"
+        android:textColor="@color/common_red_ED0763"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <!--备注-->
     <EditText
         android:layout_width="match_parent"
@@ -75,7 +85,8 @@
         android:gravity="start|top"
         android:hint="@string/common_str_note"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvTradeInfoCategory" />
+        app:layout_constraintTop_toBottomOf="@id/rvTradeInfoCategory"
+        app:layout_constraintBottom_toTopOf="@id/btTradeInfoSave"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

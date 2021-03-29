@@ -1,7 +1,10 @@
 package com.wk.cashbook.trade.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.wk.projects.common.constant.NumberConstants
 import com.wk.projects.common.constant.WkStringConstants
+import org.litepal.LitePal
 import org.litepal.crud.LitePalSupport
 
 /**
@@ -30,10 +33,55 @@ data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
                        var tradeNote: String = WkStringConstants.STR_EMPTY,
                        var receiveAccountId: Long = NumberConstants.number_long_one_Negative,
                        var relationTradeId: Long = NumberConstants.number_long_one_Negative
-) : LitePalSupport() {
+) : LitePalSupport(), ITradeRecord {
+
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: WkStringConstants.STR_EMPTY,
+            parcel.readLong(),
+            parcel.readLong(),
+            parcel.readLong(),
+            parcel.readArrayList(Long::class.java.classLoader) as ArrayList<Long>,
+            parcel.readDouble(),
+            parcel.readString() ?: WkStringConstants.STR_EMPTY,
+            parcel.readLong(),
+            parcel.readLong()) {
+    }
 
     public override fun getBaseObjId(): Long {
         return super.getBaseObjId()
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(tradeName)
+        parcel.writeLong(tradeTime)
+        parcel.writeLong(accountId)
+        parcel.writeLong(categoryId)
+        parcel.writeList(flagIds)
+        parcel.writeDouble(amount)
+        parcel.writeString(tradeNote)
+        parcel.writeLong(receiveAccountId)
+        parcel.writeLong(relationTradeId)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TradeRecode> {
+        override fun createFromParcel(parcel: Parcel): TradeRecode {
+            return TradeRecode(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TradeRecode?> {
+            return arrayOfNulls(size)
+        }
+
+        val TAG: String = TradeRecode::class.java.simpleName
+
+        fun getTradeRecodes(vararg conditions: String?) =
+            LitePal.where(*conditions).find(TradeRecode::class.java)
+    }
+
 
 }

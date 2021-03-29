@@ -1,6 +1,7 @@
 package com.wk.cashbook.trade.info
 
 import com.wk.cashbook.trade.data.TradeCategory
+import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.SimpleOnlyEtDialog
 import com.wk.projects.common.constant.NumberConstants
 import com.wk.projects.common.log.WkLog
@@ -29,6 +30,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
 
     var currentCategory:TradeCategory?=null
 
+    var currentTradeRecode:TradeRecode?=null
 
 
     /**
@@ -94,5 +96,27 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
 
     override fun cancel(): Boolean {
         return false
+    }
+    
+    fun saveTradeRecode(){
+        Observable.create(Observable.OnSubscribe<TradeRecode?> { t ->
+            if(currentTradeRecode==null){
+                currentTradeRecode= TradeRecode()
+            }
+            t?.onNext(if(currentTradeRecode?.save()==true){
+                currentTradeRecode
+            }else{
+                null
+            })
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    WkLog.d(it.toString())
+                    mTradeRecordInfoActivity.saveResult(it)
+                }
+
+
+
+
     }
 }

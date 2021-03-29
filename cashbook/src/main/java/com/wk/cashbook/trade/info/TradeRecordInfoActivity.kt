@@ -1,8 +1,10 @@
 package com.wk.cashbook.trade.info
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import androidx.annotation.MainThread
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookTradeRecordInfoActivityBinding
 import com.wk.cashbook.trade.data.TradeCategory
+import com.wk.cashbook.trade.data.TradeRecode
+import com.wk.cashbook.trade.record.CashBookBillListActivity
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.ui.WkToast
 
 class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
 
@@ -18,6 +23,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         TradeRecordInfoPresent(this)
     }
 
+    private lateinit var btTradeInfoSave:Button
     private val mBind by lazy {
         CashbookTradeRecordInfoActivityBinding.inflate(layoutInflater)
     }
@@ -58,6 +64,8 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initRootCategoryRv()
         initCategoryRv()
         mTradeRecordInfoPresent.initRootCategoryAsync()
+        btTradeInfoSave=mBind.btTradeInfoSave
+        btTradeInfoSave.setOnClickListener(this)
     }
 
     private fun initRootCategoryRv() {
@@ -105,5 +113,24 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
             mTradeInfoRootCategoryAdapter.selectPosition(position)
             mTradeRecordInfoPresent.currentRootCategory = mTradeInfoRootCategoryAdapter.getItem(position)
         }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.btTradeInfoSave->{
+                mTradeRecordInfoPresent.saveTradeRecode()
+            }
+        }
+    }
+
+    fun saveResult(tradeRecode: TradeRecode?){
+        if(null==tradeRecode){
+            WkToast.showToast("保存失败")
+            return
+        }
+        val intent=Intent()
+        intent.putExtra(TradeRecode.TAG,tradeRecode)
+        setResult(2,intent)
+        finish()
     }
 }

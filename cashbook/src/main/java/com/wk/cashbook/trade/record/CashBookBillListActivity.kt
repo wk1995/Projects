@@ -16,11 +16,17 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookBillListActivityBinding
+import com.wk.cashbook.trade.data.ITradeRecord
+import com.wk.cashbook.trade.data.TradeCategory
+import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.resource.WkContextCompat
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -185,13 +191,23 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
             }
             R.id.btnAddBill -> {
                 val intene=Intent(this,TradeRecordInfoActivity::class.java)
-                startActivity(intene)
+                startActivityForResult(intene,1)
             }
         }
     }
 
     private fun initData(){
-        val calendar=Calendar.getInstance()
+        Observable.create(Observable.OnSubscribe<List<TradeRecode>> { t ->
+            t?.onNext(TradeRecode.getTradeRecodes(null))
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    WkLog.d("交易记录数目： "+it.size)
+                    cashListAdapter.replaceList(it)
+                }
+
+
+       /* val calendar=Calendar.getInstance()
         calendar.time= Date()
         val random=Random()
         val tradeRecordBeans=ArrayList<ITradeRecord>()
@@ -205,7 +221,13 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
             }
         }
         WkLog.d("tradeRecordBeans size : ${tradeRecordBeans.size}")
-        cashListAdapter.replaceList(tradeRecordBeans)
+        cashListAdapter.replaceList(tradeRecordBeans)*/
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val tradeRecode=data?.getParcelableExtra<TradeRecode>(TradeRecode.TAG)?:return
+        cashListAdapter.addData(tradeRecode)
     }
 }

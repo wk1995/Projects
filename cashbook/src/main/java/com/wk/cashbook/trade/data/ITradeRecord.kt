@@ -1,4 +1,6 @@
-package com.wk.cashbook.trade.record
+package com.wk.cashbook.trade.data
+
+import android.os.Parcelable
 
 /**
  * @author      :wangkang_shenlong
@@ -8,4 +10,4 @@ package com.wk.cashbook.trade.record
  */
 
 
-interface ITradeRecord
+interface ITradeRecord:Parcelable
