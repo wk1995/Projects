@@ -15,4 +15,6 @@ public final class WkStringConstants {
     public static final String STR_NULL_LOW="null";
     public static final String STR_EMPTY="";
     public static final String STR_INT_ZERO="0";
+
+    public static final String STR_POSITION_LOW="position";
 }

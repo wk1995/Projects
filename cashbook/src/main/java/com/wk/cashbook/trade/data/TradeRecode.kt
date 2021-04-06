@@ -81,6 +81,17 @@ data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
 
         fun getTradeRecodes(vararg conditions: String?) =
             LitePal.where(*conditions).find(TradeRecode::class.java)
+
+        const val TRADE_NAME="tradename"
+        const val TRADE_TIME="tradetime"
+        const val ACCOUNT_ID="accountid"
+        const val CATEGORY_ID="categoryid"
+        const val FLAG_IDS="flagids"
+        const val AMOUNT="amount"
+        const val TRADE_NOTE="tradenote"
+        const val RECEIVE_ACCOUNT_ID="receiveaccountid"
+        const val RELATION_TRADE_ID="relationtradeid"
+
     }
 
 

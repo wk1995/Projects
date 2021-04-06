@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
 import com.wk.cashbook.trade.data.ITradeRecord
 import com.wk.cashbook.trade.data.TradeRecode
+import com.wk.projects.common.constant.WkStringConstants.STR_POSITION_LOW
 import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import com.wk.projects.common.time.date.DayUtil
 import com.wk.projects.common.time.date.week.WeekUtil
@@ -22,15 +23,14 @@ import java.util.*
  */
 
 
-class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : RecyclerView.Adapter<BaseCashItemVH>() {
+class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
+                      var rvItemListener: IRvClickListener?=null) : RecyclerView.Adapter<BaseCashItemVH>() {
 
     companion object {
         private const val TYPE_TOTAL_ITEM = 0
         private const val TYPE_LIST_ITEM = 1
 
     }
-
-    private var rvItemListener: IRvClickListener?=null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseCashItemVH {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -81,6 +81,7 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
                         itemView.setOnClickListener{
                             val bundle=Bundle()
                             bundle.putParcelable(TradeRecode.TAG,tradeRecord)
+                            bundle.putInt(STR_POSITION_LOW,position)
                             rvItemListener?.onItemClick(bundle)
                         }
                         tvTradeAmount.text=amount.toString()
@@ -113,5 +114,10 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>) : Re
     fun addData(tradeRecode: TradeRecode){
         mTradeRecords.add(tradeRecode)
         notifyItemChanged(itemCount)
+    }
+
+    fun replaceData(tradeRecode: TradeRecode,position: Int){
+        mTradeRecords[position]=tradeRecode
+        notifyItemChanged(position)
     }
 }

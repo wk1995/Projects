@@ -1,9 +1,11 @@
 package com.wk.cashbook.trade.info
 
+import android.os.Bundle
 import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.SimpleOnlyEtDialog
 import com.wk.projects.common.constant.NumberConstants
+import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.ui.WkToast
 import rx.Observable
@@ -22,15 +24,26 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     : SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
 
     /**当前的根类别*/
-     var currentRootCategory: TradeCategory? = null
+    var currentRootCategory: TradeCategory? = null
         set(value) {
             field = value
             initCategoryAsync(field)
         }
 
-    var currentCategory:TradeCategory?=null
+    var currentCategory: TradeCategory? = null
 
-    var currentTradeRecode:TradeRecode?=null
+    /**当前的交易记录*/
+    var currentTradeRecode: TradeRecode? = null
+        set(value) {
+            field = value
+            value?.apply {
+                mTradeRecordInfoActivity.setAmount(amount.toString())
+                mTradeRecordInfoActivity.setNote(tradeNote)
+                mTradeRecordInfoActivity.setTradeFlag()
+                mTradeRecordInfoActivity.setTradeTime(tradeTime)
+                mTradeRecordInfoActivity.setTradeAccount(accountId)
+            }
+        }
 
 
     /**
@@ -50,7 +63,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     }
 
 
-    fun initCategoryAsync(parent: TradeCategory?) {
+    private fun initCategoryAsync(parent: TradeCategory?) {
         Observable.create(Observable.OnSubscribe<List<TradeCategory>> { t ->
             t?.onNext(TradeCategory.getSubCategory(parent))
         }).subscribeOn(Schedulers.newThread())
@@ -62,31 +75,30 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     }
 
 
-
     fun showAddCategoryDialog() {
-        val simpleOnlyEtDialog=SimpleOnlyEtDialog.create(simpleOnlyEtDialogListener=this)
+        val simpleOnlyEtDialog = SimpleOnlyEtDialog.create(simpleOnlyEtDialogListener = this)
         simpleOnlyEtDialog.show(mTradeRecordInfoActivity)
     }
 
 
-    private fun saveNewCategory(categoryName:String){
-        val newCategory=TradeCategory(categoryName,System.currentTimeMillis(),
-                currentRootCategory?.baseObjId?:NumberConstants.number_long_one_Negative)
+    private fun saveNewCategory(categoryName: String) {
+        val newCategory = TradeCategory(categoryName, System.currentTimeMillis(),
+                currentRootCategory?.baseObjId ?: NumberConstants.number_long_one_Negative)
         Observable.create(Observable.OnSubscribe<Boolean> { t ->
             t?.onNext(newCategory.save())
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (it){
+                    if (it) {
                         mTradeRecordInfoActivity.addCategory(newCategory)
-                    }else{
+                    } else {
                         WkToast.showToast("失败")
                     }
                 }
     }
 
     override fun ok(textString: String?): Boolean {
-        if(textString.isNullOrBlank()){
+        if (textString.isNullOrBlank()) {
             WkToast.showToast("不能为空")
             return true
         }
@@ -97,15 +109,26 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     override fun cancel(): Boolean {
         return false
     }
-    
-    fun saveTradeRecode(){
+
+    fun saveTradeRecode(bundle:Bundle?=null) {
         Observable.create(Observable.OnSubscribe<TradeRecode?> { t ->
-            if(currentTradeRecode==null){
-                currentTradeRecode= TradeRecode()
+            if (currentTradeRecode == null) {
+                currentTradeRecode = TradeRecode()
             }
-            t?.onNext(if(currentTradeRecode?.save()==true){
+            currentTradeRecode?.apply {
+                val originTradeNote=currentTradeRecode?.tradeNote?:WkStringConstants.STR_EMPTY
+                val tradeNote=bundle?.getString(TradeRecode.TRADE_NOTE,
+                        originTradeNote)?:originTradeNote
+                this.tradeNote=tradeNote
+                val originAmount=currentTradeRecode?.amount?:NumberConstants.number_double_zero
+                val tradeAmount=bundle?.getDouble(TradeRecode.AMOUNT,
+                        originAmount)?:originAmount
+                this.amount=tradeAmount
+            }
+
+            t?.onNext(if (currentTradeRecode?.save() == true) {
                 currentTradeRecode
-            }else{
+            } else {
                 null
             })
         }).subscribeOn(Schedulers.newThread())
@@ -114,8 +137,6 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
                     WkLog.d(it.toString())
                     mTradeRecordInfoActivity.saveResult(it)
                 }
-
-
 
 
     }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextClock
 import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,8 +15,8 @@ import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookTradeRecordInfoActivityBinding
 import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
-import com.wk.cashbook.trade.record.CashBookBillListActivity
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.ui.WkToast
 
 class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
@@ -25,21 +24,24 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     private val mTradeRecordInfoPresent by lazy {
         TradeRecordInfoPresent(this)
     }
+
     /**保存按钮*/
-    private lateinit var btTradeInfoSave:Button
+    private lateinit var btTradeInfoSave: Button
 
     /**金额*/
-    private lateinit var tvTradeInfoAmount:EditText
+    private lateinit var tvTradeInfoAmount: EditText
+
     /**备注*/
-    private lateinit var etTradeInfoNote:EditText
+    private lateinit var etTradeInfoNote: EditText
 
     /**时间*/
-    private lateinit var tvTradeInfoTime:TextView
+    private lateinit var tvTradeInfoTime: TextView
+
     /**标签*/
-    private lateinit var tvTradeInfoFlag:TextView
+    private lateinit var tvTradeInfoFlag: TextView
 
     /**账户*/
-    private lateinit var tvTradeInfoAccount:TextView
+    private lateinit var tvTradeInfoAccount: TextView
 
     /**
      * 支出，收入，内部转账
@@ -52,16 +54,12 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         mBind.rvTradeInfoCategory
     }
 
-
-
     private val mBind by lazy {
         CashbookTradeRecordInfoActivityBinding.inflate(layoutInflater)
     }
     private val inflater by lazy {
         LayoutInflater.from(this)
     }
-
-
 
     private val mTradeInfoRootCategoryAdapter by lazy {
         TradeInfoRootCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
@@ -86,18 +84,18 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initRootCategoryRv()
         initCategoryRv()
         mTradeRecordInfoPresent.initRootCategoryAsync()
-        btTradeInfoSave=mBind.btTradeInfoSave
+        btTradeInfoSave = mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)
-        val tradeRecode=intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG)
-
+        mTradeRecordInfoPresent.currentTradeRecode = intent.getParcelableExtra(TradeRecode.TAG)
     }
-    private fun initView(){
-        btTradeInfoSave=mBind.btTradeInfoSave
-        tvTradeInfoAmount=mBind.tvTradeInfoAmount
-        etTradeInfoNote=mBind.etTradeInfoNote
-        tvTradeInfoTime=mBind.tvTradeInfoTime
-        tvTradeInfoFlag=mBind.tvTradeInfoFlag
-        tvTradeInfoAccount=mBind.tvTradeInfoAccount
+
+    private fun initView() {
+        btTradeInfoSave = mBind.btTradeInfoSave
+        tvTradeInfoAmount = mBind.tvTradeInfoAmount
+        etTradeInfoNote = mBind.etTradeInfoNote
+        tvTradeInfoTime = mBind.tvTradeInfoTime
+        tvTradeInfoFlag = mBind.tvTradeInfoFlag
+        tvTradeInfoAccount = mBind.tvTradeInfoAccount
     }
 
     private fun initRootCategoryRv() {
@@ -148,21 +146,49 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btTradeInfoSave->{
-                mTradeRecordInfoPresent.saveTradeRecode()
+        when (v?.id) {
+            R.id.btTradeInfoSave -> {
+                val amount = tvTradeInfoAmount.text.toString()
+                val note = etTradeInfoNote.text.toString()
+                val bundle = Bundle()
+                bundle.putDouble(TradeRecode.AMOUNT, amount.toDouble())
+                bundle.putString(TradeRecode.TRADE_NOTE, note)
+                mTradeRecordInfoPresent.saveTradeRecode(bundle)
             }
         }
     }
 
-    fun saveResult(tradeRecode: TradeRecode?){
-        if(null==tradeRecode){
+    fun setNote(note: String) {
+        etTradeInfoNote.setText(note)
+    }
+
+    fun setAmount(amount: String) {
+        tvTradeInfoAmount.setText(amount)
+    }
+
+
+    fun setTradeTime(time: Long) {
+
+    }
+
+    fun setTradeFlag() {
+
+    }
+
+    fun setTradeAccount(account: Long) {
+
+    }
+
+    fun saveResult(tradeRecode: TradeRecode?) {
+        if (null == tradeRecode) {
             WkToast.showToast("保存失败")
             return
         }
-        val intent=Intent()
-        intent.putExtra(TradeRecode.TAG,tradeRecode)
-        setResult(2,intent)
+        val intent1 = Intent()
+        intent1.putExtra(TradeRecode.TAG, tradeRecode)
+        intent1.putExtra(WkStringConstants.STR_POSITION_LOW,
+                intent.getIntExtra(WkStringConstants.STR_POSITION_LOW,-1) )
+        setResult(2, intent1)
         finish()
     }
 }

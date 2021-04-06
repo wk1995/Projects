@@ -19,6 +19,7 @@ import com.wk.cashbook.databinding.CashbookBillListActivityBinding
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.resource.WkContextCompat
@@ -44,7 +45,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
         arrayOf(R.string.common_str_zh_detailed, R.string.common_str_zh_category, R.string.common_str_zh_account)
     }
     private val cashListAdapter by lazy {
-        CashListAdapter(ArrayList())
+        CashListAdapter(ArrayList(),this)
     }
 
     /**时间*/
@@ -225,14 +226,19 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val tradeRecode = data?.getParcelableExtra<TradeRecode>(TradeRecode.TAG) ?: return
-        cashListAdapter.addData(tradeRecode)
+        val position=data.getIntExtra(WkStringConstants.STR_POSITION_LOW,-1)
+
+        if(position==-1) {
+            cashListAdapter.addData(tradeRecode)
+        }else{
+            cashListAdapter.replaceData(tradeRecode,position)
+        }
     }
 
     override fun onItemClick(bundle: Bundle?, vararg any: Any?) {
         val intent = Intent(this, TradeRecordInfoActivity::class.java)
         intent.putExtras(bundle ?: Bundle())
         startActivityForResult(intent, 1)
-
     }
 
     override fun onItemLongClick(bundle: Bundle?, vararg any: Any?) {
