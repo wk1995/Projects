@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<dimen name="common_tool_bar_height">@dimen/d52dp</dimen>
+
+
+
+
+
 	<dimen name="d0dp">0dp</dimen>
 	<dimen name="d1dp">1dp</dimen>
 	<dimen name="d2dp">2dp</dimen>

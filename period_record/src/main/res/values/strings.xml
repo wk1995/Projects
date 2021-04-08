@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module_name_debug">period_record_debug</string>
+    <string name="module_name_release">period_record</string>
+    
+    <string name="period_recode_add_hint">温馨提示</string>
+    <string name="period_recode_set_start">设置成开始时间</string>
+    <string name="period_recode_set_end">设置成结素时间</string>
+
+    
+    
+    <string-array name="chinese_week_string_array">
+        <item>周日</item>
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+    </string-array>
+    <string-array name="english_week_string_array">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+</resources>

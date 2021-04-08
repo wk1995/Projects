@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel target="1.7">
+      <module name="Projects.app" target="1.8" />
       <module name="Projects.buildSrc" target="1.7" />
+      <module name="Projects.cashbook" target="1.8" />
+      <module name="Projects.common" target="1.8" />
+      <module name="Projects.main" target="1.8" />
+      <module name="Projects.period_record" target="1.8" />
+      <module name="Projects.schedules" target="1.8" />
+      <module name="Projects.test" target="1.8" />
       <module name="wk_projects.Projects.buildSrc" target="1.7" />
     </bytecodeTargetLevel>
   </component>

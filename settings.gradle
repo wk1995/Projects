@@ -1,4 +1,5 @@
 include ':cashbook'
+include ':period_record'
 println "setting gradle start"
 include ':app', ':common', ':schedules', ':main', ':wkBuildSrc', ':test', ':lint'
 println "setting gradle end"

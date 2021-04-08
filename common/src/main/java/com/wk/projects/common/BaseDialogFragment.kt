@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.wk.projects.common.communication.IFragmentToActivity
+import com.wk.projects.common.helper.WkBuildConfigHelper
 
 /**
  * <pre>
@@ -56,7 +57,7 @@ abstract class BaseDialogFragment : DialogFragment() {
         if (Build.VERSION.SDK_INT in 11..18) { // lower api
 
             v.systemUiVisibility = View.GONE
-        } else if (Build.VERSION.SDK_INT >= 19) {
+        } else if (WkBuildConfigHelper.isGreaterThanOrEqualKITKAT()) {
             //for new api versions.
 
             val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

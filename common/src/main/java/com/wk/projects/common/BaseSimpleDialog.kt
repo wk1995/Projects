@@ -3,7 +3,9 @@ package com.wk.projects.common
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import android.view.View
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.wk.projects.common.log.WkLog
 import kotlinx.android.synthetic.main.common_dialog_fragment_base_simple.*
 
 /**
@@ -27,29 +29,26 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btnComSimpleDialogOk->{
+        when (v?.id) {
+            R.id.btnComSimpleDialogOk -> {
                 ok()
             }
-            R.id.btnComSimpleDialogCancel->{
+            R.id.btnComSimpleDialogCancel -> {
                 cancel()
             }
         }
     }
 
-    open fun ok(){
+    open fun ok() {
         disMiss()
     }
 
-    open fun cancel(){
+    open fun cancel() {
         disMiss()
     }
-
-
-
 
     protected fun disMiss() {
-        if (dialog?.isShowing==true) {
+        if (dialog?.isShowing == true) {
             dismiss()
         }
     }
@@ -57,7 +56,8 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
     fun show(manager: FragmentManager?) {
         super.show(manager, this::class.java.simpleName)
     }
-    fun show(baseProjectsActivity: BaseProjectsActivity){
+
+    fun show(baseProjectsActivity: BaseProjectsActivity) {
         show(baseProjectsActivity.supportFragmentManager)
     }
 
@@ -87,6 +87,28 @@ abstract class BaseSimpleDialog : BaseDialogFragment(), View.OnClickListener {
         vsView.layoutParams = p
         (btnComSimpleDialogOk.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
         (btnComSimpleDialogCancel.layoutParams as ConstraintLayout.LayoutParams).topToBottom = vsView.id
+        initText(OK_STR_ID, btnComSimpleDialogOk, getComSimpleDialogOkStrId())
+        initText(CANCEL_STR_ID, btnComSimpleDialogCancel, getComSimpleDialogCancelStrId())
+        initText(THEME_STR_ID, tvComSimpleDialogTheme, getComSimpleDialogThemeStrId())
         initVSView(vsView)
+    }
+
+    private fun initText(bundleKey: String, textView: TextView, defaultId: Int) {
+        var okStrId: Int = arguments?.getInt(bundleKey,-1) ?: defaultId
+        if (okStrId == -1) {
+            okStrId = defaultId
+        }
+        WkLog.i("okStrId: $okStrId  ")
+        textView.setText(okStrId)
+    }
+
+    open fun getComSimpleDialogOkStrId() = android.R.string.ok
+    open fun getComSimpleDialogCancelStrId() = android.R.string.cancel
+    open fun getComSimpleDialogThemeStrId() = R.string.common_str_title
+
+    companion object {
+        const val OK_STR_ID = "okStrId"
+        const val CANCEL_STR_ID = "cancelStrId"
+        const val THEME_STR_ID = "ThemeStrId"
     }
 }
