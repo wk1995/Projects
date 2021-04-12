@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
+import com.haibin.calendarview.CalendarView.OnCalendarMultiSelectListener
 import com.wk.period.data.Period
 import com.wk.period_record.R
 import com.wk.period_record.databinding.PeriodRecordMainActivityBinding
@@ -18,10 +19,11 @@ import org.litepal.LitePal
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
 
 class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendarSelectListener,
-        CalendarView.OnCalendarLongClickListener, SimpleOnlyEtDialog.SimpleOnlyEtDialogListener,
-        CalendarView.OnCalendarRangeSelectListener {
+        OnCalendarMultiSelectListener,
+        CalendarView.OnCalendarLongClickListener, SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
 
     private val mBind by lazy {
         PeriodRecordMainActivityBinding.inflate(layoutInflater)
@@ -37,6 +39,10 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
 
     private val rvPeriodRecord by lazy {
         mBind.rvPeriodRecord
+    }
+
+    private val ivToolBarFunc by lazy{
+        mBind.ivToolBarFunc
     }
 
     private val adapter by lazy {
@@ -56,10 +62,14 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
         mCurrentYear = cvPeriodRecordCalendar.curYear
+
+        WkLog.d("mCurrentYear: $mCurrentYear")
         cvPeriodRecordCalendar.setOnCalendarSelectListener(this)
         cvPeriodRecordCalendar.setOnCalendarLongClickListener(this)
-        cvPeriodRecordCalendar.setOnCalendarRangeSelectListener(this)
+        cvPeriodRecordCalendar.setOnCalendarMultiSelectListener(this)
         fabAddPeriodRecord.setOnClickListener(this)
+        ivToolBarFunc.setOnClickListener(this)
+
         initRv()
     }
 
@@ -166,21 +176,33 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
     }
 
     override fun onClick(v: View?) {
-
+        when(v?.id){
+            R.id.ivToolBarFunc->{
+                val month= cvPeriodRecordCalendar.curMonth
+                val calendar=Calendar()
+                calendar.year=mCurrentYear
+                calendar.month=month
+                calendar.day=10
+                val calendar1=Calendar()
+                calendar1.year=mCurrentYear
+                calendar1.month=month
+                calendar1.day=11
+                cvPeriodRecordCalendar.putMultiSelect(calendar,calendar1)
+                WkLog.d("multiselect: "+cvPeriodRecordCalendar.multiSelectCalendars.toString())
+            }
+        }
 
     }
 
-    override fun onCalendarSelectOutOfRange(calendar: Calendar?) {
-        WkLog.i("onCalendarSelectOutOfRange")
-
+    override fun onCalendarMultiSelectOutOfRange(calendar: Calendar?) {
+        WkLog.i("onCalendarMultiSelectOutOfRange ")
     }
 
-    override fun onSelectOutOfRange(calendar: Calendar?, isOutOfMinRange: Boolean) {
-        WkLog.i("onSelectOutOfRange")
+    override fun onMultiSelectOutOfSize(calendar: Calendar?, maxSize: Int) {
+        WkLog.i("onMultiSelectOutOfSize e  maxSize  $maxSize")
     }
 
-    override fun onCalendarRangeSelect(calendar: Calendar?, isEnd: Boolean) {
-        WkLog.i("onCalendarRangeSelect")
-
+    override fun onCalendarMultiSelect(calendar: Calendar?, curSize: Int, maxSize: Int) {
+        WkLog.i("onCalendarMultiSelect curSize $curSize  maxSize  $maxSize calendar: $calendar")
     }
 }
