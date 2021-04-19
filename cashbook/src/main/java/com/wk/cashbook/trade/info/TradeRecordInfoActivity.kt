@@ -133,11 +133,13 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
                 mTradeRecordInfoPresent.showAddCategoryDialog()
             } else {
                 //选中类别
-                mTradeInfoCategoryAdapter.selectPosition(position)
+                mTradeRecordInfoPresent.setAmount(tvTradeInfoAmount.text.toString().toDouble())
+                mTradeRecordInfoPresent.setCategory(mTradeInfoCategoryAdapter.selectPosition(position))
             }
             return
         }
 
+        // 根类别
         if (tradeInfoCategoryAdapter == mTradeInfoRootCategoryAdapter) {
             //选中类别
             mTradeInfoRootCategoryAdapter.selectPosition(position)
@@ -177,6 +179,10 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
 
     fun setTradeAccount(account: Long) {
 
+    }
+
+    fun setTradeCategory(categoryId:Long){
+        mTradeInfoCategoryAdapter.setSelectTradeCategory(categoryId)
     }
 
     fun saveResult(tradeRecode: TradeRecode?) {

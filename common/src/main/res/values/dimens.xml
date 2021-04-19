@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="common_border_padding">@dimen/d15dp</dimen>
+    <!-- 边界的距离	-->
+    <dimen name="common_border_padding">@dimen/d15dp</dimen>
 </resources>

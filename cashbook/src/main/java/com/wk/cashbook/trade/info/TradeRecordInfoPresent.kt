@@ -19,7 +19,6 @@ import rx.schedulers.Schedulers
  * desc         :
  */
 
-
 class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity)
     : SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
 
@@ -30,6 +29,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
             initCategoryAsync(field)
         }
 
+    /**当前的类别*/
     var currentCategory: TradeCategory? = null
 
     /**当前的交易记录*/
@@ -42,6 +42,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
                 mTradeRecordInfoActivity.setTradeFlag()
                 mTradeRecordInfoActivity.setTradeTime(tradeTime)
                 mTradeRecordInfoActivity.setTradeAccount(accountId)
+                mTradeRecordInfoActivity.setTradeCategory(categoryId)
             }
         }
 
@@ -74,13 +75,34 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
                 }
     }
 
+    fun setCategory(category: TradeCategory) {
+        checkTradeRecode()
+        currentTradeRecode?.apply {
+            if (tradeNote.isEmpty()) {
+                tradeNote = category.categoryName
+            }
+            categoryId = category.baseObjId
+        }
+    }
 
+    fun setAmount(amount: Double) {
+        if (currentTradeRecode == null) {
+            val tradeRecode=TradeRecode(amount = amount)
+            currentTradeRecode = tradeRecode
+        } else {
+            currentTradeRecode?.amount = amount
+        }
+    }
+
+
+    /**添加类别的弹窗*/
     fun showAddCategoryDialog() {
         val simpleOnlyEtDialog = SimpleOnlyEtDialog.create(simpleOnlyEtDialogListener = this)
         simpleOnlyEtDialog.show(mTradeRecordInfoActivity)
     }
 
 
+    /**保存新类别*/
     private fun saveNewCategory(categoryName: String) {
         val newCategory = TradeCategory(categoryName, System.currentTimeMillis(),
                 currentRootCategory?.baseObjId ?: NumberConstants.number_long_one_Negative)
@@ -110,23 +132,33 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
         return false
     }
 
-    fun saveTradeRecode(bundle:Bundle?=null) {
-        Observable.create(Observable.OnSubscribe<TradeRecode?> { t ->
-            if (currentTradeRecode == null) {
-                currentTradeRecode = TradeRecode()
-            }
-            currentTradeRecode?.apply {
-                val originTradeNote=currentTradeRecode?.tradeNote?:WkStringConstants.STR_EMPTY
-                val tradeNote=bundle?.getString(TradeRecode.TRADE_NOTE,
-                        originTradeNote)?:originTradeNote
-                this.tradeNote=tradeNote
-                val originAmount=currentTradeRecode?.amount?:NumberConstants.number_double_zero
-                val tradeAmount=bundle?.getDouble(TradeRecode.AMOUNT,
-                        originAmount)?:originAmount
-                this.amount=tradeAmount
-            }
+    /**
+     * @return true 表示已经存在
+     * false 表示不存在，以新建
+     * */
+    private fun checkTradeRecode(): Boolean {
+        if (currentTradeRecode == null) {
+            currentTradeRecode = TradeRecode()
+            return false
+        }
+        return true
+    }
 
-            t?.onNext(if (currentTradeRecode?.save() == true) {
+    fun saveTradeRecode(bundle: Bundle? = null) {
+        Observable.create(Observable.OnSubscribe<TradeRecode?> { t ->
+            val has = checkTradeRecode()
+            currentTradeRecode?.apply {
+                val originTradeNote = currentTradeRecode?.tradeNote ?: WkStringConstants.STR_EMPTY
+                val tradeNote = bundle?.getString(TradeRecode.TRADE_NOTE,
+                        originTradeNote) ?: originTradeNote
+                this.tradeNote = tradeNote
+                val originAmount = currentTradeRecode?.amount ?: NumberConstants.number_double_zero
+                val tradeAmount = bundle?.getDouble(TradeRecode.AMOUNT,
+                        originAmount) ?: originAmount
+                this.amount = tradeAmount
+            }
+            val result = currentTradeRecode?.saveOrUpdate()
+            t?.onNext(if (result == true) {
                 currentTradeRecode
             } else {
                 null
@@ -137,7 +169,6 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
                     WkLog.d(it.toString())
                     mTradeRecordInfoActivity.saveResult(it)
                 }
-
 
     }
 }

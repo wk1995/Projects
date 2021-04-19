@@ -12,7 +12,6 @@ import org.litepal.crud.LitePalSupport
  * email        :shenlong.wang@tuya.com
  * create date  : 2021/03/10
  * desc         : 交易记录
- * @param tradeName 交易记录名
  * @param tradeTime 交易时间
  * @param accountId 账户 [TradeAccount]
  * @param categoryId 类别  [TradeCategory]
@@ -24,8 +23,7 @@ import org.litepal.crud.LitePalSupport
  */
 
 
-data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
-                       var tradeTime: Long = NumberConstants.number_long_zero,
+data class TradeRecode(var tradeTime: Long = NumberConstants.number_long_zero,
                        var accountId: Long = NumberConstants.number_long_one_Negative,
                        var categoryId: Long = NumberConstants.number_long_one_Negative,
                        val flagIds: ArrayList<Long> = ArrayList(),
@@ -37,7 +35,6 @@ data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
 
 
     constructor(parcel: Parcel) : this(
-            parcel.readString() ?: WkStringConstants.STR_EMPTY,
             parcel.readLong(),
             parcel.readLong(),
             parcel.readLong(),
@@ -53,7 +50,6 @@ data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(tradeName)
         parcel.writeLong(tradeTime)
         parcel.writeLong(accountId)
         parcel.writeLong(categoryId)
@@ -79,10 +75,9 @@ data class TradeRecode(var tradeName: String = WkStringConstants.STR_EMPTY,
 
         val TAG: String = TradeRecode::class.java.simpleName
 
-        fun getTradeRecodes(vararg conditions: String?) =
+        fun getTradeRecodes(vararg conditions: String?): MutableList<TradeRecode> =
             LitePal.where(*conditions).find(TradeRecode::class.java)
 
-        const val TRADE_NAME="tradename"
         const val TRADE_TIME="tradetime"
         const val ACCOUNT_ID="accountid"
         const val CATEGORY_ID="categoryid"

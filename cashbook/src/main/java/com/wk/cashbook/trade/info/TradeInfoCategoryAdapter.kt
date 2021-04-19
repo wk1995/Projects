@@ -1,9 +1,6 @@
 package com.wk.cashbook.trade.info
 
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
@@ -70,13 +67,30 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
         }
     }
 
-    fun selectPosition(position: Int) {
+    fun selectPosition(position: Int):TradeCategory {
+        val target=categories[position]
+        if(position==selectPosition){
+            return  target
+        }
+        lastSelectPosition = selectPosition
         selectPosition = position
+
         notifyItemChanged(position)
-        if (lastSelectPosition in 0 until itemCount) {
+        if(lastSelectPosition in 0 until itemCount) {
             notifyItemChanged(lastSelectPosition)
         }
-        lastSelectPosition = position
+        return target
+    }
+
+
+    fun setSelectTradeCategory(categoryId:Long){
+        WkLog.d("categoryId: $categoryId")
+        for(i in 0 until  categories.size){
+            if(categories[i].baseObjId==categoryId){
+                selectPosition(i)
+            }
+        }
+
     }
 
 

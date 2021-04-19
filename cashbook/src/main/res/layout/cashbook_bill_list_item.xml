@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/d50dp"
     android:background="@android:color/white"
-    android:paddingStart="@dimen/d15dp"
-    android:paddingEnd="@dimen/d15dp"
+    android:paddingStart="@dimen/common_border_padding"
+    android:paddingEnd="@dimen/common_border_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <!--交易类别-->
@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/cashbook_category_pic_default"/>
     <TextView
-        android:id="@+id/tvTradeName"
+        android:id="@+id/tvTradeNote"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/d10dp"

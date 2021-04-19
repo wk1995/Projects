@@ -50,6 +50,13 @@ data class TradeCategory(val categoryName: String, val createTime: Long = Number
                     .find(TradeCategory::class.java)
 
         }
+
+        @WorkerThread
+        fun getCategory(id: Long): TradeCategory? {
+            return LitePal.find(TradeCategory::class.java,id)
+
+        }
+
     }
 
 

@@ -47,7 +47,7 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
             val rootView = layoutInflater.inflate(R.layout.cashbook_bill_list_item, parent, false)
             rootView.setBackgroundResource(R.color.color_grey_7E797B)
             val ivTradeType = rootView.findViewById<ImageView>(R.id.ivTradeType)
-            val tvTradeNote = rootView.findViewById<TextView>(R.id.tvTradeName)
+            val tvTradeNote = rootView.findViewById<TextView>(R.id.tvTradeNote)
             val tvTradeAmount = rootView.findViewById<TextView>(R.id.tvTradeAmount)
             return CashListItemVH(rootView, ivTradeType, tvTradeNote, tvTradeAmount)
         }
@@ -57,6 +57,7 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
     override fun onBindViewHolder(holder: BaseCashItemVH, position: Int) {
         val tradeRecord = mTradeRecords[getRealPosition(position)]
         when (holder) {
+            //汇总
             is CashTotalItemVH -> {
                 if (tradeRecord is TradeRecordTotal) {
                     val date = Date(tradeRecord.date)
@@ -73,6 +74,7 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
 
                 }
             }
+            //列表项目
             is CashListItemVH -> {
                 if (tradeRecord is TradeRecode) {
                     val note=tradeRecord.tradeNote
