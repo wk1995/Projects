@@ -16,7 +16,6 @@ import com.wk.projects.common.log.WkLog
 
 
 open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCategory> = ArrayList(),
-                                    private val mTradeRecordInfoPresent: TradeRecordInfoPresent,
                                     private val mTradeInfoCategoryListener: ITradeInfoCategoryListener? = null)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
@@ -35,11 +34,13 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
 
     private var selectPosition: Int = -1
     private var lastSelectPosition: Int = -1
+    private var selectedId=-1L
 
     class RootCategoryVH(rootView: View, val tvCommon: TextView) : RecyclerView.ViewHolder(rootView)
     class CategoryVH(rootView: View) : RecyclerView.ViewHolder(rootView)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        WkLog.d("onBindViewHolder","wk1995")
         if (isHeader(position) || isFoot(position)) {
             if (holder is CategoryVH) {
                 val tvCommon = holder.itemView.findViewById<TextView>(R.id.tvCommon)
@@ -54,11 +55,10 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
             val category = categories[position]
             if (holder is RootCategoryVH) {
                 holder.tvCommon.text = category.categoryName
-                if (position == selectPosition) {
+                if (selectPosition==position) {
                     holder.tvCommon.setBackgroundResource(R.color.design_default_color_background)
                 } else {
                     holder.tvCommon.setBackgroundResource(R.color.colorAccent)
-
                 }
                 holder.tvCommon.setOnClickListener {
                     mTradeInfoCategoryListener?.itemClick(this, holder.tvCommon, position)
@@ -67,30 +67,35 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
         }
     }
 
-    fun selectPosition(position: Int):TradeCategory {
-        val target=categories[position]
-        if(position==selectPosition){
-            return  target
+
+    /**
+     * 选择，需要还原上一个，
+     * */
+    fun selectPosition(position: Int): TradeCategory {
+        val target = categories[position]
+        if (position==selectPosition) {
+            return target
         }
         lastSelectPosition = selectPosition
         selectPosition = position
-
+        WkLog.d("itemCount: $itemCount")
         notifyItemChanged(position)
-        if(lastSelectPosition in 0 until itemCount) {
+        if (lastSelectPosition in 0 until itemCount) {
             notifyItemChanged(lastSelectPosition)
         }
         return target
     }
 
 
-    fun setSelectTradeCategory(categoryId:Long){
-        WkLog.d("categoryId: $categoryId")
-        for(i in 0 until  categories.size){
-            if(categories[i].baseObjId==categoryId){
+    /**设置类别*/
+    fun setSelectTradeCategory(categoryId: Long) {
+        selectedId=categoryId
+        WkLog.d("categoryId: $categoryId","wk1995")
+        for(i in 0 until categories.size){
+            if(categoryId==categories[i].baseObjId){
                 selectPosition(i)
             }
         }
-
     }
 
 
@@ -108,7 +113,6 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
     fun isItem(position: Int) = !isHeader(position) && !isFoot(position)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        WkLog.d(parent::class.java.simpleName, "wk1995")
         if (viewType == VIEW_TYPE_ITEM) {
             val rootView = LayoutInflater.from(parent.context).inflate(R.layout.common_only_text, parent, false)
             val tvCommon = rootView.findViewById<TextView>(R.id.tvCommon)
@@ -132,6 +136,7 @@ open class TradeInfoCategoryAdapter(private var categories: MutableList<TradeCat
     fun replaceData(categories: List<TradeCategory>) {
         this.categories.clear()
         this.categories.addAll(categories)
+        setSelectTradeCategory(selectedId)
         notifyDataSetChanged()
     }
 

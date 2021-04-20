@@ -21,9 +21,9 @@ import com.wk.projects.common.ui.WkToast
 
 class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
 
-    private val mTradeRecordInfoPresent by lazy {
-        TradeRecordInfoPresent(this)
-    }
+    private lateinit var mTradeRecordInfoPresent :TradeRecordInfoPresent
+
+
 
     /**保存按钮*/
     private lateinit var btTradeInfoSave: Button
@@ -62,12 +62,10 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     }
 
     private val mTradeInfoRootCategoryAdapter by lazy {
-        TradeInfoRootCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
-                mTradeInfoCategoryListener = this)
+        TradeInfoRootCategoryAdapter( mTradeInfoCategoryListener = this)
     }
     private val mTradeInfoCategoryAdapter by lazy {
-        TradeInfoCategoryAdapter(mTradeRecordInfoPresent = mTradeRecordInfoPresent,
-                mTradeInfoCategoryListener = this)
+        TradeInfoCategoryAdapter(mTradeInfoCategoryListener = this)
     }
     private val rootCategoryLayoutManage by lazy {
         LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
@@ -83,10 +81,11 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initView()
         initRootCategoryRv()
         initCategoryRv()
+        mTradeRecordInfoPresent= TradeRecordInfoPresent(this,
+                intent.getParcelableExtra(TradeRecode.TAG)?:TradeRecode())
         mTradeRecordInfoPresent.initRootCategoryAsync()
         btTradeInfoSave = mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)
-        mTradeRecordInfoPresent.currentTradeRecode = intent.getParcelableExtra(TradeRecode.TAG)
     }
 
     private fun initView() {
@@ -133,7 +132,6 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
                 mTradeRecordInfoPresent.showAddCategoryDialog()
             } else {
                 //选中类别
-                mTradeRecordInfoPresent.setAmount(tvTradeInfoAmount.text.toString().toDouble())
                 mTradeRecordInfoPresent.setCategory(mTradeInfoCategoryAdapter.selectPosition(position))
             }
             return

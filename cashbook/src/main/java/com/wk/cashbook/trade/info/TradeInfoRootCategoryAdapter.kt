@@ -18,13 +18,11 @@ import com.wk.projects.common.log.WkLog
 
 
 class TradeInfoRootCategoryAdapter(private var categories: MutableList<TradeCategory> = ArrayList(),
-                                   private val mTradeRecordInfoPresent: TradeRecordInfoPresent,
-                                   private val mTradeInfoCategoryListener: TradeInfoCategoryAdapter.ITradeInfoCategoryListener? = null)
-    : TradeInfoCategoryAdapter(categories,mTradeRecordInfoPresent,mTradeInfoCategoryListener) {
+                                  var mTradeInfoCategoryListener: ITradeInfoCategoryListener? = null)
+    : TradeInfoCategoryAdapter(categories,mTradeInfoCategoryListener) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        WkLog.d(parent::class.java.simpleName,"wk1995")
         if (viewType == VIEW_TYPE_ITEM) {
             val rootView = LayoutInflater.from(parent.context).inflate(R.layout.common_only_text, parent, false)
             val tvCommon = rootView.findViewById<TextView>(R.id.tvCommon)
