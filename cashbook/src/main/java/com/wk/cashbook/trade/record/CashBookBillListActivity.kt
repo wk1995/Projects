@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -19,6 +20,7 @@ import com.wk.cashbook.databinding.CashbookBillListActivityBinding
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
@@ -28,7 +30,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelectedListener, IRvClickListener {
+class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelectedListener, IRvClickListener, BaseSimpleDialog.SimpleOnlyEtDialogListener {
 
     companion object {
         private const val LAYOUT_VIEWPAGER_DETAILED = 0
@@ -108,9 +110,11 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
                         , parent, false)
                 val rvCommon = rootView.findViewById<RecyclerView>(R.id.rvCommon)
                 rvCommon?.apply {
-                    layoutManager = LinearLayoutManager(parent.context)
+                    val linearLayoutManager=LinearLayoutManager(context)
+                    layoutManager = linearLayoutManager
                     adapter = cashListAdapter
                     setBackgroundColor(WkContextCompat.getColor(this@CashBookBillListActivity, android.R.color.white))
+                    addItemDecoration(DividerItemDecoration(context,linearLayoutManager.orientation))
                 }
                 return CardViewHolder(rootView)
             }
@@ -185,7 +189,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
         super.onClick(v)
         when (v?.id) {
             R.id.llDate -> {
-
+                ChooseMonthDialog.create(simpleOnlyEtDialogListener=this).show(this)
             }
             R.id.btnAddBill -> {
                 val intene = Intent(this, TradeRecordInfoActivity::class.java)
@@ -243,4 +247,13 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
 
     override fun onItemLongClick(bundle: Bundle?, vararg any: Any?) {
     }
+
+    override fun ok(bundle: Bundle?): Boolean {
+        val year=bundle?.getString("year")
+        val month=bundle?.getString("month")
+        WkLog.d("year: $year  month:  $month")
+        return false
+    }
+
+    override fun cancel(bundle: Bundle?)=false
 }

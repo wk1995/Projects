@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wk.cashbook.R
 import com.wk.cashbook.trade.data.ITradeRecord
 import com.wk.cashbook.trade.data.TradeRecode
+import com.wk.projects.common.configuration.WkConfiguration
 import com.wk.projects.common.constant.WkStringConstants.STR_POSITION_LOW
+import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import com.wk.projects.common.time.date.DayUtil
 import com.wk.projects.common.time.date.week.WeekUtil
@@ -45,10 +47,11 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
 
         if (TYPE_LIST_ITEM == viewType) {
             val rootView = layoutInflater.inflate(R.layout.cashbook_bill_list_item, parent, false)
-            rootView.setBackgroundResource(R.color.color_grey_7E797B)
+            rootView.setBackgroundResource(R.color.common_white_F1F0F0)
             val ivTradeType = rootView.findViewById<ImageView>(R.id.ivTradeType)
             val tvTradeNote = rootView.findViewById<TextView>(R.id.tvTradeNote)
             val tvTradeAmount = rootView.findViewById<TextView>(R.id.tvTradeAmount)
+            tvTradeAmount.setTextColor(WkContextCompat.getColor(parent.context,R.color.color_grey_7E797B))
             return CashListItemVH(rootView, ivTradeType, tvTradeNote, tvTradeAmount)
         }
         throw IllegalAccessException("viewType: $viewType is illegal")

@@ -3,6 +3,7 @@ package com.wk.cashbook.trade.info
 import android.os.Bundle
 import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
+import com.wk.projects.common.BaseSimpleDialog
 import com.wk.projects.common.SimpleOnlyEtDialog
 import com.wk.projects.common.constant.NumberConstants
 import com.wk.projects.common.constant.WkStringConstants
@@ -22,7 +23,7 @@ import rx.schedulers.Schedulers
 
 class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity,
 private val currentTradeRecode:TradeRecode=TradeRecode())
-    : SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
+    : BaseSimpleDialog.SimpleOnlyEtDialogListener {
 
     /**当前的根类别*/
     var currentRootCategory: TradeCategory? = null
@@ -100,7 +101,8 @@ private val currentTradeRecode:TradeRecode=TradeRecode())
                 }
     }
 
-    override fun ok(textString: String?): Boolean {
+    override fun ok(bundle: Bundle?): Boolean {
+        val textString=bundle?.getString("textString")
         if (textString.isNullOrBlank()) {
             WkToast.showToast("不能为空")
             return true
@@ -109,7 +111,7 @@ private val currentTradeRecode:TradeRecode=TradeRecode())
         return false
     }
 
-    override fun cancel(): Boolean {
+    override fun cancel(bundle: Bundle?): Boolean {
         return false
     }
 

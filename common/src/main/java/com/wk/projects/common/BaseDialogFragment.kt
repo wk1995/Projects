@@ -27,25 +27,26 @@ abstract class BaseDialogFragment : DialogFragment() {
     protected lateinit var iFa:IFragmentToActivity
 
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity = context as BaseProjectsActivity
         iFa=mActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(getBackgroundDrawable())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //        hideBottomUIMenu()
-        val rootView = inflater.inflate(initResLayId(), container, false)
-        return rootView
+        return inflater.inflate(initResLayId(), container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         bindView(savedInstanceState)
-
         super.onActivityCreated(savedInstanceState)
     }
+
+
+    open fun getBackgroundDrawable()=ColorDrawable(Color.TRANSPARENT)
 
     /**
      * 隐藏虚拟键
