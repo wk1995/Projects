@@ -11,6 +11,7 @@ import com.wk.cashbook.trade.data.ITradeRecord
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.configuration.WkConfiguration
 import com.wk.projects.common.constant.WkStringConstants.STR_POSITION_LOW
+import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.resource.WkContextCompat
 import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import com.wk.projects.common.time.date.DayUtil
@@ -87,6 +88,8 @@ class CashListAdapter(private var mTradeRecords: MutableList<ITradeRecord>,
                             val bundle=Bundle()
                             bundle.putParcelable(TradeRecode.TAG,tradeRecord)
                             bundle.putInt(STR_POSITION_LOW,position)
+                            bundle.putLong("id",tradeRecord.baseObjId)
+                            WkLog.d("click id: ${tradeRecord.baseObjId}")
                             rvItemListener?.onItemClick(bundle)
                         }
                         tvTradeAmount.text=amount.toString()

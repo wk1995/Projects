@@ -85,9 +85,15 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initView()
         initRootCategoryRv()
         initCategoryRv()
-        val target = intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG) ?: TradeRecode()
+        var target = intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG)
+        var id = intent.getLongExtra("id",0)
+        val isUpdate = target != null
+        if (target == null) {
+            target = TradeRecode(tradeTime = System.currentTimeMillis())
+        }
         WkLog.d("target： $target")
-        mTradeRecordInfoPresent = TradeRecordInfoPresent(this, target)
+        mTradeRecordInfoPresent = TradeRecordInfoPresent(this, target,id)
+        mTradeRecordInfoPresent.isUpdate=isUpdate
         mTradeRecordInfoPresent.initRootCategoryAsync()
         btTradeInfoSave = mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)
@@ -162,7 +168,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
                 mTradeRecordInfoPresent.saveTradeRecode(bundle)
             }
             R.id.tvTradeInfoTime -> {
-                TimePickerCreator.create(this,R.string.common_str_add, OnTimeSelectListener { date, _ ->
+                TimePickerCreator.create(this, R.string.common_str_add, OnTimeSelectListener { date, _ ->
                     mTradeRecordInfoPresent.setTradeTime(date.time)
                 })
             }
@@ -179,7 +185,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
 
 
     fun setTradeTime(time: Long) {
-        tvTradeInfoTime.text= DateTime.getDateString(time)
+        tvTradeInfoTime.text = DateTime.getDateString(time)
     }
 
     fun setTradeFlag() {

@@ -22,8 +22,10 @@ import rx.schedulers.Schedulers
  * @param currentTradeRecode  当前的交易记录
  */
 
-class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity, private val currentTradeRecode:TradeRecode)
+class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity, private val currentTradeRecode: TradeRecode,val id:Long)
     : BaseSimpleDialog.SimpleOnlyEtDialogListener {
+
+    var isUpdate=false
 
     /**当前的根类别*/
     var currentRootCategory: TradeCategory? = null
@@ -46,10 +48,13 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     }
 
 
-    fun setTradeTime(time:Long){
-        currentTradeRecode.tradeTime=time
+    fun setTradeTime(time: Long) {
+        WkLog.d("修改之前： $currentTradeRecode")
+        currentTradeRecode.tradeTime = time
+        WkLog.d("修改之后： $currentTradeRecode")
         mTradeRecordInfoActivity.setTradeTime(time)
     }
+
     /**
      * 获取最顶的类别
      * 支出，收入，内部转账
@@ -79,7 +84,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     }
 
     fun setCategory(category: TradeCategory) {
-        currentTradeRecode.categoryId=category.baseObjId
+        currentTradeRecode.categoryId = category.baseObjId
     }
 
     /**添加类别的弹窗*/
@@ -107,7 +112,7 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
     }
 
     override fun ok(bundle: Bundle?): Boolean {
-        val textString=bundle?.getString("textString")
+        val textString = bundle?.getString("textString")
         if (textString.isNullOrBlank()) {
             WkToast.showToast("不能为空")
             return true
@@ -133,14 +138,21 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
                         originAmount) ?: originAmount
                 this.amount = tradeAmount
             }
-            WkLog.d("保存的： $currentTradeRecode")
-            val result = currentTradeRecode.saveOrUpdate("id=?",currentTradeRecode.baseObjId.toString())
+//            WkLog.d("保存的： $currentTradeRecode")
+            val result =if(id==0L){
+                currentTradeRecode.save()
+            }else{
+                currentTradeRecode.update(id)>0
+            }
             t?.onNext(result)
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    WkLog.d(it.toString())
-                    mTradeRecordInfoActivity.saveResult(currentTradeRecode)
+                    mTradeRecordInfoActivity.saveResult(if (it) {
+                        currentTradeRecode
+                    } else {
+                        null
+                    })
                 }
 
     }
