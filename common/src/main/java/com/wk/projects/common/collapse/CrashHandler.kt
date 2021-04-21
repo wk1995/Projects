@@ -16,6 +16,7 @@ import rx.schedulers.Schedulers
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.jvm.Throws
 
 @Suppress("unused")
 class CrashHandler private constructor(private val context: Context,

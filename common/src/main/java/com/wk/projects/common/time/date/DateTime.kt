@@ -1,5 +1,6 @@
-package com.wk.projects.schedules.date
+package com.wk.projects.common.time.date
 
+import com.wk.projects.common.constant.NumberConstants
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,9 +25,11 @@ object DateTime {
             if (time == null) "null" else
                 mSimpleDateFormat.format(time)
 
+    fun getDataString( time: Long?,pattern:String)=getDateString(time, SimpleDateFormat(pattern, Locale.getDefault()))
+
     @JvmStatic
     fun getDateLong(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
-            : Long = mSimpleDateFormat.parse(timeString).time
+            : Long = mSimpleDateFormat.parse(timeString)?.time?:NumberConstants.number_long_one_Negative
 
     /**
      * @param time 毫秒

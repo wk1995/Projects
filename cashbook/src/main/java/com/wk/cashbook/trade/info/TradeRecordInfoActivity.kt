@@ -11,6 +11,7 @@ import androidx.annotation.MainThread
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookTradeRecordInfoActivityBinding
 import com.wk.cashbook.trade.data.TradeCategory
@@ -18,12 +19,14 @@ import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.log.WkLog
+import com.wk.projects.common.time.date.DateTime
+import com.wk.projects.common.ui.TimePickerCreator
 import com.wk.projects.common.ui.WkToast
+import java.text.SimpleDateFormat
 
 class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
 
-    private lateinit var mTradeRecordInfoPresent :TradeRecordInfoPresent
-
+    private lateinit var mTradeRecordInfoPresent: TradeRecordInfoPresent
 
 
     /**保存按钮*/
@@ -63,7 +66,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
     }
 
     private val mTradeInfoRootCategoryAdapter by lazy {
-        TradeInfoRootCategoryAdapter( mTradeInfoCategoryListener = this)
+        TradeInfoRootCategoryAdapter(mTradeInfoCategoryListener = this)
     }
     private val mTradeInfoCategoryAdapter by lazy {
         TradeInfoCategoryAdapter(mTradeInfoCategoryListener = this)
@@ -82,12 +85,13 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initView()
         initRootCategoryRv()
         initCategoryRv()
-        val target=intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG)?:TradeRecode()
+        val target = intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG) ?: TradeRecode()
         WkLog.d("target： $target")
-        mTradeRecordInfoPresent= TradeRecordInfoPresent(this,target)
+        mTradeRecordInfoPresent = TradeRecordInfoPresent(this, target)
         mTradeRecordInfoPresent.initRootCategoryAsync()
         btTradeInfoSave = mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)
+        tvTradeInfoTime.setOnClickListener(this)
     }
 
     private fun initView() {
@@ -157,6 +161,11 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
                 bundle.putString(TradeRecode.TRADE_NOTE, note)
                 mTradeRecordInfoPresent.saveTradeRecode(bundle)
             }
+            R.id.tvTradeInfoTime -> {
+                TimePickerCreator.create(this,R.string.common_str_add, OnTimeSelectListener { date, _ ->
+                    mTradeRecordInfoPresent.setTradeTime(date.time)
+                })
+            }
         }
     }
 
@@ -170,7 +179,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
 
 
     fun setTradeTime(time: Long) {
-
+        tvTradeInfoTime.text= DateTime.getDateString(time)
     }
 
     fun setTradeFlag() {
@@ -181,7 +190,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
 
     }
 
-    fun setTradeCategory(categoryId:Long){
+    fun setTradeCategory(categoryId: Long) {
         mTradeInfoCategoryAdapter.setSelectTradeCategory(categoryId)
     }
 
@@ -193,7 +202,7 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         val intent1 = Intent()
         intent1.putExtra(TradeRecode.TAG, tradeRecode)
         intent1.putExtra(WkStringConstants.STR_POSITION_LOW,
-                intent.getIntExtra(WkStringConstants.STR_POSITION_LOW,-1) )
+                intent.getIntExtra(WkStringConstants.STR_POSITION_LOW, -1))
         setResult(2, intent1)
         finish()
     }

@@ -45,6 +45,11 @@ class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordIn
 
     }
 
+
+    fun setTradeTime(time:Long){
+        currentTradeRecode.tradeTime=time
+        mTradeRecordInfoActivity.setTradeTime(time)
+    }
     /**
      * 获取最顶的类别
      * 支出，收入，内部转账

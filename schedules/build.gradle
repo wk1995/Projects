@@ -78,8 +78,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(':common')
-    //时间选择
-    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
     //请求权限
     kapt "com.github.hotchemi:permissionsdispatcher-processor:${rootProject.permissionsDispatcher}"
     //路由
