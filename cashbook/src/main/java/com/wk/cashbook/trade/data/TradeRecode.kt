@@ -64,6 +64,10 @@ data class TradeRecode(var tradeTime: Long = NumberConstants.number_long_zero,
         return 0
     }
 
+    override fun toString(): String {
+        return "TradeRecode(baseObjId=${baseObjId}, tradeTime=$tradeTime, accountId=$accountId, categoryId=$categoryId, flagIds=$flagIds, amount=$amount, tradeNote='$tradeNote', receiveAccountId=$receiveAccountId, relationTradeId=$relationTradeId)"
+    }
+
     companion object CREATOR : Parcelable.Creator<TradeRecode> {
         override fun createFromParcel(parcel: Parcel): TradeRecode {
             return TradeRecode(parcel)
@@ -86,7 +90,6 @@ data class TradeRecode(var tradeTime: Long = NumberConstants.number_long_zero,
         const val TRADE_NOTE="tradenote"
         const val RECEIVE_ACCOUNT_ID="receiveaccountid"
         const val RELATION_TRADE_ID="relationtradeid"
-
     }
 
 

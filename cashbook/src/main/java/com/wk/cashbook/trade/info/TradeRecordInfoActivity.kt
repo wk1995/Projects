@@ -17,6 +17,7 @@ import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.constant.WkStringConstants
+import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.ui.WkToast
 
 class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter.ITradeInfoCategoryListener {
@@ -81,8 +82,9 @@ class TradeRecordInfoActivity : BaseProjectsActivity(), TradeInfoCategoryAdapter
         initView()
         initRootCategoryRv()
         initCategoryRv()
-        mTradeRecordInfoPresent= TradeRecordInfoPresent(this,
-                intent.getParcelableExtra(TradeRecode.TAG)?:TradeRecode())
+        val target=intent.getParcelableExtra<TradeRecode>(TradeRecode.TAG)?:TradeRecode()
+        WkLog.d("target： $target")
+        mTradeRecordInfoPresent= TradeRecordInfoPresent(this,target)
         mTradeRecordInfoPresent.initRootCategoryAsync()
         btTradeInfoSave = mBind.btTradeInfoSave
         btTradeInfoSave.setOnClickListener(this)

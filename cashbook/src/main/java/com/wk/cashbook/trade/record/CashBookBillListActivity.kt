@@ -204,7 +204,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    WkLog.d("交易记录数目： " + it.size)
+                    WkLog.d("交易记录： $it")
                     cashListAdapter.replaceList(it)
                 }
 

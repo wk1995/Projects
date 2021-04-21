@@ -1,6 +1,7 @@
 package com.wk.cashbook.trade.info
 
 import android.os.Bundle
+import android.widget.Button
 import com.wk.cashbook.trade.data.TradeCategory
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.projects.common.BaseSimpleDialog
@@ -21,8 +22,7 @@ import rx.schedulers.Schedulers
  * @param currentTradeRecode  当前的交易记录
  */
 
-class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity,
-private val currentTradeRecode:TradeRecode=TradeRecode())
+class TradeRecordInfoPresent(private val mTradeRecordInfoActivity: TradeRecordInfoActivity, private val currentTradeRecode:TradeRecode)
     : BaseSimpleDialog.SimpleOnlyEtDialogListener {
 
     /**当前的根类别*/
@@ -117,7 +117,7 @@ private val currentTradeRecode:TradeRecode=TradeRecode())
 
     /**保存 \ 更新*/
     fun saveTradeRecode(bundle: Bundle? = null) {
-        Observable.create(Observable.OnSubscribe<TradeRecode?> { t ->
+        Observable.create(Observable.OnSubscribe<Boolean> { t ->
             currentTradeRecode.apply {
                 val originTradeNote = currentTradeRecode.tradeNote
                 val tradeNote = bundle?.getString(TradeRecode.TRADE_NOTE,
@@ -128,17 +128,14 @@ private val currentTradeRecode:TradeRecode=TradeRecode())
                         originAmount) ?: originAmount
                 this.amount = tradeAmount
             }
-            val result = currentTradeRecode.saveOrUpdate()
-            t?.onNext(if (result) {
-                currentTradeRecode
-            } else {
-                null
-            })
+            WkLog.d("保存的： $currentTradeRecode")
+            val result = currentTradeRecode.saveOrUpdate("id=?",currentTradeRecode.baseObjId.toString())
+            t?.onNext(result)
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     WkLog.d(it.toString())
-                    mTradeRecordInfoActivity.saveResult(it)
+                    mTradeRecordInfoActivity.saveResult(currentTradeRecode)
                 }
 
     }
