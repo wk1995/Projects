@@ -103,6 +103,47 @@ object DateTime {
         return todayStart.timeInMillis
     }
 
+    /**
+     * 获取某个月的第一天的0点0分0秒0毫秒 月和日都从0开始算
+     * */
+    fun getMonthStart(time:Long):Long{
+        val thisMonth = Calendar.getInstance()
+        thisMonth.time = Date(time)
+        thisMonth.set(Calendar.HOUR_OF_DAY, 0)
+        thisMonth.set(Calendar.MINUTE, 0)
+        thisMonth.set(Calendar.SECOND, 0)
+        thisMonth.set(Calendar.MILLISECOND, 0)
+        thisMonth.set(Calendar.DAY_OF_MONTH, 1)
+        return thisMonth.timeInMillis
+    }
+
+    /**
+     * 获取某个月的最后时刻
+     * 取下一月的第一天，-1
+     * */
+    fun getMonthEnd(time:Long):Long{
+        val thisMonth = Calendar.getInstance()
+        thisMonth.time = Date(time)
+        var theMonthValue=thisMonth.get(Calendar.MONTH)
+        var theYearValue=thisMonth.get(Calendar.YEAR)
+        thisMonth.set(Calendar.HOUR_OF_DAY, 0)
+        thisMonth.set(Calendar.MINUTE, 0)
+        thisMonth.set(Calendar.SECOND, 0)
+        thisMonth.set(Calendar.MILLISECOND, 0)
+        thisMonth.set(Calendar.DAY_OF_MONTH, 1)
+        //表示12月
+        if(theMonthValue==11){
+            theMonthValue=0
+            theYearValue++
+        }else{
+            theMonthValue++
+        }
+        thisMonth.set(Calendar.MONTH, theMonthValue)
+        thisMonth.set(Calendar.YEAR, theYearValue)
+        return thisMonth.timeInMillis-1
+    }
+
+
 
     /**获取某一天的23点59分59秒999毫秒*/
     @JvmStatic

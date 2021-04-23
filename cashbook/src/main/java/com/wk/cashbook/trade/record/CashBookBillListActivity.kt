@@ -21,14 +21,18 @@ import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.BaseSimpleDialog
+import com.wk.projects.common.constant.NumberConstants
 import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.constant.WkStringConstants.STR_INT_ZERO
 import com.wk.projects.common.log.WkLog
 import com.wk.projects.common.resource.WkContextCompat
+import com.wk.projects.common.time.date.DateTime
 import com.wk.projects.common.ui.recycler.listener.IRvClickListener
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelectedListener, IRvClickListener, BaseSimpleDialog.SimpleOnlyEtDialogListener {
 
@@ -84,7 +88,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     override fun initResLayId() = mBind.root
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
-        initData()
+        initData(System.currentTimeMillis())
         initView()
         initListener()
         initTime()
@@ -198,40 +202,23 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
         }
     }
 
-    private fun initData() {
+    private fun initData(time:Long) {
+        val startTime=DateTime.getMonthStart(time)
+        val endTime=DateTime.getMonthEnd(time)
         Observable.create(Observable.OnSubscribe<List<TradeRecode>> { t ->
-            t?.onNext(TradeRecode.getTradeRecodes(null))
+            t?.onNext(TradeRecode.getTradeRecodes("${TradeRecode.TRADE_TIME}>? and ${TradeRecode.TRADE_TIME}<?",startTime.toString(),endTime.toString()))
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     WkLog.d("交易记录： $it")
                     cashListAdapter.replaceList(it)
                 }
-
-
-        /* val calendar=Calendar.getInstance()
-         calendar.time= Date()
-         val random=Random()
-         val tradeRecordBeans=ArrayList<ITradeRecord>()
-         for(i in 1..20){
-             calendar.set(Calendar.DAY_OF_MONTH,i)
-             val num=random.nextInt(5)+1
-             for(j in 0 ..num) {
-                 val dateTime = calendar.timeInMillis
-                 val amount= random.nextInt(10).toDouble()
-                 tradeRecordBeans.add(TradeRecordBean(dateTime, i.toString(), amount))
-             }
-         }
-         WkLog.d("tradeRecordBeans size : ${tradeRecordBeans.size}")
-         cashListAdapter.replaceList(tradeRecordBeans)*/
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val tradeRecode = data?.getParcelableExtra<TradeRecode>(TradeRecode.TAG) ?: return
         val position=data.getIntExtra(WkStringConstants.STR_POSITION_LOW,-1)
-
         if(position==-1) {
             cashListAdapter.addData(tradeRecode)
         }else{
@@ -251,7 +238,11 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     override fun ok(bundle: Bundle?): Boolean {
         val year=bundle?.getString("year")
         val month=bundle?.getString("month")
+        val calendar=Calendar.getInstance()
+        calendar.set(Calendar.YEAR,year?.toInt()?:NumberConstants.number_int_zero)
+        calendar.set(Calendar.MONTH,year?.toInt()?:NumberConstants.number_int_zero)
         WkLog.d("year: $year  month:  $month")
+        initData(calendar.timeInMillis)
         return false
     }
 
