@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendarSelectListener,
-        OnCalendarMultiSelectListener,
+        OnCalendarMultiSelectListener, CalendarView.OnCalendarInterceptListener,
         CalendarView.OnCalendarLongClickListener, SimpleOnlyEtDialog.SimpleOnlyEtDialogListener {
 
     private val mBind by lazy {
@@ -67,6 +67,7 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
         cvPeriodRecordCalendar.setOnCalendarSelectListener(this)
         cvPeriodRecordCalendar.setOnCalendarLongClickListener(this)
         cvPeriodRecordCalendar.setOnCalendarMultiSelectListener(this)
+        cvPeriodRecordCalendar.setOnCalendarInterceptListener(this)
         fabAddPeriodRecord.setOnClickListener(this)
         ivToolBarFunc.setOnClickListener(this)
 
@@ -106,7 +107,7 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
    private var period:Period?=null
 
     override fun onCalendarLongClick(calendar: Calendar?) {
-        Observable.create(Observable.OnSubscribe<List<Period>> { t ->
+      /*  Observable.create(Observable.OnSubscribe<List<Period>> { t ->
             //判断是否有开始时间的经期
             val periods = LitePal.where("").find(Period::class.java)
             t?.onNext(periods)
@@ -128,8 +129,8 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
                     }
                     dialog = SimpleOnlyEtDialog.create(bundle, this)
                     dialog?.show(this)
-                }
-
+                }*/
+    WkToast.showToast("wk")
 
     }
 
@@ -204,5 +205,13 @@ class PeriodRecordMainActivity : BaseProjectsActivity(), CalendarView.OnCalendar
 
     override fun onCalendarMultiSelect(calendar: Calendar?, curSize: Int, maxSize: Int) {
         WkLog.i("onCalendarMultiSelect curSize $curSize  maxSize  $maxSize calendar: $calendar")
+    }
+
+    override fun onCalendarIntercept(calendar: Calendar?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCalendarInterceptClick(calendar: Calendar?, isClick: Boolean) {
+        TODO("Not yet implemented")
     }
 }

@@ -137,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
-            app:month_view="com.wk.period.multi.CustomMultiMonthView"
+            app:month_view="com.wk.period.MultiLongMonthView"
             app:week_view="com.wk.period.multi.CustomMultiWeekView"
             app:week_bar_view="com.wk.period.simple.EnglishWeekBar"
             app:calendar_height="50dp"
