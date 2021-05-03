@@ -205,6 +205,7 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     private fun initData(time:Long) {
         val startTime=DateTime.getMonthStart(time)
         val endTime=DateTime.getMonthEnd(time)
+        WkLog.i("initData startTime: ${DateTime.getDateString(startTime)}, endTime: ${DateTime.getDateString(endTime)}")
         Observable.create(Observable.OnSubscribe<List<TradeRecode>> { t ->
             t?.onNext(TradeRecode.getTradeRecodes("${TradeRecode.TRADE_TIME}>? and ${TradeRecode.TRADE_TIME}<?",startTime.toString(),endTime.toString()))
         }).subscribeOn(Schedulers.newThread())
@@ -236,12 +237,14 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     }
 
     override fun ok(bundle: Bundle?): Boolean {
-        val year=bundle?.getString("year")
-        val month=bundle?.getString("month")
+        val year=bundle?.getString("year")?:return false
+        val month=bundle.getString("month")?:return false
         val calendar=Calendar.getInstance()
-        calendar.set(Calendar.YEAR,year?.toInt()?:NumberConstants.number_int_zero)
-        calendar.set(Calendar.MONTH,year?.toInt()?:NumberConstants.number_int_zero)
-        WkLog.d("year: $year  month:  $month")
+        calendar.set(Calendar.YEAR,year.toInt())
+        calendar.set(Calendar.MONTH,month.toInt()-1)
+        tvDateMonth.text=month
+        tvDateYear.text=year
+        WkLog.d("year: $year  month:  $month  time: ${DateTime.getDateString(calendar.timeInMillis)}")
         initData(calendar.timeInMillis)
         return false
     }

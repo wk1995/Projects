@@ -23,7 +23,7 @@ class CashBookBillPresent(val mCashBookBillListActivity: CashBookBillListActivit
         can.timeInMillis=currentTime
         val year=can.get(Calendar.YEAR)
         val month=can.get(Calendar.MONTH)+1
-        WkLog.d("year: $year}  month: $month")
+        WkLog.d("year: $year  month: $month")
         return Pair(year,month)
     }
 }

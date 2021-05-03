@@ -25,7 +25,7 @@ object DateTime {
             if (time == null) "null" else
                 mSimpleDateFormat.format(time)
 
-    fun getDataString( time: Long?,pattern:String)=getDateString(time, SimpleDateFormat(pattern, Locale.getDefault()))
+    fun getDateString( time: Long?,pattern:String)=getDateString(time, SimpleDateFormat(pattern, Locale.getDefault()))
 
     @JvmStatic
     fun getDateLong(timeString: String, mSimpleDateFormat: SimpleDateFormat = defaultSimpleDateFormat)
