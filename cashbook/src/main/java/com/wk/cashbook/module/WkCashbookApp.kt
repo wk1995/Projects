@@ -30,6 +30,11 @@ class WkCashbookApp : BaseApplication() {
 
     }
 
+    private fun storageDataIntoLocal(){
+
+    }
+
+
     companion object {
 
         @WorkerThread
@@ -47,15 +52,15 @@ class WkCashbookApp : BaseApplication() {
 
         @WorkerThread
         fun initTradeCategory():Boolean {
-            val accounts=LitePal.where(TradeCategory.CATEGORY_NAME+"=?","支出").find(TradeCategory::class.java)
-            if(accounts.isNotEmpty()){
-                return true
+            var result=false
+            TradeCategory.forEachRoot {
+                val accounts=LitePal.where(TradeCategory.CATEGORY_NAME+"=?",it.value).find(TradeCategory::class.java)
+                if(accounts.isEmpty()){
+                    val tradeCategory=TradeCategory(categoryName = it.value)
+                    result=tradeCategory.save()
+                }
             }
-            val initCategories = ArrayList<TradeCategory>()
-            initCategories.add(TradeCategory(categoryName = "支出"))
-            initCategories.add(TradeCategory(categoryName = "收入"))
-            initCategories.add(TradeCategory(categoryName = "内部转账"))
-            return LitePal.saveAll(initCategories)
+            return result
         }
 
     }

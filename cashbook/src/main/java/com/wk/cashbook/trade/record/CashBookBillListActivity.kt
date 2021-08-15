@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wk.cashbook.R
 import com.wk.cashbook.databinding.CashbookBillListActivityBinding
+import com.wk.cashbook.trade.data.ITradeRecord
 import com.wk.cashbook.trade.data.TradeRecode
 import com.wk.cashbook.trade.info.TradeRecordInfoActivity
 import com.wk.projects.common.BaseProjectsActivity
@@ -203,18 +204,13 @@ class CashBookBillListActivity : BaseProjectsActivity(), TabLayout.OnTabSelected
     }
 
     private fun initData(time:Long) {
-        val startTime=DateTime.getMonthStart(time)
-        val endTime=DateTime.getMonthEnd(time)
-        WkLog.i("initData startTime: ${DateTime.getDateString(startTime)}, endTime: ${DateTime.getDateString(endTime)}")
-        Observable.create(Observable.OnSubscribe<List<TradeRecode>> { t ->
-            t?.onNext(TradeRecode.getTradeRecodes("${TradeRecode.TRADE_TIME}>? and ${TradeRecode.TRADE_TIME}<?",startTime.toString(),endTime.toString()))
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    WkLog.d("交易记录： $it")
-                    cashListAdapter.replaceList(it)
-                }
+      mCashBookBillPresent.getData(time)
     }
+
+    fun replaceTradeRecodes(tradeRecords:List<ITradeRecord>){
+        cashListAdapter.replaceList(tradeRecords)
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -29,6 +29,27 @@ data class TradeCategory(val categoryName: String, val createTime: Long = Number
         const val PARENT_ID = "parentid"
         const val NOTE = "note"
 
+        /**支出*/
+        const val ROOT_TYPE_PAY="pay"
+        const val ROOT_TYPE_PAY_NAME="支出"
+        /**收入*/
+        const val ROOT_TYPE_INCOME_NAME="收入"
+        const val ROOT_TYPE_INCOME="income"
+        /**内部转账*/
+        const val ROOT_TYPE_INTERNAL_TRANSFER_NAME="内部转账"
+        const val ROOT_TYPE_INTERNAL_TRANSFER="internalTransfer"
+
+        private val rootType by lazy{
+            mapOf(
+                    Pair(ROOT_TYPE_PAY, ROOT_TYPE_PAY_NAME),
+                    Pair(ROOT_TYPE_INCOME, ROOT_TYPE_INCOME_NAME),
+                    Pair(ROOT_TYPE_INTERNAL_TRANSFER, ROOT_TYPE_INTERNAL_TRANSFER_NAME)
+            )
+        }
+
+        fun forEachRoot(action: (Map.Entry<String, String>) -> Unit){
+            rootType.forEach(action)
+        }
 
         /**
          * 获取最顶的类别
@@ -56,8 +77,9 @@ data class TradeCategory(val categoryName: String, val createTime: Long = Number
             return LitePal.find(TradeCategory::class.java,id)
 
         }
-
     }
+
+
 
 
     public override fun getBaseObjId(): Long {
