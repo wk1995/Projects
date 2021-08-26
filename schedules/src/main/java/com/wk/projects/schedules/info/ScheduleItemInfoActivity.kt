@@ -115,6 +115,10 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             tvScheduleName -> {
                 ScheduleItemAddDialog.create().show(supportFragmentManager)
             }
+            ivTitleBack->{
+                finish()
+            }
+            btTitleSave,
             btScheduleSave -> {
                 currentSchedule.note=etScheduleNote.text.toString()
                 currentSchedule.saveAsync().listen {
@@ -186,6 +190,8 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         btScheduleSave.setOnClickListener(this)
         tvScheduleName.setOnClickListener(this)
         tvScheduleDate.setOnClickListener(this)
+        btTitleSave.setOnClickListener(this)
+        ivTitleBack.setOnClickListener(this)
         mScheduleInfoAdapter.onItemClickListener = this
         mScheduleInfoAdapter.onItemLongClickListener = this
     }
