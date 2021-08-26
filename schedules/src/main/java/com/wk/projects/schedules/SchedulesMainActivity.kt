@@ -2,12 +2,19 @@ package com.wk.projects.schedules
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -39,12 +46,13 @@ import permissions.dispatcher.*
 import timber.log.Timber
 import java.util.*
 
+
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemChildLongClickListener {
 
-    private var selectPosition=-1
+    private var selectPosition = -1
 
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
@@ -61,6 +69,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         setSupportActionBar(tbSchedules)
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
+        requestPermission()
         initClickListener()
     }
 
@@ -80,20 +89,20 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         when (view?.id) {
             R.id.tvCompleteStatus -> {
                 val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
-                val tempTime=scheduleItem.endTime
-                scheduleItem.endTime=System.currentTimeMillis()
+                val tempTime = scheduleItem.endTime
+                scheduleItem.endTime = System.currentTimeMillis()
                 scheduleItem.saveAsync().listen {
-                    if(it){
+                    if (it) {
                         scheduleMainAdapter.notifyItemChanged(position)
                         WkToast.showToast("完成")
-                    }else{
-                        scheduleItem.endTime=tempTime
+                    } else {
+                        scheduleItem.endTime = tempTime
                     }
                 }
 
             }
             R.id.clScheduleItem -> {
-                selectPosition=position
+                selectPosition = position
                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
                 ARouter.getInstance()
                         .build(ARoutePath.ScheduleItemInfoActivity)
@@ -158,7 +167,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
                 val currentTime = System.currentTimeMillis()
                 val scheduleItem = ScheduleItem(WkStringConstants.STR_EMPTY, currentTime)
                 scheduleItem.saveAsync().listen {
-                    if(it){
+                    if (it) {
                         scheduleMainAdapter.addItem(scheduleItem)
                     }
                 }
@@ -212,8 +221,17 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         if (requestCode == ActivityRequestCode.RequestCode_SchedulesMainActivity &&
                 resultCode == ActivityResultCode.ResultCode_ScheduleItemInfoActivity) {
             val scheduleItem = scheduleMainAdapter.getItem(selectPosition) ?: return
-            LitePal.findAsync(ScheduleItem::class.java,scheduleItem.baseObjId).listen {
-                scheduleMainAdapter.replaceItem(it?:return@listen,selectPosition)
+            LitePal.findAsync(ScheduleItem::class.java, scheduleItem.baseObjId).listen {
+                scheduleMainAdapter.replaceItem(it ?: return@listen, selectPosition)
+            }
+        }
+
+        if (requestCode == 1024 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+            } else {
+                finish()
+                android.os.Process.killProcess(android.os.Process.myPid())
+                System.exit(0)
             }
         }
 
@@ -221,7 +239,18 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1024) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                finish()
+                android.os.Process.killProcess(android.os.Process.myPid())
+                System.exit(0)
+            }
+            return
+        }
         SchedulesMainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -252,6 +281,28 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
             }
         }
         return true
+    }
+
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // 先判断有没有权限
+            if (Environment.isExternalStorageManager()) {
+
+            } else {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                intent.data = Uri.parse("package:$packageName")
+                startActivityForResult(intent, 1024)
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 先判断有没有权限
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1024)
+            }
+        } else {
+
+        }
     }
 }
 

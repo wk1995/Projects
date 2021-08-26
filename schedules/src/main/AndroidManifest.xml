@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wk.projects.schedules">
 
-    <application android:theme="@style/Theme.AppCompat">
+    <application android:theme="@style/Theme.AppCompat"
+        android:requestLegacyExternalStorage="true">
 
     </application>
 </manifest>
