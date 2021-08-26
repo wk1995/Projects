@@ -43,6 +43,9 @@ import java.util.*
 @RuntimePermissions
 class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemChildLongClickListener {
+
+    private var selectPosition=-1
+
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
@@ -76,9 +79,21 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
         when (view?.id) {
             R.id.tvCompleteStatus -> {
-                WkToast.showToast("完成")
+                val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
+                val tempTime=scheduleItem.endTime
+                scheduleItem.endTime=System.currentTimeMillis()
+                scheduleItem.saveAsync().listen {
+                    if(it){
+                        scheduleMainAdapter.notifyItemChanged(position)
+                        WkToast.showToast("完成")
+                    }else{
+                        scheduleItem.endTime=tempTime
+                    }
+                }
+
             }
             R.id.clScheduleItem -> {
+                selectPosition=position
                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
                 ARouter.getInstance()
                         .build(ARoutePath.ScheduleItemInfoActivity)
@@ -196,15 +211,10 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
         if (requestCode == ActivityRequestCode.RequestCode_SchedulesMainActivity &&
                 resultCode == ActivityResultCode.ResultCode_ScheduleItemInfoActivity) {
-            val position = data?.getIntExtra(LIST_POSITION, -1) ?: return
-            if (position < 0)
-                return
-            val endTime = data.getLongExtra(ScheduleItem.COLUMN_END_TIME, 0)
-            val startTime = data.getLongExtra(ScheduleItem.COLUMN_START_TIME, 0)
-            val scheduleItem = scheduleMainAdapter.getItem(position) ?: return
-            scheduleItem.endTime = endTime
-            scheduleItem.startTime = startTime
-            scheduleMainAdapter.notifyItemChanged(position)
+            val scheduleItem = scheduleMainAdapter.getItem(selectPosition) ?: return
+            LitePal.findAsync(ScheduleItem::class.java,scheduleItem.baseObjId).listen {
+                scheduleMainAdapter.replaceItem(it?:return@listen,selectPosition)
+            }
         }
 
     }

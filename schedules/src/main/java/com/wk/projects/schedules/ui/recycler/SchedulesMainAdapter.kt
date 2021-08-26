@@ -60,6 +60,13 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
                                     Color.RED
                                 }
                         )
+                        ?.setTextColor(R.id.tvCompleteStatus,
+                                if (finish) {
+                                    Color.BLACK
+                                } else {
+                                    Color.RED
+                                }
+                        )
                         ?.setVisible(R.id.tvCompleteStatus, true)
                         ?.setVisible(R.id.tvScheduleItemTime, true)
                         ?.setText(R.id.tvCompleteStatus,
@@ -77,10 +84,10 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
                                 }
                         )
 
-                tvCompleteStatus?.setBackgroundResource(if (finish) {
-                    -1
+                tvCompleteStatus?.background=(if (finish) {
+                    null
                 } else {
-                    R.drawable.common_bg_xml_shape_r25_solid_white
+                    mContext.getDrawable(R.drawable.common_bg_xml_shape_r25_solid_white)
                 })
             }
             helper ?.addOnClickListener(R.id.clScheduleItem)
@@ -95,6 +102,25 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
         itemList.add(mScheduleItem)
         notifyItemChanged(itemCount - 1)
     }
+    
+    fun replaceItem(scheduleItem: ScheduleItem,index:Int){
+        if(index>=itemCount){
+            replaceItemNoCheck(scheduleItem,itemCount-1)
+            return
+        }
+        if(index<=0){
+            replaceItemNoCheck(scheduleItem,0)
+            return
+        }
+        replaceItemNoCheck(scheduleItem,index)
+    }
+
+    private fun replaceItemNoCheck(scheduleItem: ScheduleItem,index:Int){
+        remove(index)
+        itemList.add(index,scheduleItem)
+        notifyItemChanged(index)
+    }
+
 
     fun addItems(list: MutableCollection<ScheduleItem>) {
         itemList.addAll(list)

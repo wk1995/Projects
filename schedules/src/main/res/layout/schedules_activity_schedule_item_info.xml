@@ -23,12 +23,12 @@
         android:inputType="text"
         android:maxLength="3"
         app:layout_constraintBottom_toTopOf="@id/btScheduleSave" />
-
+    <!--多功能区 ，图表，同类型数据，路线-->
     <FrameLayout
         android:id="@+id/fl"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/tvItemClass"
+        app:layout_constraintBottom_toTopOf="@id/etScheduleNote"
         app:layout_constraintTop_toBottomOf="@id/rvScheduleInfo"
         tools:background="@color/cardview_dark_background" />
     <!--活动类别-->
@@ -52,21 +52,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="2021年3月6日" />
 
-    <TextView
-        android:id="@+id/tvItemClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/d40dp"
-        android:text="@string/common_str_category"
-        app:layout_constraintBottom_toTopOf="@id/rvItemCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clTitle"
         android:layout_width="0dp"
         android:layout_height="@dimen/d40dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -103,11 +93,6 @@
         android:background="@color/cardview_dark_background"
         app:layout_constraintTop_toBottomOf="@id/tvScheduleName" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItemCategory"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/d100dp"
-        app:layout_constraintBottom_toTopOf="@id/etScheduleNote" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
