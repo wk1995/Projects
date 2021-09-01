@@ -81,7 +81,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         rvSchedules.adapter = scheduleMainAdapter
         scheduleMainAdapter.onItemChildClickListener = this
         scheduleMainAdapter.onItemChildLongClickListener = this
-        rvSchedules.addItemDecoration(DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        rvSchedules.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         initData()
     }
 

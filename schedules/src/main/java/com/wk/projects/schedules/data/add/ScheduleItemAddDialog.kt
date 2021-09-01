@@ -86,7 +86,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             }
         })
         rvExistItem.addItemDecoration(DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL))
-        Observable.just("select distinct itemname from scheduleitem")
+        Observable.just("select distinct itemname from scheduleitem where itemname!=''")
                 .map {
                     Timber.d("54 $it")
                     LitePal.findBySQL(it)
@@ -96,7 +96,10 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     val items = ArrayList<String>()
                     Timber.d("60 ${it.position}")
                     while (it.moveToNext()) {
-                        items.add(it.getString(0))
+                        val itemName=it.getString(0)
+                        if(itemName.trim().isNotEmpty()) {
+                            items.add(itemName)
+                        }
                     }
                     mItemAdapter.initData(items)
                 }
@@ -108,7 +111,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
 
-    //保存数据库中
+    /**保存数据库中*/
     private fun saveItem(itemName: String?) {
         if (itemName == null || itemName.isBlank()) {
             WkToast.showToast("项目需名字")
