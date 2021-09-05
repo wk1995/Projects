@@ -15,7 +15,6 @@ import com.wk.projects.common.listener.BaseSimpleClickListener
 import com.wk.projects.common.listener.BaseTextWatcher
 import com.wk.projects.common.ui.WkToast
 import com.wk.projects.schedules.R
-import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.data.ScheduleItem
 import org.litepal.LitePal
 import rx.Observable
@@ -37,7 +36,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
     private lateinit var etAddItem: EditText
     private lateinit var rvExistItem: RecyclerView
-    private lateinit var rvItemClass: RecyclerView
 
     companion object {
         fun create(bundle: Bundle? = null): ScheduleItemAddDialog {
@@ -58,7 +56,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         when (v?.id) {
             R.id.btnComSimpleDialogOk -> {
                 val itemName = etAddItem.text.toString()
-                saveItem(itemName)
+                selectItem(itemName)
             }
         }
         super.onClick(v)
@@ -67,7 +65,6 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     override fun initVSView(vsView: View) {
         etAddItem = vsView.findViewById(R.id.etAddItem)
         rvExistItem = vsView.findViewById(R.id.rvExistItem)
-        rvItemClass = vsView.findViewById(R.id.rvItemCategory)
         rvExistItem.layoutManager = LinearLayoutManager(mActivity)
 
         rvExistItem.adapter = mItemAdapter
@@ -79,7 +76,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                         val data = adapter?.data ?: return
                         val itemName = data[position] as? String
                         Timber.d("95  $itemName")
-                        saveItem(itemName)
+                        selectItem(itemName)
                         disMiss()
                     }
                 }
@@ -110,31 +107,16 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         })
     }
 
-
-    /**保存数据库中*/
-    private fun saveItem(itemName: String?) {
+    private fun selectItem(itemName: String?) {
         if (itemName == null || itemName.isBlank()) {
             WkToast.showToast("项目需名字")
             return
         }
         val scheduleItem = ScheduleItem(itemName, System.currentTimeMillis())
         showInScheduleList(scheduleItem)
-
     }
 
-    private fun saveItemInDB(scheduleItem : ScheduleItem){
-        scheduleItem.saveAsync().listen {
-            val msg: String = when (it) {
-                true -> {
-                    showInScheduleList(scheduleItem)
-                    "保存成功"
-                }
-                else ->
-                    "未知原因,保存失败"
-            }
-            WkToast.showToast(msg)
-        }
-    }
+
     /**传到主页面*/
     private fun showInScheduleList(scheduleItem : ScheduleItem){
         val bundle = Bundle()

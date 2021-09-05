@@ -184,6 +184,12 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
         (v as? TextView)?.text = DateTime.getDateString(date?.time)
     }
 
+    /**
+     * 选择类别
+     * */
+    private fun selectCategory(){
+
+    }
 
     /**注册各种监听*/
     private fun initClick() {
