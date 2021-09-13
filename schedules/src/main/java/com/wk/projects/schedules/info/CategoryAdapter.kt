@@ -24,4 +24,6 @@ class CategoryAdapter : BaseQuickAdapter<ScheduleCategory, BaseViewHolder>(R.lay
 
         }
     }
+
+    override fun getFooterViewsCount()=1
 }

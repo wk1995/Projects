@@ -9,6 +9,8 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.wk.projects.common.BaseProjectsActivity
 import com.wk.projects.common.communication.constant.BundleKey
+import com.wk.projects.common.communication.constant.IFAFlag.SCHEDULE_CATEGORY
+import com.wk.projects.common.communication.constant.IFAFlag.SCHEDULE_ITEM_DIALOG
 import com.wk.projects.common.constant.ARoutePath
 import com.wk.projects.common.constant.NumberConstants
 import com.wk.projects.common.constant.NumberConstants.number_long_one_Negative
@@ -21,6 +23,7 @@ import com.wk.projects.schedules.constant.ActivityRequestCode.RequestCode_Schedu
 import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.data.ScheduleCategory
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
+import com.wk.projects.schedules.data.add.ScheduleItemAddDialog.Companion.BUNDLE_KEY_QUERY_TYPE
 import com.wk.projects.schedules.date.DateTime
 import com.wk.projects.schedules.ui.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
@@ -175,8 +178,23 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
         val itemName=bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME)?:WkStringConstants.STR_EMPTY
-        currentSchedule.itemName=itemName
-        tvScheduleName.text=itemName
+        when(flag){
+            SCHEDULE_ITEM_DIALOG->{
+                currentSchedule.itemName=itemName
+                tvScheduleName.text=itemName
+            }
+            SCHEDULE_CATEGORY->{
+                val categoryId=bundle?.getLong(BundleKey.SCHEDULE_ITEM_ID)?:number_long_one_Negative
+                currentSchedule.categoryId=categoryId
+                val data=mScheduleInfoAdapter.getItem(2)
+                mScheduleInfoAdapter.setData(2, Pair(itemName,data?.second?:"类别"))
+                mScheduleInfoAdapter.notifyItemChanged(2)
+            }
+
+        }
+
+
+
     }
 
     override fun onTimeSelect(date: Date?, v: View?) {
@@ -188,7 +206,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
      * 选择类别
      * */
     private fun selectCategory(){
-
+        val bundle=Bundle()
+        bundle.putInt(BUNDLE_KEY_QUERY_TYPE,SCHEDULE_CATEGORY)
+        ScheduleItemAddDialog.create(bundle).show(supportFragmentManager)
     }
 
     /**注册各种监听*/
@@ -214,6 +234,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                     }
                     starTv?.text = DateTime.getDateString(date?.time, "HH:mm:ss")
                 }
+            }
+            2->{
+                selectCategory()
             }
 
         }

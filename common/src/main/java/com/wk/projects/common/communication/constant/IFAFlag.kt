@@ -14,4 +14,5 @@ object IFAFlag {
     const val SCHEDULE_ITEM_DIALOG=1
     const val SCHEDULE_NEW_ITEM_DIALOG=2
     const val DELETE_ITEM_DIALOG=3
+    const val SCHEDULE_CATEGORY=4
 }

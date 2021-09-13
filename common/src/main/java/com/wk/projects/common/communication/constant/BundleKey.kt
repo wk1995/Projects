@@ -16,6 +16,7 @@ object BundleKey {
     const val IFA_KEY="IFA_KEY"
 
     const val SCHEDULE_ITEM_NAME="SCHEDULE_ITEM_NAME"
+    const val SCHEDULE_ITEM_ID="SCHEDULE_ITEM_ID"
 
     const val DATA_OPERATION="DATA_OPERATION"
 
