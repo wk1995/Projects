@@ -184,7 +184,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 tvScheduleName.text=itemName
             }
             SCHEDULE_CATEGORY->{
-                val categoryId=bundle?.getLong(BundleKey.SCHEDULE_ITEM_ID)?:number_long_one_Negative
+                val categoryId=bundle?.getLong(BundleKey.SCHEDULE_ITEM_ID,number_long_one_Negative)?:number_long_one_Negative
                 currentSchedule.categoryId=categoryId
                 val data=mScheduleInfoAdapter.getItem(2)
                 mScheduleInfoAdapter.setData(2, Pair(itemName,data?.second?:"类别"))

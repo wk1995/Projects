@@ -14,20 +14,28 @@ import com.wk.projects.schedules.R
  *      desc   :
  * </pre>
  */
-class ScheduleItemNameListAdapter
-    : BaseQuickAdapter<String, BaseViewHolder>(R.layout.common_only_text) {
+class ScheduleItemNameListAdapter<T>(private val adapterItemCastString: AdapterItemCastString<T>?)
+    : BaseQuickAdapter<T, BaseViewHolder>(R.layout.common_only_text) {
 
-    private val originalList by lazy { ArrayList<String>() }
-    private val filterList by lazy { ArrayList<String>() }
 
-    override fun convert(helper: BaseViewHolder?, item: String?) {
-        item?.run {
+    interface AdapterItemCastString<T>{
+        fun castString(t:T?):String?
+    }
+
+
+    private val originalList by lazy { ArrayList<T>() }
+    private val filterList by lazy { ArrayList<T>() }
+
+    override fun convert(helper: BaseViewHolder?, item: T?) {
+        getItemString(item)?.run {
             helper?.setText(R.id.tvCommon, this)
                     ?.addOnClickListener(R.id.tvCommon)
         }
     }
 
-    fun initData(itemList: List<String>) {
+    private fun getItemString(item: T?)=adapterItemCastString?.castString(item)
+
+    fun initData(itemList: List<T>) {
         originalList.clear()
         filterList.clear()
         originalList.addAll(itemList)
@@ -42,7 +50,7 @@ class ScheduleItemNameListAdapter
         }
         filterList.clear()
         originalList.forEach {
-            if (it.contains(containChar, true))
+            if ((getItemString(it)?.contains(containChar, true))==true)
                 filterList.add(it)
         }
         setNewData(filterList)

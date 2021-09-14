@@ -37,9 +37,9 @@ import kotlin.properties.Delegates
  *      desc   : 新增数据库没有的项目数据
  * </pre>
  */
-class ScheduleItemAddDialog : BaseSimpleDialog() {
+class ScheduleItemAddDialog : BaseSimpleDialog(), ScheduleItemNameListAdapter.AdapterItemCastString<LitePalSupport> {
 
-    private val mItemAdapter by lazy { ScheduleItemNameListAdapter() }
+    private val mItemAdapter by lazy { ScheduleItemNameListAdapter(this) }
     private lateinit var etAddItem: EditText
     private lateinit var rvExistItem: RecyclerView
     private var type by Delegates.notNull<Int>()
@@ -84,36 +84,44 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
     }
 
     private fun initData(){
-        Observable.just(getSelectString())
+        Observable.just(getTableClass())
                 .map {
                     Timber.d("54 $it")
-                    LitePal.findBySQL(it)
+                    LitePal.findAll(getTableClass())
+                }.map{
+                    val map=HashMap<String,LitePalSupport>()
+                    it?.forEach {litePalSupport->
+                        val key=castString(litePalSupport)
+                        if(!key.isNullOrEmpty()){
+                            map[key]=litePalSupport
+                        }
+                    }
+                    map
+
                 }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    val items = ArrayList<String>()
-                    Timber.d("60 ${it.position}")
-                    while (it.moveToNext()) {
-                        val itemName=it.getString(0)
-                        if(itemName.trim().isNotEmpty()) {
-                            items.add(itemName)
-                        }
+                    val data = ArrayList<LitePalSupport>()
+                    for ((_, v) in it) {
+                        data.add(v)
                     }
-                    mItemAdapter.initData(items)
+                    mItemAdapter.initData(data)
                 }
     }
 
-    private fun getSelectString():String{
+
+
+
+    private fun getTableClass():Class<out LitePalSupport>{
         when(type){
             SCHEDULE_CATEGORY->{
-               return "select distinct itemname from schedulecategory where itemname!=''"
+               return ScheduleCategory::class.java
             }
             else->{
-                return "select distinct itemname from scheduleitem where itemname!=''"
+                return ScheduleItem::class.java
             }
         }
     }
-
 
     override fun initVSView(vsView: View) {
         etAddItem = vsView.findViewById(R.id.etAddItem)
@@ -126,8 +134,7 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
                     R.id.tvCommon -> {
                         //获取当前的值
                         val data = adapter?.data ?: return
-                        val itemName = data[position] as? String
-                        Timber.d("95  $itemName")
+                        val itemName = data[position] as? LitePalSupport
                         selectItem(itemName)
                         disMiss()
                     }
@@ -142,28 +149,33 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
         })
     }
 
-    private fun selectItem(itemName: String?) {
-        if (itemName == null || itemName.isBlank()) {
+    private fun selectItem(itemName: LitePalSupport?) {
+        if (castString(itemName).isNullOrEmpty()) {
             WkToast.showToast("项目需名字")
             return
         }
-        responseSelectItem(itemName)
+        response(itemName)
+    }
+
+
+    private fun response(litePalSupport : LitePalSupport?){
+        var itemName=WkStringConstants.STR_EMPTY
+        var itemId:Long?=null
+        if(litePalSupport is ScheduleCategory){
+            itemName=litePalSupport.itemName
+            itemId=litePalSupport.baseObjId
+        }
+
+        if(litePalSupport is ScheduleItem){
+            itemName=litePalSupport.itemName
+        }
+        responseSelectItem(itemName,itemId)
     }
     private fun saveItemInDB(litePalSupport : LitePalSupport){
         litePalSupport.saveAsync().listen {
             val msg: String = when (it) {
                 true -> {
-                    var itemName=WkStringConstants.STR_EMPTY
-                    var itemId:Long?=null
-                    if(litePalSupport is ScheduleCategory){
-                        itemName=litePalSupport.itemName
-                        itemId=litePalSupport.baseObjId
-                    }
-
-                    if(litePalSupport is ScheduleItem){
-                        itemName=litePalSupport.itemName
-                    }
-                    responseSelectItem(itemName,itemId)
+                    response(litePalSupport)
                     "保存成功"
                 }
                 else ->
@@ -181,5 +193,16 @@ class ScheduleItemAddDialog : BaseSimpleDialog() {
             bundle.putLong(BundleKey.SCHEDULE_ITEM_ID, itemId)
         }
         iFa.communication(type, bundle)
+    }
+
+    override fun castString(t: LitePalSupport?): String? {
+        if(t is ScheduleCategory){
+          return t.itemName
+        }
+
+        if(t is ScheduleItem){
+            return t.itemName
+        }
+        return null
     }
 }
