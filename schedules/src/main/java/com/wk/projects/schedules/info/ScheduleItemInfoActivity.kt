@@ -52,8 +52,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     /**当前schedule id*/
     private var itemId = INVALID_ITEM_ID
 
-    /**改变后的parentId*/
-    private var newCategoryId: Long? = -1L
+
     private var currentId: Long? = -1L
 
     private var currentSchedule: ScheduleItem = ScheduleItem()
@@ -118,81 +117,42 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             tvScheduleName -> {
                 ScheduleItemAddDialog.create().show(supportFragmentManager)
             }
-            ivTitleBack->{
+            ivTitleBack -> {
                 finish()
             }
             btTitleSave,
             btScheduleSave -> {
-                currentSchedule.note=etScheduleNote.text.toString()
+                currentSchedule.note = etScheduleNote.text.toString()
                 currentSchedule.saveAsync().listen {
-                    if(it){
+                    if (it) {
                         setResult(RequestCode_SchedulesMainActivity)
                         finish()
-                    }else{
+                    } else {
                         WkToast.showToast("保存失败")
                     }
                 }
-
-
             }
-            /*
-               btAddCategory -> {
-                   //将要添加的类别
-                   val addCategoryName = etAddCategory.text.toString().trim()
-                   if (addCategoryName != "") {
-                       //如果类别名不为空，先判断数据库中是否有相同名字的WkActivity
-                       LitePal.where("itemName=?", addCategoryName)
-                               .findAsync(WkActivity::class.java)
-                               .listen {
-                                   if (it.size > 0) {
-                                       Toast.makeText(this@ScheduleItemInfoActivity,
-                                               "$addCategoryName 已存在，添加失败",
-                                               Toast.LENGTH_SHORT).show()
-                                       newCategoryId = it[0].baseObjId
-                                       Timber.d("newCategoryId: $newCategoryId")
-                                       etAddCategory.setText(addCategoryName)
-                                   } else {
-                                       //不存在的话，保存一新的WkActivity
-                                       val newWkActivity = WkActivity(addCategoryName)
-                                       newWkActivity.saveAsync().listen {
-                                           if (it) {
-                                               newCategoryId = newWkActivity.baseObjId
-                                               Timber.d("newCategoryId: $newCategoryId")
-                                               tvItemClassName.text = (addCategoryName)
-                                               mCategoryAdapter.data.add(newWkActivity)
-                                               mCategoryAdapter.notifyItemChanged(mCategoryAdapter.data.size - 1)
-                                           } else
-                                               Toast.makeText(this@ScheduleItemInfoActivity,
-                                                       "保存失败",
-                                                       Toast.LENGTH_SHORT).show()
-                                       }
-
-                                   }
-                               }
-                   }
-               }*/
         }
-
     }
 
-
     override fun communication(flag: Int, bundle: Bundle?, any: Any?) {
-        val itemName=bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME)?:WkStringConstants.STR_EMPTY
-        when(flag){
-            SCHEDULE_ITEM_DIALOG->{
-                currentSchedule.itemName=itemName
-                tvScheduleName.text=itemName
+        val itemName = bundle?.getString(BundleKey.SCHEDULE_ITEM_NAME)
+                ?: WkStringConstants.STR_EMPTY
+        when (flag) {
+            SCHEDULE_ITEM_DIALOG -> {
+                currentSchedule.itemName = itemName
+                tvScheduleName.text = itemName
             }
-            SCHEDULE_CATEGORY->{
-                val categoryId=bundle?.getLong(BundleKey.SCHEDULE_ITEM_ID,number_long_one_Negative)?:number_long_one_Negative
-                currentSchedule.categoryId=categoryId
-                val data=mScheduleInfoAdapter.getItem(2)
-                mScheduleInfoAdapter.setData(2, Pair(itemName,data?.second?:"类别"))
+            SCHEDULE_CATEGORY -> {
+                val categoryId = bundle?.getLong(BundleKey.SCHEDULE_ITEM_ID, number_long_one_Negative)
+                        ?: number_long_one_Negative
+                currentSchedule.categoryId = categoryId
+                val data = mScheduleInfoAdapter.getItem(2)
+                mScheduleInfoAdapter.setData(2, Pair(itemName, data?.second ?: "类别"))
                 mScheduleInfoAdapter.notifyItemChanged(2)
             }
 
         }
-
 
 
     }
@@ -205,9 +165,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     /**
      * 选择类别
      * */
-    private fun selectCategory(){
-        val bundle=Bundle()
-        bundle.putInt(BUNDLE_KEY_QUERY_TYPE,SCHEDULE_CATEGORY)
+    private fun selectCategory() {
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_KEY_QUERY_TYPE, SCHEDULE_CATEGORY)
         ScheduleItemAddDialog.create(bundle).show(supportFragmentManager)
     }
 
@@ -235,7 +195,7 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                     starTv?.text = DateTime.getDateString(date?.time, "HH:mm:ss")
                 }
             }
-            2->{
+            2 -> {
                 selectCategory()
             }
 
