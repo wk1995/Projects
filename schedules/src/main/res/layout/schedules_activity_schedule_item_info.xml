@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toTopOf="@id/btScheduleSave" />
     <!--多功能区 ，图表，同类型数据，路线-->
     <FrameLayout
-        android:id="@+id/fl"
+        android:id="@+id/flInfoContain"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/etScheduleNote"

@@ -1,9 +1,12 @@
 package com.wk.projects.schedules.info
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -25,11 +28,14 @@ import com.wk.projects.schedules.data.ScheduleCategory
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog
 import com.wk.projects.schedules.data.add.ScheduleItemAddDialog.Companion.BUNDLE_KEY_QUERY_TYPE
 import com.wk.projects.schedules.date.DateTime
+import com.wk.projects.schedules.info.container.SampleFragment
+import com.wk.projects.schedules.info.container.ScheduleInfoContainerAdapter
 import com.wk.projects.schedules.ui.time.TimePickerCreator
 import kotlinx.android.synthetic.main.schedules_activity_schedule_item_info.*
 import org.litepal.LitePal
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * <pre>
@@ -62,6 +68,14 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     private val mScheduleInfoAdapter by lazy { ScheduleInfoAdapter() }
 
+    private val adapter by lazy {
+        val fragments=ArrayList<Fragment>()
+        fragments.add(SampleFragment("1"))
+        fragments.add(SampleFragment("2"))
+        fragments.add(SampleFragment("3"))
+        ScheduleInfoContainerAdapter(supportFragmentManager,fragments)
+    }
+
     override fun initResLayId() = R.layout.schedules_activity_schedule_item_info
 
     override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
@@ -77,6 +91,11 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     private fun initView() {
         initInfoRv()
+        val viewPager=ViewPager(this)
+        viewPager.adapter=adapter
+        viewPager.id=R.id.schedules_info_container_id
+        viewPager.setBackgroundColor(Color.YELLOW)
+        flInfoContain.addView(viewPager)
     }
 
     /**项目信息的视图*/
