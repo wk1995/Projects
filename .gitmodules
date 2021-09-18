@@ -1,0 +1,3 @@
+[submodule "android_projects_base"]
+	path = android_projects_base
+	url = https://github.com/wk1995/android_projects_base.git
