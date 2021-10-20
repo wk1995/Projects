@@ -10,13 +10,29 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+
+def scheduleVersionCode
+if (isModule.toBoolean()) {
+    scheduleVersionCode = 3
+} else {
+    scheduleVersionCode = rootProject.ext.versionCode
+}
+
+def scheduleVersionName
+if (isModule.toBoolean()) {
+    scheduleVersionName = "1.02.01"
+} else {
+    scheduleVersionName = rootProject.ext.versionName
+}
+
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        versionCode scheduleVersionCode
+        versionName scheduleVersionName
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         buildFeatures {

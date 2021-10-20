@@ -39,7 +39,8 @@
         <activity android:name=".collapse.SchedulesWatchActivity" />
         <activity
             android:name=".collapse.SchedulesCollapseActivity"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:process=":collapse">
             <intent-filter>
                 <action android:name="com.wk.projects.collapse" />
 
