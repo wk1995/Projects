@@ -18,9 +18,14 @@ abstract class BaseTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(initLayout())
         initView()
+        initData()
     }
 
     abstract fun initLayout(): Int
 
     abstract fun initView()
+
+    protected open fun initData(){
+
+    }
 }
