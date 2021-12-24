@@ -6,7 +6,7 @@ import com.wk.test.R
 class TestHandlerActivity : BaseTestActivity() {
 
 
-    override fun initLayout()= R.layout.test_activity_handler
+    override fun initLayout()= R.layout.test_handler_activity
 
 
     override fun initView() {
