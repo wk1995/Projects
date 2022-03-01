@@ -12,7 +12,16 @@
         android:label="@string/test_modules_name"
         android:theme="@style/TestAppTheme"
         tools:replace="android:appComponentFactory,android:label">
-        <activity android:name=".recycle.RecycleViewMainActivity"></activity>
+        <activity
+            android:name=".di.hilt.DiHiltActivity"
+            android:exported="false" />
+        <activity
+            android:name=".di.dagger.DiDaggerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".di.DiMainActivity"
+            android:exported="false" />
+        <activity android:name=".recycle.RecycleViewMainActivity" />
         <activity android:name=".net.TestNetActivity" />
         <activity android:name=".handler.TestHandlerActivity" />
         <activity android:name=".aidl.AIDLActivity" />
