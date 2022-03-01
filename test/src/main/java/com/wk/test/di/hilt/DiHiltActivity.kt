@@ -11,6 +11,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DiHiltActivity: BaseTestActivity() {
     private lateinit var tvDiHilt: TextView
+
     @Inject
     lateinit var analytics: AnalyticsAdapter
     override fun initLayout()= R.layout.test_di_hilt_activity
