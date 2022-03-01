@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wk.test.aidl.AIDLActivity
 import com.wk.test.bitmap.TestBitmapActivity
+import com.wk.test.di.DiMainActivity
 import com.wk.test.net.TestNetActivity
 import com.wk.test.recycle.RecycleViewMainActivity
 import com.wk.test.touch.TestMotionEventActivity
@@ -18,6 +19,7 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
         const val BITMAP="图片"
         const val NET="网络"
         const val RECYCLE_VIEW="recycleView"
+        const val DI="依赖项注入"
     }
 
     private val map by lazy {
@@ -27,7 +29,8 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
                 Pair(HANDLER, TestMotionEventActivity::class.java),
                 Pair(BITMAP, TestBitmapActivity::class.java),
                 Pair(NET, TestNetActivity::class.java),
-                Pair(RECYCLE_VIEW, RecycleViewMainActivity::class.java)
+                Pair(RECYCLE_VIEW, RecycleViewMainActivity::class.java),
+                Pair(DI, DiMainActivity::class.java)
         )
     }
 
@@ -42,8 +45,8 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
     override fun initLayout()=R.layout.test_main_activity
 
     override fun initView() {
-        rvTestList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        rvTestList.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        rvTestList.layoutManager = LinearLayoutManager(this)
+        rvTestList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         val testListAdapter = TestListAdapter(list)
         testListAdapter.testItemClickListener = this
         rvTestList.adapter = testListAdapter

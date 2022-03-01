@@ -3,6 +3,7 @@ package com.wk.test.debug
 import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.test.R
+import dagger.hilt.android.HiltAndroidApp
 
 /**
  *
@@ -13,6 +14,7 @@ import com.wk.test.R
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * */
+@HiltAndroidApp
 class TestApp: BaseApplication() {
 
     override fun onCreate() {
