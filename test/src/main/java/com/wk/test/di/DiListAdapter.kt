@@ -27,6 +27,7 @@ class DiListAdapter(data: MutableList<Pair<String, Class<out BaseTestActivity>>>
     override fun onBindViewHolder(holder: SimpleStringListVH, position: Int) {
         super.onBindViewHolder(holder, position)
         holder.tvCommon.apply {
+            text = mData[position].first
             setOnClickListener{
                 mIRvClickListener?.onItemClick(this@DiListAdapter,this,position)
             }

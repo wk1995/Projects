@@ -1,5 +1,6 @@
 package com.wk.test.di.hilt
 
+import com.wk.projects.common.log.WkLog
 import javax.inject.Inject
 
 /**
@@ -11,8 +12,9 @@ import javax.inject.Inject
 
 class AnalyticsAdapter @Inject constructor(
     private val service: IAnalyticsService
-){
-    fun analyticsMethods(){
+) {
+    fun analyticsMethods() {
+        WkLog.d(" AnalyticsAdapter  analyticsMethods")
         service.analyticsMethods()
     }
 }
