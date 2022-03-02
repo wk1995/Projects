@@ -1,7 +1,7 @@
 package com.wk.test.di.hilt
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 
@@ -12,8 +12,12 @@ import dagger.hilt.android.components.ActivityComponent
  * desc         :
  */
 
-abstract class AnalyticsModule {
-    abstract fun bindAnalyticsService(
-        analyticsServiceImpl: AnalyticsServiceImpl
-    ): IAnalyticsService
+@Module
+@InstallIn(ActivityComponent::class)
+object ModuleHiltProvide {
+
+    @Provides
+    fun provideAnalyticsService():IAnalyticsService{
+        return AnalyticsServiceImpl()
+    }
 }
