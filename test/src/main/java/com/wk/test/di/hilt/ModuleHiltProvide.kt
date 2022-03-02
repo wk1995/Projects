@@ -16,8 +16,15 @@ import dagger.hilt.android.components.ActivityComponent
 @InstallIn(ActivityComponent::class)
 object ModuleHiltProvide {
 
+    @AnalyticsService1
     @Provides
-    fun provideAnalyticsService():IAnalyticsService{
-        return AnalyticsServiceImpl()
+    fun provideAnalyticsService1(analyticsService1: AnalyticsServiceImpl):IAnalyticsService{
+        return analyticsService1
+    }
+
+    @AnalyticsService2
+    @Provides
+    fun provideAnalyticsService2(analyticsService2: AnalyticsServiceImpl2):IAnalyticsService{
+        return analyticsService2
     }
 }

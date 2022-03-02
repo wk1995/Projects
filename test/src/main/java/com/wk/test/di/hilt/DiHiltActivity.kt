@@ -12,20 +12,28 @@ import javax.inject.Inject
 class DiHiltActivity: BaseTestActivity() {
     private lateinit var tvDiHilt: TextView
 
+    @AnalyticsService2
     @Inject
-    lateinit var analytics: AnalyticsAdapter
+    lateinit var analytics2: IAnalyticsService
+
+    @AnalyticsService1
+    @Inject
+    lateinit var analytics1: IAnalyticsService
+
     override fun initLayout()= R.layout.test_di_hilt_activity
 
     override fun initView() {
         findViewById<Button>(R.id.btnDiHilt).setOnClickListener(this)
         tvDiHilt=findViewById(R.id.tvDiHilt)
+        analytics2.analyticsMethods()
+        analytics1.analyticsMethods()
     }
 
     override fun onClick(v: View?) {
         super.onClick(v)
         when(v?.id){
             R.id.btnDiHilt->{
-                analytics.analyticsMethods()
+
             }
         }
 
