@@ -14,7 +14,7 @@ import dagger.hilt.android.HiltAndroidApp
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * */
-@HiltAndroidApp
+
 class TestApp: BaseApplication() {
 
     override fun onCreate() {
