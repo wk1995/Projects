@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wk.test.aidl.AIDLActivity
 import com.wk.test.bitmap.TestBitmapActivity
+import com.wk.test.coroutines.CoroutinesMainActivity
 import com.wk.test.di.DiMainActivity
 import com.wk.test.net.TestNetActivity
 import com.wk.test.recycle.RecycleViewMainActivity
@@ -20,6 +21,7 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
         const val NET="网络"
         const val RECYCLE_VIEW="recycleView"
         const val DI="依赖项注入"
+        const val COROUTINES="协程"
     }
 
     private val map by lazy {
@@ -30,7 +32,8 @@ class TestMainActivity : BaseTestActivity(), TestListAdapter.ITestItemClickListe
                 Pair(BITMAP, TestBitmapActivity::class.java),
                 Pair(NET, TestNetActivity::class.java),
                 Pair(RECYCLE_VIEW, RecycleViewMainActivity::class.java),
-                Pair(DI, DiMainActivity::class.java)
+                Pair(DI, DiMainActivity::class.java),
+                Pair(COROUTINES, CoroutinesMainActivity::class.java)
         )
     }
 
