@@ -12,10 +12,10 @@ import javax.inject.Inject
 
 // Constructor-injected, because Hilt needs to know how to
 // provide instances of AnalyticsServiceImpl, too.
-class AnalyticsServiceImpl @Inject constructor(
+class AnalyticsServiceBindsImpl  @Inject constructor(
 
 ) : IAnalyticsService {
     override fun analyticsMethods() {
-        WkLog.d("AnalyticsServiceImpl  analyticsMethods")
+        WkLog.d("AnalyticsServiceImpl3 analyticsMethods")
     }
 }

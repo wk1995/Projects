@@ -18,13 +18,13 @@ object ModuleHiltProvide {
 
     @AnalyticsService1
     @Provides
-    fun provideAnalyticsService1(analyticsService1: AnalyticsServiceImpl):IAnalyticsService{
+    fun provideAnalyticsService1(analyticsService1: AnalyticsServiceProvidesImpl):IAnalyticsService{
         return analyticsService1
     }
 
     @AnalyticsService2
     @Provides
-    fun provideAnalyticsService2(analyticsService2: AnalyticsServiceImpl2):IAnalyticsService{
-        return analyticsService2
+    fun provideAnalyticsService2():IAnalyticsService{
+        return AnalyticsServiceProvidesImpl2()
     }
 }

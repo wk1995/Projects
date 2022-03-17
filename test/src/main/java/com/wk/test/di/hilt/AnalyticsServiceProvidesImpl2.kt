@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 // Constructor-injected, because Hilt needs to know how to
 // provide instances of AnalyticsServiceImpl, too.
-class AnalyticsServiceImpl2 @Inject constructor(
+class AnalyticsServiceProvidesImpl2  (
 
 ) : IAnalyticsService {
     override fun analyticsMethods() {

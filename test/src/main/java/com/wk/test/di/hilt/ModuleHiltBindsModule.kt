@@ -12,11 +12,11 @@ import dagger.hilt.android.components.ActivityComponent
  * desc         :
  */
 
-//@Module
-//@InstallIn(ActivityComponent::class)
-abstract class ModuleHiltModule {
-//    @Binds
+@Module
+@InstallIn(ActivityComponent::class)
+abstract class ModuleHiltBindsModule {
+    @Binds
     abstract fun bindAnalyticsService(
-        analyticsServiceImpl: AnalyticsServiceImpl
+        analyticsServiceBindsImpl: AnalyticsServiceBindsImpl
     ): IAnalyticsService
 }

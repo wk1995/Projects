@@ -15,6 +15,8 @@ class DiHiltActivity: BaseTestActivity() {
     @AnalyticsService2
     @Inject
     lateinit var analytics2: IAnalyticsService
+    @Inject
+    lateinit var analyticsBinds: IAnalyticsService
 
     @AnalyticsService1
     @Inject
@@ -27,6 +29,7 @@ class DiHiltActivity: BaseTestActivity() {
         tvDiHilt=findViewById(R.id.tvDiHilt)
         analytics2.analyticsMethods()
         analytics1.analyticsMethods()
+        analyticsBinds.analyticsMethods()
     }
 
     override fun onClick(v: View?) {
