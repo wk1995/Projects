@@ -3,8 +3,10 @@ package com.wk.test.debug
 import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.test.R
+import com.wk.test_lib.IWk
 //import com.wk.test_lib.IWk
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 /**
  *
@@ -19,14 +21,14 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class TestApp: BaseApplication() {
 
-//    @Inject
-//    lateinit var service: IWk
+    @Inject
+    lateinit var service: IWk
     override fun onCreate() {
         super.onCreate()
         WkProjects.init(this)
                 .withModuleName(getString(R.string.test_modules_name))
                 .configure()
-//        service.analyticsMethods()
+        service.analyticsMethods()
 //        KOOM.init(this)
     }
 }
