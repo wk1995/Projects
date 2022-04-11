@@ -8,7 +8,7 @@ import android.webkit.WebView
 
 class AIDLActivity : BaseTestActivity() {
 
-    override fun initLayout()= com.wk.test.R.layout.test_activity_aidl
+    override fun initLayout()= com.wk.test.R.layout.test_aidl_activity
 
     override fun initView() {
         testWebViewInitUsedTime();

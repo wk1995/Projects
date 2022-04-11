@@ -1,7 +1,7 @@
 package com.wk.test
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.wk.projects.common.BaseProjectsActivity
 
 /**
  *
@@ -12,15 +12,23 @@ import androidx.appcompat.app.AppCompatActivity
  *      GitHub : https://github.com/wk1995 <br/>
  *      CSDN   : http://blog.csdn.net/qq_33882671 <br/>
  * */
-abstract class BaseTestActivity : AppCompatActivity() {
+abstract class BaseTestActivity : BaseProjectsActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(initLayout())
+    override fun initResLayId() = initLayout()
+
+    override fun bindView(
+        savedInstanceState: Bundle?,
+        mBaseProjectsActivity: BaseProjectsActivity
+    ) {
         initView()
+        initData()
     }
 
     abstract fun initLayout(): Int
 
     abstract fun initView()
+
+    protected open fun initData() {
+
+    }
 }
