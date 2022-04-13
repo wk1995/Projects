@@ -8,10 +8,10 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
-import com.wk.projects.common.MotionEventUtil
-import com.wk.projects.common.PhysicalUtil
 import com.wk.projects.common.constant.WkSuppressConstants
 import com.wk.projects.common.constant.WkSuppressConstants.CLICKABLE_VIEW_ACCESSIBILITY
+import com.wk.projects.common.helper.MotionEventUtil
+import com.wk.projects.common.helper.PhysicalUtil
 import com.wk.projects.common.log.WkLogUtil
 
 /**
