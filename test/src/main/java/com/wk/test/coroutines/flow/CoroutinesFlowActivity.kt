@@ -1,4 +1,4 @@
-package com.wk.test.coroutines
+package com.wk.test.coroutines.flow
 
 import android.os.Bundle
 import com.wk.projects.common.BaseProjectsActivity

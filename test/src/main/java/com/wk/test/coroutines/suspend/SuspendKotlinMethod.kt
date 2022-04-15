@@ -63,10 +63,9 @@ class SuspendKotlinMethod {
 
         }
     }
-/*
-    *//**
+    /**
      * 普通方法转成 方法 ：接口里面只有三个方法
-     * *//*
+     * */
     fun suspendJavaMethodCallbackThreeMethod(javaMethod: JavaMethod): Flow<Any?>{
         return callbackFlow {
             javaMethod.javaSimpleCallBackMethod(object : JavaMethod.IJavaInterfaceThreeMethod {
@@ -83,8 +82,9 @@ class SuspendKotlinMethod {
                 }
             })
         }
-    }*/
+    }
 
+//     suspend fun javaSuspendMethod(javaMethod: JavaMethod)=javaMethod.javaSuspendMethod()
 
 
     suspend fun returnSuspend()=
@@ -107,6 +107,16 @@ class SuspendKotlinMethod {
             "return Immediately"
         }
 
+    suspend fun returnImmediately1()=
+        suspendCoroutineUninterceptedOrReturn<String>{continuation->
+            TestLogUtil.log("returnImmediately 1")
+            thread {
+                TestLogUtil.log(" thread  start")
+                TestLogUtil.log(" returnSuspend  2")
+                continuation.resume("1024")
+            }
+            "return Immediately"
+        }
 
     fun execute(){
         runBlocking {

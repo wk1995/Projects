@@ -51,5 +51,4 @@ abstract class BaseListActivity<T> : BaseProjectsActivity(), IRvClickListener {
 
     }
 
-
 }

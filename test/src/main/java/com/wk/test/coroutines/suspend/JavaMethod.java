@@ -9,6 +9,7 @@ import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.coroutines.intrinsics.IntrinsicsKt;
+import kotlinx.coroutines.DelayKt;
 
 /**
  * @author :wangkang_shenlong
@@ -72,7 +73,6 @@ public class JavaMethod {
         } catch (Exception e) {
             callback.twoMethod("IJavaInterfaceTwoMethod  oneMethod");
         }
-
     }
 
     /**
@@ -91,6 +91,11 @@ public class JavaMethod {
             callback.twoMethod("IJavaInterfaceThreeMethod twoMethod");
         }
         callback.threeMethod("IJavaInterfaceThreeMethod  oneMethod");
+    }
+
+    public Object javaSuspendMethod(@NotNull Continuation $completion){
+        Object object=DelayKt.delay(1000,$completion);
+        return object == IntrinsicsKt.getCOROUTINE_SUSPENDED() ? object : Unit.INSTANCE;
     }
 
 

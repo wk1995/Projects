@@ -14,10 +14,10 @@
         tools:replace="android:appComponentFactory,android:label"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".coroutines.CoroutinesFlowActivity"
+            android:name=".coroutines.flow.CoroutinesFlowActivity"
             android:exported="false" />
         <activity
-            android:name=".coroutines.CoroutinesSuspendActivity"
+            android:name=".coroutines.suspend.CoroutinesSuspendActivity"
             android:exported="false" />
         <activity
             android:name=".coroutines.CoroutinesMainActivity"
