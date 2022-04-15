@@ -40,7 +40,8 @@ class IdeaActivity : BaseProjectsActivity(), IFileStatusListener.IReadStatusList
                 idea.saveAsync().listen {
                     WkToast.showToast(if(it)"保存成功" else "保存失败")
                     if(it){
-                        rcIdeaItemList.adapter?.notifyDataSetChanged()
+                        adapter.addScheduleIdeaBean(idea)
+                       adapter.notifyDataSetChanged()
                         etIdeaContent.setText(WkStringConstants.STR_EMPTY)
                     }
                 }

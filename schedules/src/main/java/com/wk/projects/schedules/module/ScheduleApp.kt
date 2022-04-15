@@ -3,6 +3,8 @@ package com.wk.projects.schedules.module
 import com.wk.projects.common.BaseApplication
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.schedules.R
+import org.litepal.LitePal
+import org.litepal.tablemanager.callback.DatabaseListener
 
 /**
  * <pre>
@@ -21,5 +23,16 @@ class ScheduleApp : BaseApplication() {
         WkProjects.init(this)
                 .withModuleName(getString(R.string.schedule_name))
                 .configure()
+        LitePal.registerDatabaseListener(object:DatabaseListener{
+            override fun onCreate() {
+
+            }
+
+            override fun onUpgrade(oldVersion: Int, newVersion: Int) {
+                if(oldVersion<=4){
+                    
+                }
+            }
+        })
     }
 }

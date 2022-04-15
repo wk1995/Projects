@@ -1,4 +1,4 @@
-package com.wk.projects.schedules
+package com.wk.projects.schedules.list
 
 import android.Manifest
 import android.content.Intent
@@ -15,6 +15,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -26,8 +29,8 @@ import com.wk.projects.common.communication.constant.BundleKey.LIST_POSITION
 import com.wk.projects.common.communication.constant.IFAFlag
 import com.wk.projects.common.configuration.WkProjects
 import com.wk.projects.common.constant.ARoutePath
-import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.common.ui.WkToast
+import com.wk.projects.schedules.R
 import com.wk.projects.schedules.communication.constant.SchedulesBundleKey
 import com.wk.projects.schedules.constant.ActivityRequestCode
 import com.wk.projects.schedules.constant.ActivityResultCode
@@ -37,7 +40,6 @@ import com.wk.projects.schedules.date.DateTime.getDayEnd
 import com.wk.projects.schedules.date.DateTime.getDayStart
 import com.wk.projects.schedules.permission.PermissionDialog
 import com.wk.projects.schedules.permission.RefuseDialog
-import com.wk.projects.schedules.ui.recycler.SchedulesMainAdapter
 import com.wk.projects.schedules.ui.time.TimePickerCreator
 import com.wk.projects.schedules.update.DeleteScheduleItemDialog
 import kotlinx.android.synthetic.main.schedules_activity_main.*
@@ -49,28 +51,51 @@ import java.util.*
 
 @Route(path = ARoutePath.SchedulesMainActivity)
 @RuntimePermissions
-class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
-        Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemChildLongClickListener {
+class SchedulesListActivity : BaseProjectsActivity(), View.OnClickListener,
+    Toolbar.OnMenuItemClickListener, BaseQuickAdapter.OnItemChildClickListener,
+    BaseQuickAdapter.OnItemChildLongClickListener {
 
     private var selectPosition = -1
+
+    private val mSchedulesListPresent by lazy {
+        SchedulesListPresent(this)
+    }
+    private lateinit var mViewModule: SchedulesListViewModule
 
     private val scheduleMainAdapter by lazy {
         SchedulesMainAdapter(ArrayList())
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun beforeSetContentView() {
+        super.beforeSetContentView()
         setTheme(R.style.ScheduleAppTheme)
+        mViewModule = ViewModelProvider(
+            this, ViewModelProvider.AndroidViewModelFactory.getInstance(
+                application
+            )
+        ).get(SchedulesListViewModule::class.java)
     }
+
 
     override fun initResLayId() = R.layout.schedules_activity_main
 
-    override fun bindView(savedInstanceState: Bundle?, mBaseProjectsActivity: BaseProjectsActivity) {
+    override fun bindView(
+        savedInstanceState: Bundle?,
+        mBaseProjectsActivity: BaseProjectsActivity
+    ) {
+        mSchedulesListPresent.onCreate()
         setSupportActionBar(tbSchedules)
         tvDaySelected.text = DateTime.getDateString(System.currentTimeMillis())
         SchedulesMainActivityPermissionsDispatcher.getStorageWithCheck(this)
         requestPermission()
         initClickListener()
+    }
+
+
+    override fun onDestroy() {
+        mSchedulesListPresent.onDestroy()
+        super.onDestroy()
     }
 
     private fun initRecyclerView() {
@@ -105,16 +130,22 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
                 selectPosition = position
                 val baseObjId = (adapter?.getItem(position) as? ScheduleItem)?.baseObjId ?: return
                 ARouter.getInstance()
-                        .build(ARoutePath.ScheduleItemInfoActivity)
-                        .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
-                        .withInt(LIST_POSITION, position)
-                        .navigation(this@SchedulesMainActivity,
-                                ActivityRequestCode.RequestCode_SchedulesMainActivity)
+                    .build(ARoutePath.ScheduleItemInfoActivity)
+                    .withLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, baseObjId)
+                    .withInt(LIST_POSITION, position)
+                    .navigation(
+                        this@SchedulesListActivity,
+                        ActivityRequestCode.RequestCode_SchedulesMainActivity
+                    )
             }
         }
     }
 
-    override fun onItemChildLongClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int): Boolean {
+    override fun onItemChildLongClick(
+        adapter: BaseQuickAdapter<*, *>?,
+        view: View?,
+        position: Int
+    ): Boolean {
         val item = adapter?.getItem(position) as? ScheduleItem ?: return false
         val baseObjId = item.baseObjId
         val itemName = item.itemName
@@ -128,19 +159,30 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
     }
 
     private fun initData() {
+        lifecycleScope.launchWhenCreated {
+
+        }
+
+
         val currentTime = DateTime.getDateLong(tvDaySelected.text.toString().trim())
         val toDayStart = getDayStart(currentTime).toString()
         val toDayEnd = getDayEnd(currentTime).toString()
-        Timber.d("69 toDayStart ${DateTime.getDateString(toDayStart.toLong())} toDayEnd ${DateTime.getDateString(toDayEnd.toLong())}")
+        Timber.d(
+            "69 toDayStart ${DateTime.getDateString(toDayStart.toLong())} toDayEnd ${
+                DateTime.getDateString(
+                    toDayEnd.toLong()
+                )
+            }"
+        )
 
         //开始的时间是当天,对结束的时间没有限制
         LitePal.where("startTime>? and startTime<?", toDayStart, toDayEnd)
-                .order("startTime")
-                .findAsync(ScheduleItem::class.java)
-                .listen {
-                    scheduleMainAdapter.clear()
-                    scheduleMainAdapter.addItems(it)
-                }
+            .order("startTime")
+            .findAsync(ScheduleItem::class.java)
+            .listen {
+                scheduleMainAdapter.clear()
+                scheduleMainAdapter.addItems(it)
+            }
     }
 
     private fun initClickListener() {
@@ -164,16 +206,13 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
                 }
             //增加数据库中没有的项目
             fabAddScheduleItem -> {
-                val currentTime = System.currentTimeMillis()
-                val scheduleItem = ScheduleItem(WkStringConstants.STR_EMPTY, currentTime)
-                scheduleItem.saveAsync().listen {
-                    if (it) {
-                        scheduleMainAdapter.addItem(scheduleItem)
-                    }
-                }
-
+                mSchedulesListPresent.gotoInfoActivity()
             }
         }
+    }
+
+    fun addItemImmediately(scheduleItem: ScheduleItem) {
+        scheduleMainAdapter.addItem(scheduleItem)
     }
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
@@ -200,7 +239,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
             }
             IFAFlag.DELETE_ITEM_DIALOG -> {
                 val id = bundle?.getLong(SchedulesBundleKey.SCHEDULE_ITEM_ID, -1)
-                        ?: throw Exception("id 有问题")
+                    ?: throw Exception("id 有问题")
                 val position = bundle.getInt(BundleKey.LIST_POSITION, -1)
                 LitePal.deleteAsync(ScheduleItem::class.java, id).listen {
                     val itemList = scheduleMainAdapter.itemList
@@ -219,7 +258,8 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         Timber.i("requestCode:  $requestCode   resultCode : $resultCode")
         if (requestCode == ActivityRequestCode.RequestCode_SchedulesMainActivity &&
-                resultCode == ActivityResultCode.ResultCode_ScheduleItemInfoActivity) {
+            resultCode == ActivityResultCode.ResultCode_ScheduleItemInfoActivity
+        ) {
             val scheduleItem = scheduleMainAdapter.getItem(selectPosition) ?: return
             LitePal.findAsync(ScheduleItem::class.java, scheduleItem.baseObjId).listen {
                 scheduleMainAdapter.replaceItem(it ?: return@listen, selectPosition)
@@ -237,11 +277,22 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1024) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
             } else {
                 finish()
                 android.os.Process.killProcess(android.os.Process.myPid())
@@ -249,24 +300,34 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
             }
             return
         }
-        SchedulesMainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+        SchedulesMainActivityPermissionsDispatcher.onRequestPermissionsResult(
+            this,
+            requestCode,
+            grantResults
+        )
 
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @NeedsPermission(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun getStorage() {
         initRecyclerView()
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @OnPermissionDenied(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun refusePermission() {
         RefuseDialog().show(this)
     }
 
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @OnShowRationale(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun showRationale(request: PermissionRequest) {
         PermissionDialog().withRequest(request).show(this)
     }
@@ -274,10 +335,7 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
     override fun onLongClick(v: View?): Boolean {
         when (v?.id) {
             R.id.fabAddScheduleItem -> {
-                ARouter.getInstance()
-                        .build(ARoutePath.ScheduleItemInfoActivity)
-                        .navigation(this@SchedulesMainActivity,
-                                ActivityRequestCode.RequestCode_SchedulesMainActivity)
+                mSchedulesListPresent.addItemImmediately()
             }
         }
         return true
@@ -295,10 +353,24 @@ class SchedulesMainActivity : BaseProjectsActivity(), View.OnClickListener,
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 先判断有没有权限
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
             } else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1024)
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    1024
+                )
             }
         } else {
 

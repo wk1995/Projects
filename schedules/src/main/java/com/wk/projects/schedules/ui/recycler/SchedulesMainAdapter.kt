@@ -1,13 +1,9 @@
 package com.wk.projects.schedules.ui.recycler
 
 import android.graphics.Color
-import android.view.View
 import android.widget.Button
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.wk.projects.common.constant.WkStringConstants
 import com.wk.projects.schedules.R
 import com.wk.projects.schedules.data.ScheduleItem
 import com.wk.projects.schedules.date.DateTime.getDateString
@@ -87,7 +83,7 @@ class SchedulesMainAdapter(val itemList: ArrayList<ScheduleItem>)
                 tvCompleteStatus?.background=(if (finish) {
                     null
                 } else {
-                    mContext.getDrawable(R.drawable.common_bg_xml_shape_r25_solid_white)
+                    mContext.getDrawable(R.drawable.common_bg_xml_shape_r0_solid_white)
                 })
             }
             helper ?.addOnClickListener(R.id.clScheduleItem)

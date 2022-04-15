@@ -1,4 +1,4 @@
-package com.wk.projects.schedules.ui.recycler
+package com.wk.projects.schedules.list
 
 import android.view.View
 import com.chad.library.adapter.base.BaseViewHolder

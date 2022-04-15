@@ -13,6 +13,7 @@ import java.util.*
  *      desc   :
  * </pre>
  */
+@Deprecated("see com.wk.projects.common.time.date.DateTime")
 object DateTime {
     private val defaultSimpleDateFormat by lazy {
         SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒SSS", Locale.getDefault())

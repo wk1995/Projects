@@ -48,7 +48,7 @@ class IdeaAdapter(private var beans: MutableList<ScheduleIdeaBean>? = null) : an
             beans=ArrayList()
         }
         beans?.add(index,bean)
-        notifyItemRangeChanged(index,itemCount-index)
+        notifyItemRangeChanged(index,itemCount)
     }
 
 }

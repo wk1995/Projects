@@ -66,14 +66,16 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
     /**当前的类别*/
     private var currentCategoryId: Long = INVALID_ITEM_ID
 
+//    private val mViewModel :ScheduleInfoViewModel by viewmodel()
+
     private val mScheduleInfoAdapter by lazy { ScheduleInfoAdapter() }
 
     private val adapter by lazy {
-        val fragments=ArrayList<Fragment>()
+        val fragments = ArrayList<Fragment>()
         fragments.add(SampleFragment("1"))
         fragments.add(SampleFragment("2"))
         fragments.add(SampleFragment("3"))
-        ScheduleInfoContainerAdapter(supportFragmentManager,fragments)
+        ScheduleInfoContainerAdapter(supportFragmentManager, fragments)
     }
 
     override fun initResLayId() = R.layout.schedules_activity_schedule_item_info
@@ -91,9 +93,9 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
 
     private fun initView() {
         initInfoRv()
-        val viewPager=ViewPager(this)
-        viewPager.adapter=adapter
-        viewPager.id=R.id.schedules_info_container_id
+        val viewPager = ViewPager(this)
+        viewPager.adapter = adapter
+        viewPager.id = R.id.schedules_info_container_id
         viewPager.setBackgroundColor(Color.YELLOW)
         flInfoContain.addView(viewPager)
     }
@@ -126,7 +128,6 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
                 val categoryName = it?.itemName ?: WkStringConstants.STR_EMPTY
                 mScheduleInfoAdapter.addData(Pair(categoryName, "类别"))
             }
-
         }
     }
 
@@ -142,14 +143,15 @@ class ScheduleItemInfoActivity : BaseProjectsActivity(), View.OnClickListener, O
             btTitleSave,
             btScheduleSave -> {
                 currentSchedule.note = etScheduleNote.text.toString()
-                currentSchedule.saveAsync().listen {
-                    if (it) {
-                        setResult(RequestCode_SchedulesMainActivity)
-                        finish()
-                    } else {
-                        WkToast.showToast("保存失败")
-                    }
-                }
+                currentSchedule.saveOrUpdateAsync("id=", currentSchedule.baseObjId.toString())
+                        .listen {
+                            if (it) {
+                                setResult(RequestCode_SchedulesMainActivity)
+                                finish()
+                            } else {
+                                WkToast.showToast("保存失败")
+                            }
+                        }
             }
         }
     }
