@@ -11,8 +11,11 @@
         android:icon="@drawable/test_icon"
         android:label="@string/test_modules_name"
         android:theme="@style/TestAppTheme"
-        tools:replace="android:appComponentFactory,android:label"
-        tools:ignore="UnusedAttribute">
+        tools:ignore="UnusedAttribute"
+        tools:replace="android:appComponentFactory,android:label">
+        <activity
+            android:name=".coroutines.flow.CoroutinesStateFlowActivity"
+            android:exported="false" />
         <activity
             android:name=".coroutines.flow.CoroutinesFlowActivity"
             android:exported="false" />
@@ -37,7 +40,8 @@
         <activity android:name=".aidl.AIDLActivity" />
         <activity android:name=".touch.TestMotionEventActivity" />
         <activity android:name=".bitmap.TestBitmapActivity" />
-        <activity android:name=".TestMainActivity"
+        <activity
+            android:name=".TestMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
