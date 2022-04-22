@@ -1,12 +1,12 @@
 package com.wk.test.coroutines.flow
 
 import com.wk.test.TestLogUtil
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 import org.junit.Test
 
 /**
@@ -22,33 +22,78 @@ class CoroutinesShareFlowViewModelTest {
     private val retryShareFlow = MutableSharedFlow<Int>(2)
     private val shareFlow = MutableSharedFlow<Int>()
     private val extraBufferCapacityShareFlow = MutableSharedFlow<Int>(extraBufferCapacity = 2)
+    private val dropOldestShareFlow =
+        MutableSharedFlow<Int>(extraBufferCapacity = 2,onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val dropLatestShareFlow =
+        MutableSharedFlow<Int>(extraBufferCapacity = 2, onBufferOverflow = BufferOverflow.DROP_LATEST)
 
     @Test
     fun test() {
-
+        dropLatestShareFlow()
     }
 
-    private fun hasExtraBufferCapacity(){
+    fun dropLatestShareFlow(){
         runBlocking {
             TestLogUtil.log("runBlocking start")
+            launch {
+                TestLogUtil.log("collect start")
+                dropLatestShareFlow.collect {
+                    TestLogUtil.log("shareFlow collect: $it")
+                }
+                TestLogUtil.log("collect end")
+            }
             launch {
                 (1..10).forEach {
                     TestLogUtil.log(
                         "shareFlow emit: $it"
                     )
-                    shareFlow.emit(it)
+                    dropLatestShareFlow.emit(it)
                 }
             }
-            TestLogUtil.log("runBlocking go on")
+            TestLogUtil.log("runBlocking end")
+        }
+    }
+
+    fun dropOldestShareFlow(){
+        runBlocking {
+            TestLogUtil.log("runBlocking start")
             launch {
                 TestLogUtil.log("collect start")
-                shareFlow.collect {
-                    delay(
-                        100
-                    )
+                dropOldestShareFlow.collect {
                     TestLogUtil.log("shareFlow collect: $it")
                 }
                 TestLogUtil.log("collect end")
+            }
+            launch {
+                (1..10).forEach {
+                    TestLogUtil.log(
+                        "shareFlow emit: $it"
+                    )
+                    dropOldestShareFlow.emit(it)
+                }
+            }
+            TestLogUtil.log("runBlocking end")
+        }
+    }
+
+
+    private fun hasExtraBufferCapacity(){
+        runBlocking {
+            TestLogUtil.log("runBlocking start")
+            launch {
+                TestLogUtil.log("collect start")
+                extraBufferCapacityShareFlow.collect {
+                    TestLogUtil.log("shareFlow collect: $it")
+                }
+                TestLogUtil.log("collect end")
+            }
+            launch {
+                (1..10).forEach {
+                    TestLogUtil.log(
+                        "shareFlow emit: $it"
+                    )
+                    extraBufferCapacityShareFlow.emit(it)
+                }
             }
             TestLogUtil.log("runBlocking end")
         }
