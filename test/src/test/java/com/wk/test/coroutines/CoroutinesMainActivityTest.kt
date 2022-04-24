@@ -1,11 +1,16 @@
 package com.wk.test.coroutines
 
+import com.wk.test.TestLogUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.createCoroutine
 
 /**
  *
@@ -32,6 +37,21 @@ class CoroutinesMainActivityTest{
         }
     }
 
+
+    fun createSuspend(){
+        val continuation= suspend {
+            TestLogUtil.log("in Continuation")
+            2
+        }.createCoroutine(object : Continuation<Int>{
+            override val context: CoroutineContext
+                get() = EmptyCoroutineContext
+
+            override fun resumeWith(result: Result<Int>) {
+                TestLogUtil.log("Continuation End: $result")
+            }
+        })
+
+    }
 
     suspend fun way4(){
         flow{

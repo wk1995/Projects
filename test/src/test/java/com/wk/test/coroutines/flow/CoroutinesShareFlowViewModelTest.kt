@@ -29,7 +29,7 @@ class CoroutinesShareFlowViewModelTest {
 
     @Test
     fun test() {
-        dropLatestShareFlow()
+        shareFlow()
     }
 
     fun dropLatestShareFlow(){
