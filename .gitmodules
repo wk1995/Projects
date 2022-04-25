@@ -1,12 +1,15 @@
 [submodule "android_projects_base"]
 	path = android_projects_base
-	url = https://github.com/wk1995/android_projects_base.git
+	url = https://gitee.com/wk1995/android_projects_base.git
 [submodule "schedules"]
 	path = schedules
-	url = https://github.com/wk1995/schedules.git
+	url = https://gitee.com/wk1995/schedules.git
 [submodule "plan_record"]
 	path = plan_record
 	url = https://gitee.com/wk1995/plan_record.git
 [submodule "android_demo"]
 	path = android_demo
-	url = https://github.com/wk1995/android_demo.git
+	url =  https://gitee.com/wk1995/android_demo.git
+[submodule "cashbook"]
+    path = cashbook
+    url =  https://gitee.com/wk1995/cashbook.git
