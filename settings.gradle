@@ -1,6 +1,6 @@
 include ':map-gaode'
 println "setting gradle start"
-include ':app', ':schedules', ':main', ':wkBuildSrc', ':test', ':lint',':android_projects_base'
+include ':app', ':schedules', ':main', ':wkBuildSrc', ':android_demo', ':lint',':android_projects_base'
 include ':cashbook'
 include ':plan_record'
 println "setting gradle end"
