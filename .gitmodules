@@ -7,3 +7,6 @@
 [submodule "plan_record"]
 	path = plan_record
 	url = https://gitee.com/wk1995/plan_record.git
+[submodule "android_demo"]
+	path = android_demo
+	url = https://github.com/wk1995/android_demo.git
