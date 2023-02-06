@@ -13,3 +13,6 @@
 [submodule "cashbook"]
     path = cashbook
     url =  https://gitee.com/wk1995/cashbook.git
+[submodule "short_video"]
+	path = short_video
+	url = https://gitee.com/wk1995/short_video.git

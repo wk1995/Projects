@@ -3,4 +3,7 @@ println "setting gradle start"
 include ':app', ':schedules', ':main', ':wkBuildSrc', ':android_demo', ':lint',':android_projects_base'
 include ':cashbook'
 include ':plan_record'
+include ':short_video'
 println "setting gradle end"
+include ':iot'
+include ':translate'
