@@ -7,3 +7,7 @@ include ':short_video'
 println "setting gradle end"
 include ':iot'
 include ':translate'
+include ':log'
+include ':log_api'
+include ':database_api'
+include ':database'
