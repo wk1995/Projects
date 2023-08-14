@@ -1,0 +1,3 @@
+[submodule "plugin_publish"]
+	path = plugin_publish
+	url = https://github.com/wk1995/android_plugin_publish.git

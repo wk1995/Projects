@@ -1,3 +1,4 @@
 println "setting gradle start"
 include ':app', ':common', ':schedules', ':main', ':wkBuildSrc', ':test', ':lint'
+include ':plugin_publish'
 println "setting gradle end"
